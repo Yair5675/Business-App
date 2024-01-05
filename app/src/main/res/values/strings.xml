@@ -1,0 +1,97 @@
+<resources>
+    <string name="app_name">Final Project</string>
+
+    <!-- Strings belonging to the main activity: -->
+    <string name="act_main_user_greeting_default_txt">Hello guest!</string>
+
+    <string name="act_main_edit_account_btn_txt">Edit\nAccount</string>
+    <string name="act_main_delete_account_btn_txt">Delete\nAccount</string>
+
+    <string name="act_main_content_description_user_img">A picture of the user</string>
+
+    <string name="act_main_credits_txt"><b>Made by Yair Ziv</b></string>
+
+
+    <!-- Strings belonging to the users menu: -->
+    <string name="users_menu_item_about_title">About Us</string>
+    <string name="users_menu_item_sign_up_title">Sign Up</string>
+    <string name="users_menu_item_sign_in_title">Sign In</string>
+    <string name="users_menu_item_disconnect_title">Disconnect</string>
+    <string name="users_menu_item_show_users_title">Show Users</string>
+
+
+    <!-- Strings belonging to the input activity: -->
+    <string name="act_input_title_register"><b>Register</b></string>
+    <string name="act_input_title_update"><b>Update Info</b></string>
+
+    <string name="act_input_next_btn_text">Next\t\t</string>
+    <string name="act_input_confirm_btn_text">Confirm\t\t</string>
+
+    <string name="act_input_back_btn_text">Previous</string>
+    <string name="act_input_cancel_btn_text">\tCancel</string>
+
+    <string name="act_input_scrollview_content_desc">A scrollView holding a page of the input form</string>
+
+
+    <!-- Strings belonging to the first input fragment: -->
+    <string name="frag_input1_personal_info_txt"><b>Personal Info:</b></string>
+    <string name="frag_input1_first_name_input_hint">First Name</string>
+    <string name="frag_input1_last_name_input_hint">Last Name</string>
+    <string name="frag_input1_birthdate_input_hint">Your Birthday</string>
+    <string name="frag_input1_gender_btn_male_txt">Male</string>
+    <string name="frag_input1_gender_btn_female_txt">Female</string>
+
+    <string name="frag_input1_location_info_txt"><b>Location Info:</b></string>
+    <string name="frag_input1_address_hint">Address</string>
+    <string name="frag_input1_city_hint">City</string>
+
+
+    <!-- Strings belonging to the second input fragment: -->
+    <string name="frag_input2_security_info_txt"><b>Security Info:</b></string>
+    <string name="frag_input2_old_password_hint">Old Password</string>
+    <string name="frag_input2_email_input_hint">Email</string>
+    <string name="frag_input2_password_input_hint">Password</string>
+    <string name="frag_input2_confirm_password_input_hint">Confirm Password</string>
+    <string name="frag_input2_phone_number_hint">Phone Number</string>
+
+
+    <!-- Strings belonging to the third input fragment: -->
+    <string name="frag_input_3_title_txt"><b>Take a Picture!</b></string>
+    <string name="frag_input_3_camera_btn_txt">Picture</string>
+    <string name="frag_input_3_gallery_btn_txt">Gallery</string>
+
+
+    <!-- Strings belonging to the login dialog: -->
+    <string name="dialog_login_title"><b>Log In</b></string>
+    <string name="dialog_login_button_txt">Log In</string>
+    <string name="dialog_login_checkbox_txt">Remember me</string>
+
+
+    <!-- Strings belonging to the about dialog: -->
+    <string name="dialog_about_title"><b>About Us</b></string>
+    <string name="dialog_about_text">
+        This beautiful app was created, designed, and coded by the amazing individual Yair Ziv. Yair
+        Ziv is a student in twelfth grade in Alliance, and is learning how to make mobile apps.
+        \n\nThis is his final project for the year, and he hopes you\'ll enjoy it!
+    </string>
+
+    <!-- Strings belonging to the users activity: -->
+    <string name="act_users_title"><b>The App\'s Users:</b></string>
+    <string name="act_users_sort_by_txt">Sort by:</string>
+    <string name="act_users_query_hint">Search for a name</string>
+    <string-array name="act_users_spinner_sorting_options">
+        <item>Nothing</item>
+        <item>Name</item>
+        <item>Surname</item>
+        <item>Age</item>
+    </string-array>
+
+    <!-- Strings belonging to the user list row XML: -->
+    <string name="row_users_sample_name">Guest name</string>
+    <string name="row_users_sample_age">X years old</string>
+    <string name="row_users_sample_gender">Male/Female</string>
+    <string name="row_users_sample_address">Some Address 99</string>
+    <string name="row_users_sample_city">City Name</string>
+    <string name="row_users_sample_email">someEmail123@gmail.com</string>
+    <string name="row_users_sample_phone">051–111–1111</string>
+</resources>

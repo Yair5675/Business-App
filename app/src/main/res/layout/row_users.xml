@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/rowUsersImgUser"
+
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/act_main_content_description_user_img"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/guest" />
+
+    <TextView
+        android:id="@+id/rowUsersTvUserName"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rowUsersImgUser"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+
+        android:text="@string/row_users_sample_name"
+        android:textSize="30sp"
+        android:textStyle="bold"
+
+        android:maxLength="21"
+        android:maxLines="2"
+
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        />
+
+    <TextView
+        android:id="@+id/rowUsersTvUserAge"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/rowUsersTvUserName"
+        app:layout_constraintStart_toStartOf="@id/rowUsersTvUserName"
+
+        android:text="@string/row_users_sample_age"
+        android:textSize="16sp"
+
+        android:maxLength="20"
+        android:maxLines="1"
+
+        android:layout_marginTop="3dp"
+
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rowUsersClMoreInfo"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="8dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rowUsersImgUser"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:visibility="gone"
+        >
+        
+        <TextView
+            android:id="@+id/rowUsersTvGenderTitle"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:text="Gender:"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/rowUsersTvGender"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvGenderTitle"
+            app:layout_constraintStart_toEndOf="@id/rowUsersTvGenderTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.25"
+
+            android:text="@string/row_users_sample_gender"
+            />
+
+        <TextView
+            android:id="@+id/rowUsersTvAddressTitle"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toBottomOf="@id/rowUsersTvGenderTitle"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvGenderTitle"
+            android:layout_marginTop="8dp"
+
+            android:text="Address:"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/rowUsersTvAddress"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvAddressTitle"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvGender"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+
+            android:text="@string/row_users_sample_address"
+            android:maxLines="2"
+            />
+
+        <TextView
+            android:id="@+id/rowUsersTvCityTitle"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toBottomOf="@id/rowUsersTvAddressTitle"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvAddressTitle"
+            android:layout_marginTop="8dp"
+
+            android:text="City:"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/rowUsersTvCity"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvCityTitle"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+
+            android:text="@string/row_users_sample_city"
+
+            />
+
+        <TextView
+            android:id="@+id/rowUsersTvEmailTitle"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toBottomOf="@id/rowUsersTvCityTitle"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvCityTitle"
+            android:layout_marginTop="8dp"
+
+            android:text="Email:"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/rowUsersTvEmail"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvEmailTitle"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvCity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+
+            android:text="@string/row_users_sample_email"
+            />
+
+        <TextView
+            android:id="@+id/rowUsersTvPhoneTitle"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toBottomOf="@id/rowUsersTvEmailTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="8dp"
+
+            android:text="Phone Number:"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/rowUsersTvPhone"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvPhoneTitle"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvEmail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+
+            android:text="@string/row_users_sample_phone"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

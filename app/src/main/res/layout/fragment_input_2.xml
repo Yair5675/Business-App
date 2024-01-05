@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/transparent_background">
+
+
+    <TextView
+    android:id="@+id/fragInput2TvSecurityInfo"
+
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+
+    android:text="@string/frag_input2_security_info_txt"
+
+    android:textSize="16sp"
+
+    app:layout_constraintVertical_chainStyle="packed"
+    app:layout_constraintBottom_toTopOf="@+id/fragInput2TilPhone"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragInput2TilPhone"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/frag_input2_phone_number_hint"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragInput2TvSecurityInfo"
+        app:layout_constraintBottom_toTopOf="@id/fragInput2TilEmail"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragInput2EtPhone"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:maxLength="10"
+
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@id/fragInput2EtEmail"
+            android:inputType="phone"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragInput2TilEmail"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="8dp"
+        android:hint="@string/frag_input2_email_input_hint"
+
+        app:layout_constraintEnd_toEndOf="parent"
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragInput2TilPhone"
+        app:layout_constraintBottom_toTopOf="@+id/fragInput2TilPassword"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragInput2EtEmail"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:maxLength="26"
+
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@id/fragInput2EtPassword"
+
+            android:inputType="textEmailAddress"
+
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragInput2TilPassword"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="10dp"
+        android:hint="@string/frag_input2_password_input_hint"
+
+        app:layout_constraintBottom_toTopOf="@+id/fragInput2TilConfirmPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragInput2TilEmail"
+
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragInput2EtPassword"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:maxLength="22"
+
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragInput2TilConfirmPassword"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="10dp"
+        android:hint="@string/frag_input2_confirm_password_input_hint"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragInput2TilPassword"
+        app:layout_constraintBottom_toTopOf="@id/fragInput2TilOldPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragInput2EtConfirmPassword"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:inputType="textPassword"
+            android:maxLength="22"
+
+            android:imeOptions="actionDone"
+            android:nextFocusForward="@id/fragInput2EtOldPassword"
+
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragInput2TilOldPassword"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:hint="@string/frag_input2_old_password_hint"
+
+        android:layout_marginTop="10dp"
+
+        app:layout_constraintTop_toBottomOf="@id/fragInput2TilConfirmPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:passwordToggleEnabled="true"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragInput2EtOldPassword"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:inputType="textPassword"
+            android:maxLength="22"
+
+            android:imeOptions="actionDone"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

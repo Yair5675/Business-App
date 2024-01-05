@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@drawable/transparent_background">
+
+    <TextView
+        android:id="@+id/fragInput3TvTitle"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+
+        app:layout_constraintBottom_toBottomOf="@id/fragInput3TopEdge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:text="@string/frag_input_3_title_txt"
+        android:textSize="28sp"
+        />
+
+    <ImageView
+        android:id="@+id/fragInput3ImgUser"
+
+        app:layout_constraintTop_toTopOf="@id/fragInput3TopEdge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:src="@drawable/guest"
+
+        android:layout_width="215dp"
+        android:layout_height="215dp"
+
+        />
+
+    <pl.droidsonroids.gif.GifImageButton
+        android:id="@+id/fragInput3BtnUploadCamera"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/fragInput3ImgUser"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fragInput3BtnUploadGallery"
+
+        android:layout_marginTop="32dp"
+
+        android:src="@drawable/camera_icon"
+        android:background="@drawable/transparent_background"
+        />
+
+    <pl.droidsonroids.gif.GifImageButton
+        android:id="@+id/fragInput3BtnUploadGallery"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toTopOf="@id/fragInput3BtnUploadCamera"
+        app:layout_constraintBottom_toBottomOf="@id/fragInput3BtnUploadCamera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fragInput3BtnUploadCamera"
+
+        android:src="@drawable/gallery_icon"
+        android:background="@drawable/transparent_background"
+        />
+
+    <TextView
+        android:id="@+id/fragInput3TvCamera"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintStart_toStartOf="@id/fragInput3BtnUploadCamera"
+        app:layout_constraintEnd_toEndOf="@id/fragInput3BtnUploadCamera"
+        app:layout_constraintTop_toBottomOf="@id/fragInput3BtnUploadCamera"
+
+        android:text="@string/frag_input_3_camera_btn_txt"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/fragInput3TvGallery"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintStart_toStartOf="@id/fragInput3BtnUploadGallery"
+        app:layout_constraintEnd_toEndOf="@id/fragInput3BtnUploadGallery"
+        app:layout_constraintTop_toBottomOf="@id/fragInput3BtnUploadGallery"
+
+        android:text="@string/frag_input_3_gallery_btn_txt"
+        android:gravity="center"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/fragInput3TopEdge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

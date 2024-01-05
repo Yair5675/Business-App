@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/dialogLoginTitle"
+
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+
+        android:text="@string/dialog_login_title"
+        android:textSize="32sp"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:id="@+id/dialogLoginTilPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:hint="@string/frag_input2_phone_number_hint"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/dialogLoginEtPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:inputType="phone"
+            android:autofillHints="phone"
+
+            android:maxLength="10"
+
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@id/dialogLoginEtEmail"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:id="@+id/dialogLoginTilEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:hint="@string/frag_input2_email_input_hint"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/dialogLoginEtEmail"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:maxLength="26"
+
+            android:inputType="textEmailAddress"
+            android:autofillHints="emailAddress"
+
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@id/dialogLoginEtPassword"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dialogLoginTilPassword"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+
+        android:hint="@string/frag_input2_password_input_hint"
+        app:passwordToggleEnabled="true"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/dialogLoginEtPassword"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:inputType="textPassword"
+            android:autofillHints="password"
+
+            android:maxLength="22"
+
+            android:imeOptions="actionDone"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <CheckBox
+        android:id="@+id/dialogLoginCbRememberMe"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="@string/dialog_login_checkbox_txt"
+
+        android:layout_marginStart="16dp"
+        />
+
+    <android.widget.Button
+        android:id="@+id/dialogLoginBtnSubmit"
+
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+
+        style="@style/ImprovedButtonAppearance"
+        android:text="@string/dialog_login_button_txt"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+</LinearLayout>
