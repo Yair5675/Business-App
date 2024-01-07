@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.custom_views.LoginDialog;
 import com.example.finalproject.database.AppDatabase;
 import com.example.finalproject.database.SharedPreferenceHandler;
 import com.example.finalproject.database.entities.City;
@@ -140,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         // If they want to log in to a user, create the login dialog:
         else if (ID == R.id.menuUsersItemSignIn)
-            new LoginDialog(this, getResources());
+            activateSignInPage();
 
         // If they want to log out:
         else if (ID == R.id.menuUsersItemDisconnect) {
@@ -183,6 +182,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Show the dialog:
         dialog.show();
+    }
+
+    private void activateSignInPage() {
+        // TODO: Open up the sign in page using FireBase authentication built-in UI
     }
 
     public void userConnectivityChanged() {
