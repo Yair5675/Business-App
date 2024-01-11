@@ -24,11 +24,11 @@
     <string name="act_input_title_register"><b>Register</b></string>
     <string name="act_input_title_update"><b>Update Info</b></string>
 
-    <string name="act_input_next_btn_text">Next\t\t</string>
-    <string name="act_input_confirm_btn_text">Confirm\t\t</string>
+    <string name="act_input_next_btn_text">Next</string>
+    <string name="act_input_confirm_btn_text">Confirm</string>
 
     <string name="act_input_back_btn_text">Previous</string>
-    <string name="act_input_cancel_btn_text">\tCancel</string>
+    <string name="act_input_cancel_btn_text">Cancel</string>
 
     <string name="act_input_scrollview_content_desc">A scrollView holding a page of the input form</string>
 

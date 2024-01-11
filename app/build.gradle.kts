@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.example.finalproject"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -46,7 +46,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.3.0")
 
     // Firebase authentication UI:
-    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
+    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
 
     // Firebase BoM:
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,9 +46,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     // The buttons that go forwards or backwards in the pages:
     private Button btnNext, btnPrev;
 
-    // The progress bar that will indicate how many pages are left in the form:
-    private ProgressBar pbPages;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +71,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.btnPrev = findViewById(R.id.actInputBtnBackOrCancel);
         this.btnNext.setOnClickListener(this);
         this.btnPrev.setOnClickListener(this);
-
-        // Loading the progress bar:
-        this.pbPages = findViewById(R.id.actInputProgress);
-        this.pbPages.setMax(100);
 
         // Loading the first page:
         this.currentPage = 1;
@@ -172,9 +164,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         // Save change:
         transaction.commit();
 
-        // Set the progress bar to go to 0:
-        this.pbPages.setProgress(0, true);
-
         // Set the prev button to display 'cancel' and an X drawable:
         this.btnPrev.setText(R.string.act_input_cancel_btn_text);
         this.btnPrev.setCompoundDrawablesWithIntrinsicBounds(R.drawable.cancel_symbol, 0, 0, 0);
@@ -197,9 +186,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
         // Save change:
         transaction.commit();
-
-        // Set the progress bar to go to 33:
-        this.pbPages.setProgress(33, true);
 
         // Set the prev button to display 'previous' and a backwards arrow drawable:
         this.btnPrev.setText(R.string.act_input_back_btn_text);
@@ -226,9 +212,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
         // Save change:
         transaction.commit();
-
-        // Set the progress bar to go to 67:
-        this.pbPages.setProgress(67, true);
 
         // Set the prev button to display 'previous' and a backwards arrow drawable:
         this.btnPrev.setText(R.string.act_input_back_btn_text);
