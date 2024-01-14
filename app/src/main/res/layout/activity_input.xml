@@ -57,7 +57,6 @@
             android:layout_height="match_parent"
 
             android:contentDescription="@string/act_input_scrollview_content_desc"
-            android:layout_marginBottom="8dp"
             >
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/actInputFragmentContainer"
@@ -71,6 +70,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
+            android:padding="8dp"
             >
 
             <android.widget.Button
