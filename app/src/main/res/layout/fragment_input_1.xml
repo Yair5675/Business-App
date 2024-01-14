@@ -1,131 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/transparent_background">
+    android:orientation="vertical"
+    android:background="@drawable/transparent_background"
+    android:paddingHorizontal="8dp">
 
-    <TextView
-        android:id="@+id/fragInput1TvPersonalInfo"
-
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:text="@string/frag_input1_personal_info_txt"
-        android:textSize="16sp"
-
-        app:layout_constraintBottom_toTopOf="@+id/fragInput1TilFirstName"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragInput1TilFirstName"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-
-        android:layout_marginEnd="8dp"
-        android:hint="@string/frag_input1_first_name_input_hint"
-        app:layout_constraintBottom_toTopOf="@+id/fragInput1RgGender"
-
-        app:layout_constraintEnd_toStartOf="@id/fragInput1TilLastName"
-        app:layout_constraintHorizontal_bias="0.5"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragInput1TvPersonalInfo">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragInput1EtFirstName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:imeOptions="actionNext"
-
-            android:maxLength="10"
-
-            android:inputType="textPersonName"
-            android:nextFocusForward="@id/fragInput1EtLastName" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragInput1TilLastName"
-
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        android:layout_marginStart="8dp"
-        android:hint="@string/frag_input1_last_name_input_hint"
-        app:layout_constraintBottom_toBottomOf="@id/fragInput1TilFirstName"
-        app:layout_constraintEnd_toEndOf="parent"
-
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/fragInput1TilFirstName"
-
-        app:layout_constraintTop_toTopOf="@id/fragInput1TilFirstName">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragInput1EtLastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:maxLength="10"
-
-            android:imeOptions="actionNext"
-
-            android:inputType="textPersonName"
-            android:nextFocusForward="@id/fragInput1EtBirthdate" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <RadioGroup
-        android:id="@+id/fragInput1RgGender"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        android:gravity="center"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/fragInput1TilBirthdate"
+        android:gravity="center"
+        >
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragInput1TilFirstName">
-
-        <RadioButton
-            android:id="@+id/fragInput1RbMale"
-
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fragInput1TilFirstName"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginEnd="8dp"
 
-            android:layout_marginHorizontal="16dp"
+            android:hint="@string/frag_input1_first_name_input_hint" >
 
-            android:text="@string/frag_input1_gender_btn_male_txt" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragInput1EtFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-        <RadioButton
-            android:id="@+id/fragInput1RbFemale"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@+id/fragInput1EtLastName"
 
-            android:layout_width="wrap_content"
+                android:maxLength="10"
+                android:maxLines="1"
+
+                android:inputType="textPersonName"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fragInput1TilLastName"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="0.5"
 
-            android:layout_marginHorizontal="16dp"
+            android:hint="@string/frag_input1_last_name_input_hint"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragInput1EtLastName"
 
-            android:text="@string/frag_input1_gender_btn_female_txt" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-    </RadioGroup>
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/fragInput1EtBirthdate"
+
+                android:inputType="textPersonName"
+                android:maxLength="10"
+                android:maxLines="1"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragInput1TilBirthdate"
 
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/frag_input1_birthdate_input_hint"
 
-        app:layout_constraintEnd_toEndOf="parent"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragInput1RgGender"
-        app:layout_constraintBottom_toTopOf="@+id/fragInput1TvLocationInfo"
-
+        android:layout_marginBottom="8dp"
         android:clickable="false"
         android:focusable="false">
 
@@ -135,85 +83,104 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
+            android:drawableStart="@drawable/cake_icon"
+            android:drawablePadding="8dp"
+
             android:inputType="none"
             android:clickable="false"
             android:focusable="false"
             />
-
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/fragInput1TvLocationInfo"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="32dp"
-        android:text="@string/frag_input1_location_info_txt"
-
-        android:textSize="16sp"
-
-        app:layout_constraintBottom_toTopOf="@id/fragInput1TilAddress"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fragInput1TilBirthdate"
-        />
-
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragInput1TilAddress"
+        android:id="@+id/fragInput1TilEmail"
 
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:hint="@string/frag_input1_address_hint"
+        android:layout_marginBottom="8dp"
 
-        app:layout_constraintTop_toBottomOf="@id/fragInput1TvLocationInfo"
-        app:layout_constraintStart_toStartOf="parent"
+        android:hint="@string/frag_input2_email_input_hint"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/fragInput1TilCity"
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragInput2TilPhone"
+        app:layout_constraintBottom_toTopOf="@+id/fragInput2TilPassword"
         >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragInput1EtAddress"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:inputType="textPostalAddress"
-            android:maxLength="26"
-            />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragInput1TilCity"
-
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="10dp"
-
-        app:layout_constraintTop_toBottomOf="@id/fragInput1TilAddress"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
-
-        <AutoCompleteTextView
-            android:id="@+id/fragInput1AcTvCity"
+            android:id="@+id/fragInput1EtEmail"
 
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:imeOptions="actionDone"
 
             android:maxLength="26"
-            android:maxLines="1"
 
-            android:inputType="text"
-            android:hint="@string/frag_input1_city_hint"
+            android:drawableStart="@drawable/email"
+            android:drawablePadding="8dp"
 
-            android:completionThreshold="1"
-            android:padding="14dp" />
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@id/fragInput1CountryCodePicker"
 
+            android:inputType="textEmailAddress"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.hbb20.CountryCodePicker
+        android:id="@+id/fragInput1CountryCodePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:padding="10dp"
+        app:ccp_showFullName="true"
+        app:ccp_showPhoneCode="false"
+        app:ccp_excludedCountries="PS"
+        app:ccp_defaultNameCode="IL"
+        app:ccp_countryPreference="IL"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragInput1TilPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/frag_input1_phone_hint"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragInput1EtPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:inputType="phone"
+            android:digits="0123456789"
+            android:maxLines="1"
+            android:maxLength="12"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragInput1TilPassword"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="8dp"
+        android:hint="@string/frag_input2_password_input_hint"
+
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragInput1EtPassword"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:drawableStart="@drawable/lock"
+            android:drawablePadding="8dp"
+            android:maxLength="22"
+
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>

@@ -34,12 +34,12 @@
 
 
     <!-- Strings belonging to the first input fragment: -->
-    <string name="frag_input1_personal_info_txt"><b>Personal Info:</b></string>
     <string name="frag_input1_first_name_input_hint">First Name</string>
     <string name="frag_input1_last_name_input_hint">Last Name</string>
     <string name="frag_input1_birthdate_input_hint">Your Birthday</string>
     <string name="frag_input1_gender_btn_male_txt">Male</string>
     <string name="frag_input1_gender_btn_female_txt">Female</string>
+    <string name="frag_input1_phone_hint">Phone Number</string>
 
     <string name="frag_input1_location_info_txt"><b>Location Info:</b></string>
     <string name="frag_input1_address_hint">Address</string>

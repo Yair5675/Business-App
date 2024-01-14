@@ -1,18 +1,14 @@
 package com.example.finalproject.fragments.input;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,7 +16,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.entities.City;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.ImprovedTextWatcher;
 import com.example.finalproject.util.InputValidation;
@@ -29,6 +24,7 @@ import com.example.finalproject.database.entities.User;
 import com.example.finalproject.util.Util;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.hbb20.CountryCodePicker;
 
 
 import java.time.LocalDate;
@@ -44,9 +40,6 @@ public class InputFragment1 extends Fragment {
     private TextInputLayout tilName, tilSurname;
     private TextInputEditText etName, etSurname;
 
-    // The radio group responsible for getting the user's gender:
-    private RadioGroup rgGender;
-
     // The input field responsible for getting the user's birth date:
     private TextInputLayout tilBirthdate;
     private TextInputEditText etBirthdate;
@@ -54,13 +47,18 @@ public class InputFragment1 extends Fragment {
     // The actual birthdate given by the user:
     private LocalDate birthdate;
 
-    // The input field responsible for getting the user's address:
-    private TextInputLayout tilAddress;
-    private TextInputEditText etAddress;
+    // Input field responsible for receiving the user's email:
+    private TextInputLayout tilEmail;
+    private TextInputEditText etEmail;
 
-    // The auto-complete input field for the city of the user:
-    private TextInputLayout tilCity;
-    private AutoCompleteTextView acTvCity;
+    // The country code picker that receives the user's phone number and country:
+    private TextInputLayout tilPhone;
+    private TextInputEditText etPhone;
+    private CountryCodePicker countryCodePicker;
+
+    // The input field responsible for receiving the user's password:
+    private TextInputLayout tilPassword;
+    private TextInputEditText etPassword;
 
     // A hashmap connecting input fields to their validation functions:
     private HashMap<EditText, Function<String, Result<Void, String>>> validationFunctions;
@@ -74,25 +72,28 @@ public class InputFragment1 extends Fragment {
     public static class PackagedInfo {
         public final String NAME;
         public final String SURNAME;
-        public final String GENDER;
         public final LocalDate BIRTHDATE;
-        public final String ADDRESS;
-        public final String CITY;
+        public final String EMAIL;
+        public final String COUNTRY;
+        public final String PHONE;
+        public final String PASSWORD;
 
         private PackagedInfo(
                 String NAME,
                 String SURNAME,
-                String GENDER,
                 LocalDate BIRTHDATE,
-                String ADDRESS,
-                String CITY
+                String EMAIL,
+                String COUNTRY,
+                String PHONE,
+                String PASSWORD
         ) {
             this.NAME = NAME;
             this.SURNAME = SURNAME;
-            this.GENDER = GENDER;
             this.BIRTHDATE = BIRTHDATE;
-            this.ADDRESS = ADDRESS;
-            this.CITY = CITY;
+            this.EMAIL = EMAIL;
+            this.COUNTRY = COUNTRY;
+            this.PHONE = PHONE;
+            this.PASSWORD = PASSWORD;
         }
     }
 
@@ -102,17 +103,17 @@ public class InputFragment1 extends Fragment {
         areInputsEmpty = Util.getTextFromEt(this.etName).isEmpty();
         areInputsEmpty &= Util.getTextFromEt(this.etSurname).isEmpty();
 
-        // Check the gender:
-        areInputsEmpty &= this.getSelectedGender().isEmpty();
-
-        // Check the address:
-        areInputsEmpty &= Util.getTextFromEt(this.etAddress).isEmpty();
-
         // Check the birthdate:
         areInputsEmpty &= this.birthdate == null;
 
-        // Check the city and return the result:
-        return areInputsEmpty && Util.getTextFromEt(this.acTvCity).isEmpty();
+        // Check the email:
+        areInputsEmpty &= Util.getTextFromEt(this.etEmail).isEmpty();
+
+        // Check the phone number:
+        areInputsEmpty &= this.countryCodePicker.getFullNumberWithPlus().isEmpty();
+
+        // Check the password and return the result:
+        return areInputsEmpty && Util.getTextFromEt(this.etPassword).isEmpty();
     }
 
     private void loadInputsFromUser(User user) {
@@ -123,25 +124,32 @@ public class InputFragment1 extends Fragment {
 
             this.etSurname.setText(user.getSurname());
 
-            if (user.getGender().equals("Male"))
-                this.rgGender.check(R.id.fragInput1RbMale);
-            else if (user.getGender().equals("Female"))
-                this.rgGender.check(R.id.fragInput1RbFemale);
-
             this.birthdate = user.getBirthdate();
             setBirthdateEtFromDate(user.getBirthdate());
 
-            this.etAddress.setText(user.getAddress());
+            this.etEmail.setText(user.getEmail());
 
-            this.acTvCity.setText(user.getCityName(requireContext()));
+            this.countryCodePicker.setFullNumber(user.getPhoneNumber());
+
+            this.etPassword.setText(user.getPassword());
+
+            // TODO: When switching to Firestore this function will have to be changed. Idea: Create
+            //  an interface called "UserReactive", which will have two methods: one sets the UI
+            //  when the user is not connected and the other sets the UI when they are connected
+            //  (or updated)
 
             // Clear all errors:
-            this.tilName.setError(null);
-            this.tilSurname.setError(null);
-            this.tilCity.setError(null);
-            this.tilAddress.setError(null);
-            this.tilBirthdate.setError(null);
+            this.clearErrors();
         }
+    }
+
+    private void clearErrors() {
+        this.tilName.setError(null);
+        this.tilSurname.setError(null);
+        this.tilBirthdate.setError(null);
+        this.tilEmail.setError(null);
+        this.tilPhone.setError(null);
+        this.tilPassword.setError(null);
     }
 
     @Nullable
@@ -157,11 +165,11 @@ public class InputFragment1 extends Fragment {
         this.initEditTexts(parent);
         this.initInputLayouts(parent);
 
+        // Re-establish the CCP:
+        this.initCountryCodePicker(parent);
+
         // Add the text watchers to the input fields:
         this.loadInputFieldsTextWatchers();
-
-        // Initialize the auto-completion for the city input:
-        this.initCityAutoCompletion();
 
         // Initialize the custom focus changing:
         this.initFocusChangingListeners();
@@ -170,7 +178,15 @@ public class InputFragment1 extends Fragment {
         if (AppDatabase.isUserLoggedIn())
             this.loadInputsFromUser(AppDatabase.getConnectedUser());
 
+        this.clearErrors();
         return parent;
+    }
+
+    private void initCountryCodePicker(View parent) {
+        this.countryCodePicker = parent.findViewById(R.id.fragInput1CountryCodePicker);
+
+        // Bind the phone number edit text to the CCP:
+        this.countryCodePicker.registerCarrierNumberEditText(this.etPhone);
     }
 
     private void initFocusChangingListeners() {
@@ -198,20 +214,33 @@ public class InputFragment1 extends Fragment {
 
         // Activate the birthdate dialog when the birthdate input is clicked:
         this.etBirthdate.setOnClickListener(view -> activateBirthdateDialog());
+
+        // Add the onValidityChanged listener for the CCP:
+
+        this.countryCodePicker.setPhoneNumberValidityChangeListener(isValidNumber -> {
+            Log.d("Given phone", this.countryCodePicker.getFullNumberWithPlus());
+            if (isValidNumber) {
+                this.tilPhone.setError(null);
+            } else if (Util.getTextFromEt(this.etPhone).isEmpty()){
+                this.tilPhone.setError(Constants.MANDATORY_INPUT_ERROR);
+            } else {
+                this.tilPhone.setError("Invalid phone number");
+            }
+        });
     }
 
     private void initEditTexts(View parent) {
-        // Load every input field and the gender radio group:
+        // Load every input field and the country list spinner:
         this.etName = parent.findViewById(R.id.fragInput1EtFirstName);
         this.etSurname = parent.findViewById(R.id.fragInput1EtLastName);
 
-        this.rgGender = parent.findViewById(R.id.fragInput1RgGender);
-
         this.etBirthdate = parent.findViewById(R.id.fragInput1EtBirthdate);
 
-        this.etAddress = parent.findViewById(R.id.fragInput1EtAddress);
+        this.etEmail = parent.findViewById(R.id.fragInput1EtEmail);
 
-        this.acTvCity = parent.findViewById(R.id.fragInput1AcTvCity);
+        this.etPhone = parent.findViewById(R.id.fragInput1EtPhoneNumber);
+
+        this.etPassword = parent.findViewById(R.id.fragInput1EtPassword);
     }
 
     private void initInputLayouts(View parent) {
@@ -221,9 +250,11 @@ public class InputFragment1 extends Fragment {
 
         this.tilBirthdate = parent.findViewById(R.id.fragInput1TilBirthdate);
 
-        this.tilAddress = parent.findViewById(R.id.fragInput1TilAddress);
+        this.tilEmail = parent.findViewById(R.id.fragInput1TilEmail);
 
-        this.tilCity = parent.findViewById(R.id.fragInput1TilCity);
+        this.tilPhone = parent.findViewById(R.id.fragInput1TilPhoneNumber);
+
+        this.tilPassword = parent.findViewById(R.id.fragInput1TilPassword);
     }
 
     private void clearFocus() {
@@ -232,21 +263,37 @@ public class InputFragment1 extends Fragment {
             focusedView.clearFocus();
     }
 
+    private EditText[] getEditTexts() {
+        return new EditText[] {
+                this.etName, this.etSurname, this.etEmail, this.etPhone, this.etPassword
+        };
+    }
+
+    private TextInputLayout[] getInputLayouts() {
+        return new TextInputLayout[] {
+                this.tilName, this.tilSurname, this.tilEmail, this.tilPhone, this.tilPassword
+        };
+    }
+
     private void loadInputFieldsTextWatchers() {
         // Map each input field to its validation method:
         this.validationFunctions = new HashMap<>();
         this.validationFunctions.put(this.etName, InputValidation::validateFirstName);
         this.validationFunctions.put(this.etSurname, InputValidation::validateLastName);
-        this.validationFunctions.put(this.etAddress, InputValidation::validateAddress);
-        this.validationFunctions.put(this.acTvCity, this::validateCity);
+        this.validationFunctions.put(this.etEmail, InputValidation::validateEmail);
+        this.validationFunctions.put(this.etPhone, _input -> {
+            if (this.countryCodePicker.isValidFullNumber())
+                return Result.success(null);
+            else if (Util.getTextFromEt(this.etPhone).isEmpty())
+                return Result.failure(Constants.MANDATORY_INPUT_ERROR);
+            else
+                return Result.failure("Invalid phone number");
+        });
+        this.validationFunctions.put(this.etPassword, InputValidation::validatePassword);
 
         // List the input fields that need a text watcher:
-        final EditText[] fields = {
-                this.etName, this.etSurname, this.etAddress, this.acTvCity
-        };
-        final TextInputLayout[] layouts = {
-                this.tilName, this.tilSurname, this.tilAddress, this.tilCity
-        };
+        final EditText[] fields = this.getEditTexts();
+        final TextInputLayout[] layouts = this.getInputLayouts();
 
         // Add the improved text watcher to each of the input fields and their layouts:
         for (int index = 0; index < fields.length; index++) {
@@ -262,39 +309,6 @@ public class InputFragment1 extends Fragment {
                             }
             );
         }
-    }
-
-    private Result<Void, String> validateCity(String city) {
-        // If it's an empty string:
-        if (city.isEmpty())
-            return Result.failure(Constants.MANDATORY_INPUT_ERROR);
-
-        // Check if the city name is valid (without considering the case):
-        City foundCity = this.db.cityDao().getCityByNameIgnoreCase(city);
-        if (foundCity != null)
-            return Result.success(null);
-        else
-            return Result.failure("Invalid city");
-    }
-
-    private void initCityAutoCompletion() {
-        // Set up the adapter and the validator:
-        final ArrayAdapter<City> cityAdapter = new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_spinner_dropdown_item, this.db.cityDao().getAll()
-        );
-        this.acTvCity.setAdapter(cityAdapter);
-    }
-
-    private String getSelectedGender() {
-        // Get the ID of the selected button:
-        final int ID = this.rgGender.getCheckedRadioButtonId();
-        if (ID == R.id.fragInput1RbMale)
-            return "Male";
-        else if (ID == R.id.fragInput1RbFemale)
-            return "Female";
-        // If the code reached here, no button was selected:
-        else
-            return "";
     }
 
     private void activateBirthdateDialog() {
@@ -340,18 +354,12 @@ public class InputFragment1 extends Fragment {
     /**
      * Checks all inputs and their validity. If some inputs are invalid, the function will present
      * an error to the user (if one wasn't presented already).
-     * @param context The context of the activity that holds the fragment. Will be used for toast
-     *                messages.
      * @return True if all inputs are valid, False otherwise.
      */
-    public boolean areInputsValid(Context context) {
+    public boolean areInputsValid() {
         // Check all the normal input fields:
-        final EditText[] fields = {
-                this.etName, this.etSurname, this.etAddress, this.acTvCity
-        };
-        final TextInputLayout[] layouts = {
-                this.tilName, this.tilSurname, this.tilAddress, this.tilCity
-        };
+        final EditText[] fields = this.getEditTexts();
+        final TextInputLayout[] layouts = this.getInputLayouts();
 
         boolean areInputsValid = true;
         Function<String, Result<Void, String>> validator;
@@ -365,11 +373,8 @@ public class InputFragment1 extends Fragment {
             areInputsValid &= layouts[i].getError() == null;
         }
 
-        // Check that a gender was selected:
-        final boolean genderSelected = this.rgGender.getCheckedRadioButtonId() != -1;
-        areInputsValid &= genderSelected;
-        if (!genderSelected)
-            Toast.makeText(context, "Please choose your gender", Toast.LENGTH_SHORT).show();
+        // Check that the country code picker and phone number are valid:
+        areInputsValid &= this.countryCodePicker.isValidFullNumber();
 
         // Check that a birthdate was selected:
         final boolean birthdateSelected = this.birthdate != null;
@@ -386,15 +391,14 @@ public class InputFragment1 extends Fragment {
      *         from the user.
      */
     public InputFragment1.PackagedInfo getPackagedInfo() {
-        // Since the city fields isn't case sensitive, make sure to get the correct city name:
-        final City city = this.db.cityDao().getCityByNameIgnoreCase(Util.getTextFromEt(this.acTvCity));
         return new PackagedInfo(
                 Util.fixNamingCapitalization(Util.getTextFromEt(this.etName)),
                 Util.fixNamingCapitalization(Util.getTextFromEt(this.etSurname)),
-                this.getSelectedGender(),
                 this.birthdate,
-                Util.getTextFromEt(this.etAddress),
-                city.getCityName()
+                Util.getTextFromEt(this.etEmail),
+                this.countryCodePicker.getSelectedCountryName(),
+                this.countryCodePicker.getFullNumberWithPlus(),
+                Util.getTextFromEt(this.etPassword)
         );
     }
 
@@ -409,7 +413,7 @@ public class InputFragment1 extends Fragment {
             setBirthdateEtFromDate(date);
 
             // Request focus for the next input field:
-            Util.openKeyboard(requireContext(), etAddress);
+            Util.openKeyboard(requireContext(), etEmail);
         }
     }
 

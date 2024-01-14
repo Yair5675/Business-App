@@ -42,6 +42,9 @@ dependencies {
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.22")
     implementation("com.github.bumptech.glide:glide:4.12.0")
 
+    // Country code picker:
+    implementation("com.hbb20:ccp:2.5.0")
+
     // Firebase authentication:
     implementation("com.google.firebase:firebase-auth:22.3.0")
 

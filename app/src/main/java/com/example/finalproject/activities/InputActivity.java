@@ -114,7 +114,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         switch (this.currentPage) {
             case 1: {
                 // Validate the inputs:
-                if (this.firstPage.areInputsValid(this)) {
+                if (this.firstPage.areInputsValid()) {
                     // Get the info from the page:
                     this.firstPageInfo = this.firstPage.getPackagedInfo();
 
@@ -238,12 +238,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
     private void finishInputs() {
         // Enter the inputs to the user:
+        // TODO: Change details after all fragments are updated
         this.user.setName(this.firstPageInfo.NAME);
         this.user.setSurname(this.firstPageInfo.SURNAME);
-        this.user.setGender(this.firstPageInfo.GENDER);
         this.user.setBirthdate(this.firstPageInfo.BIRTHDATE);
-        this.user.setAddress(this.firstPageInfo.ADDRESS);
-        this.user.setCityByName(this, this.firstPageInfo.CITY);
 
         this.user.setPhoneNumber(this.secondPageInfo.PHONE);
         this.user.setEmail(this.secondPageInfo.EMAIL);
