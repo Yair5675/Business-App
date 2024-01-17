@@ -26,10 +26,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
-
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.function.Function;
 
 public class InputFragment1 extends Fragment {
@@ -55,6 +55,9 @@ public class InputFragment1 extends Fragment {
     private TextInputLayout tilPhone;
     private TextInputEditText etPhone;
     private CountryCodePicker countryCodePicker;
+
+    // The edit code that displays the country code digits selected:
+    private TextInputEditText etCountryCode;
 
     // The input field responsible for receiving the user's password:
     private TextInputLayout tilPassword;
@@ -168,6 +171,9 @@ public class InputFragment1 extends Fragment {
         // Re-establish the CCP:
         this.initCountryCodePicker(parent);
 
+        // Display the selected country code:
+        this.updateDisplayedCountryCode();
+
         // Add the text watchers to the input fields:
         this.loadInputFieldsTextWatchers();
 
@@ -180,6 +186,16 @@ public class InputFragment1 extends Fragment {
 
         this.clearErrors();
         return parent;
+    }
+
+    private void updateDisplayedCountryCode() {
+        this.etCountryCode.setText(
+                String.format(
+                        Locale.getDefault(),
+                        "+%s",
+                        this.countryCodePicker.getSelectedCountryCode()
+                )
+        );
     }
 
     private void initCountryCodePicker(View parent) {
@@ -214,19 +230,6 @@ public class InputFragment1 extends Fragment {
 
         // Activate the birthdate dialog when the birthdate input is clicked:
         this.etBirthdate.setOnClickListener(view -> activateBirthdateDialog());
-
-        // Add the onValidityChanged listener for the CCP:
-
-        this.countryCodePicker.setPhoneNumberValidityChangeListener(isValidNumber -> {
-            Log.d("Given phone", this.countryCodePicker.getFullNumberWithPlus());
-            if (isValidNumber) {
-                this.tilPhone.setError(null);
-            } else if (Util.getTextFromEt(this.etPhone).isEmpty()){
-                this.tilPhone.setError(Constants.MANDATORY_INPUT_ERROR);
-            } else {
-                this.tilPhone.setError("Invalid phone number");
-            }
-        });
     }
 
     private void initEditTexts(View parent) {
@@ -239,6 +242,7 @@ public class InputFragment1 extends Fragment {
         this.etEmail = parent.findViewById(R.id.fragInput1EtEmail);
 
         this.etPhone = parent.findViewById(R.id.fragInput1EtPhoneNumber);
+        this.etCountryCode = parent.findViewById(R.id.fragInput1EtCountryCode);
 
         this.etPassword = parent.findViewById(R.id.fragInput1EtPassword);
     }
@@ -309,6 +313,21 @@ public class InputFragment1 extends Fragment {
                             }
             );
         }
+
+        // Add the onValidityChanged listener for the CCP:
+        this.countryCodePicker.setPhoneNumberValidityChangeListener(isValidNumber -> {
+            Log.d("Given phone", this.countryCodePicker.getFullNumberWithPlus());
+            if (isValidNumber) {
+                this.tilPhone.setError(null);
+            } else if (Util.getTextFromEt(this.etPhone).isEmpty()){
+                this.tilPhone.setError(Constants.MANDATORY_INPUT_ERROR);
+            } else {
+                this.tilPhone.setError("Invalid phone number");
+            }
+        });
+
+        // Change country code number:
+        this.countryCodePicker.setOnCountryChangeListener(this::updateDisplayedCountryCode);
     }
 
     private void activateBirthdateDialog() {
