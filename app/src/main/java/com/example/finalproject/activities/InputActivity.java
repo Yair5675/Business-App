@@ -64,7 +64,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
         // Initializing the pages (third one will be initialized later):
         this.firstPage = new InputFragment1();
-        this.secondPage = new InputFragment2();
 
         // Initialize the next and previous buttons:
         this.btnNext = findViewById(R.id.actInputBtnNextOrRegister);
@@ -132,7 +131,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
                     // Load the next page:
                     this.currentPage++;
-                    this.loadThirdPage(this.secondPageInfo.PHONE);
+                    this.loadThirdPage(this.firstPageInfo.PHONE);
                 }
                 break;
             }
@@ -174,6 +173,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loadSecondPage(@AnimRes int enter, @AnimRes int exit) {
+        // Creating the second page if it hadn't been created already:
+        if (this.secondPage == null)
+            this.secondPage = new InputFragment2(this.firstPageInfo.COUNTRY);
+
         // Get a fragment transaction object:
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -242,10 +245,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.user.setName(this.firstPageInfo.NAME);
         this.user.setSurname(this.firstPageInfo.SURNAME);
         this.user.setBirthdate(this.firstPageInfo.BIRTHDATE);
-
-        this.user.setPhoneNumber(this.secondPageInfo.PHONE);
-        this.user.setEmail(this.secondPageInfo.EMAIL);
-        this.user.setPassword(this.secondPageInfo.PASSWORD);
+        this.user.setPhoneNumber(this.firstPageInfo.PHONE);
+        this.user.setEmail(this.firstPageInfo.EMAIL);
+        this.user.setPassword(this.firstPageInfo.PASSWORD);
 
         this.user.setPictureFileName(this.userImgFileName);
 

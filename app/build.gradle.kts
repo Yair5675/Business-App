@@ -56,6 +56,7 @@ dependencies {
 
     // Firestore library:
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     val roomVersion = "2.6.0"
     implementation("androidx.room:room-runtime:$roomVersion")

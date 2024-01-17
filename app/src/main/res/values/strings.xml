@@ -42,8 +42,8 @@
     <string name="frag_input1_phone_hint">Phone Number</string>
 
     <string name="frag_input1_location_info_txt"><b>Location Info:</b></string>
-    <string name="frag_input1_address_hint">Address</string>
-    <string name="frag_input1_city_hint">City</string>
+    <string name="frag_input2_address_hint">Address</string>
+    <string name="frag_input2_city_hint">City</string>
 
 
     <!-- Strings belonging to the second input fragment: -->
@@ -94,4 +94,7 @@
     <string name="row_users_sample_city">City Name</string>
     <string name="row_users_sample_email">someEmail123@gmail.com</string>
     <string name="row_users_sample_phone">051–111–1111</string>
+    <string name="frag_input_2_title"><b>Choose your location:</b></string>
+    <string name="frag_input_2_country_hint">Country</string>
+    <string name="frag_input_2_btn_location_txt">Pick Location!</string>
 </resources>
