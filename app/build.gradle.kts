@@ -1,12 +1,19 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
+
+val apiKeysPropertiesFile = rootProject.file("secrets.properties")
+val apiKeysProperties = Properties()
+apiKeysProperties.load(apiKeysPropertiesFile.inputStream())
 
 android {
     namespace = "com.example.finalproject"
     compileSdk = 34
-
+    buildFeatures.buildConfig = true
     defaultConfig {
         applicationId = "com.example.finalproject"
         minSdk = 26
@@ -24,6 +31,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "MAPS_API_KEY", "\"${apiKeysProperties["MAPS_API_KEY"]}\"")
         }
     }
     compileOptions {
@@ -56,6 +65,8 @@ dependencies {
 
     // Firestore library:
     implementation("com.google.firebase:firebase-firestore")
+
+    // Google maps services:
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     val roomVersion = "2.6.0"
@@ -65,4 +76,10 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+
+    defaultPropertiesFileName = "local.defaults.properties"
 }
