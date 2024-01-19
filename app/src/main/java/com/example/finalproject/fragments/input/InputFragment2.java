@@ -1,54 +1,37 @@
 package com.example.finalproject.fragments.input;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.util.Constants;
-import com.example.finalproject.util.ImprovedTextWatcher;
-import com.example.finalproject.util.InputValidation;
 import com.example.finalproject.database.entities.User;
-import com.example.finalproject.util.Result;
-import com.example.finalproject.util.Util;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.HashMap;
-import java.util.function.Function;
+public class InputFragment2 extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+    // The map that allows the user to choose a location:
+    private GoogleMap map;
 
-public class InputFragment2 extends Fragment {
-    // The views that show the country:
-    private TextInputLayout tilCountry;
-    private TextInputEditText etCountry;
+    // The view of that map:
+    private MapView mapView;
 
-    // The views that show the city:
-    private TextInputLayout tilCity;
-    private TextInputEditText etCity;
+    // The country that the user selected:
+    private String selectedCountry;
 
-    // The views that show the address:
-    private TextInputLayout tilAddress;
-    private TextInputEditText etAddress;
+    // The city that the user selected:
+    private String selectedCity;
 
-    // The selected country from the previous fragment:
-    private final String countryName;
-
-    // The callback that will receive the location:
-    private ActivityResultLauncher<Intent> locationReceiver;
+    // The address that the user selected:
+    private String selectedAddress;
 
     /**
      * After validation occurred, the info given by the user needs to be given to the activity which
@@ -57,17 +40,19 @@ public class InputFragment2 extends Fragment {
      * InputFragment2.PackagedInfo object, except the InputFragment2 class.
      */
     public static class PackagedInfo {
+        public final String COUNTRY;
         public final String CITY;
         public final String ADDRESS;
 
-        private PackagedInfo(String city, String address) {
+        private PackagedInfo(String country, String city, String address) {
+            COUNTRY = country;
             CITY = city;
             ADDRESS = address;
         }
     }
 
-    public InputFragment2(String countryName) {
-        this.countryName = countryName;
+    public InputFragment2(String selectedCountry) {
+        this.selectedCountry = selectedCountry;
     }
 
     public void loadInputsFromUser(User user) {
@@ -79,9 +64,30 @@ public class InputFragment2 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the second input fragment:
         final View parent = inflater.inflate(R.layout.fragment_input_2, container, false);
-        // TODO: Add the map view and the API key
+
+        // Initialize the map view:
+        this.mapView = parent.findViewById(R.id.fragInput2MapView);
+
+        // Check if we have proper permissions and google services are available:
+        if (checkMapPermission() && checkGooglePlayServices()) {
+            // Use the onCreate life-cycle method on the map:
+            this.mapView.onCreate(savedInstanceState);
+
+            // Add the activity as a callback:
+            this.mapView.getMapAsync(this);
+        }
 
         return parent;
+    }
+
+    private boolean checkGooglePlayServices() {
+        // TODO: Complete the function and check for google play availability
+        return true;
+    }
+
+    private boolean checkMapPermission() {
+        // TODO: Complete the function and check for map and location permissions
+        return true;
     }
 
     public boolean areInputsValid() {
@@ -99,9 +105,15 @@ public class InputFragment2 extends Fragment {
      */
     public InputFragment2.PackagedInfo getPackagedInfo() {
         return new PackagedInfo(
+                this.getCountry(),
                 this.getCity(),
                 this.getAddress()
         );
+    }
+
+    private String getCountry() {
+        // TODO: Complete the function to return the country after the map view is finished
+        return "";
     }
 
     private String getAddress() {
@@ -112,5 +124,79 @@ public class InputFragment2 extends Fragment {
     private String getCity() {
         // TODO: Complete the function to return the city after the map view is finished
         return "";
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        this.map = googleMap;
+        this.map.setOnMapClickListener(this);
+    }
+
+    @Override
+    public void onMapClick(@NonNull LatLng latLng) {
+        // Update the marker on the map:
+        this.setMarkerOnMap(latLng);
+
+        // Load the country, city and address from the location:
+        this.loadInfoFromLocation(latLng.latitude, latLng.longitude);
+    }
+
+    private void loadInfoFromLocation(double latitude, double longitude) {
+        // TODO: Use reverse geocoding
+    }
+
+    private void setMarkerOnMap(@NonNull LatLng latLng) {
+        this.map.clear();
+        this.map.addMarker(new MarkerOptions().position(latLng).title("Chosen Location"));
+    }
+
+    // Implement built-in life-cycle methods for the map:
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        this.mapView.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        this.mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        this.mapView.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        this.mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        this.mapView.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        this.mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+        this.mapView.onLowMemory();
     }
 }
