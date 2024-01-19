@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,11 +13,21 @@ import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.entities.User;
+import com.example.finalproject.util.Constants;
+import com.example.finalproject.util.ImprovedTextWatcher;
+import com.example.finalproject.util.Result;
+import com.example.finalproject.util.Util;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.hbb20.CountryCodePicker;
+
+import java.util.Locale;
+import java.util.function.Function;
 
 public class InputFragment2 extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
     // The map that allows the user to choose a location:
@@ -33,6 +45,27 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     // The address that the user selected:
     private String selectedAddress;
 
+    // The layout containing all info about the selected location, will be shown only after
+    // selection on the map:
+    private LinearLayout locationLayout;
+
+    // The country code picker that receives the user's phone number and country:
+    private TextInputLayout tilPhone;
+    private TextInputEditText etPhone;
+    private CountryCodePicker countryCodePicker;
+
+    // The edit code that displays the country code digits selected:
+    private TextInputEditText etCountryCode;
+
+    // The progress bar that will be shown while the reverse geocoding is happening:
+    private ProgressBar pbLocationLoader;
+
+    // The edit text holding the picked city:
+    private TextInputEditText etCity;
+
+    // The edit text holding the picked address:
+    private TextInputEditText etAddress;
+
     /**
      * After validation occurred, the info given by the user needs to be given to the activity which
      * needs it. This class provides a convenient way for the info to pass anywhere.
@@ -40,19 +73,17 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
      * InputFragment2.PackagedInfo object, except the InputFragment2 class.
      */
     public static class PackagedInfo {
+        public final String PHONE;
         public final String COUNTRY;
         public final String CITY;
         public final String ADDRESS;
 
-        private PackagedInfo(String country, String city, String address) {
+        private PackagedInfo(String phone, String country, String city, String address) {
+            PHONE = phone;
             COUNTRY = country;
             CITY = city;
             ADDRESS = address;
         }
-    }
-
-    public InputFragment2(String selectedCountry) {
-        this.selectedCountry = selectedCountry;
     }
 
     public void loadInputsFromUser(User user) {
@@ -65,9 +96,25 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         // Inflate the second input fragment:
         final View parent = inflater.inflate(R.layout.fragment_input_2, container, false);
 
-        // Initialize the map view:
-        this.mapView = parent.findViewById(R.id.fragInput2MapView);
+        // Initialize the edit texts and input layouts for them:
+        this.initEditTexts(parent);
+        this.initInputLayouts(parent);
 
+        // Re-establish the CCP:
+        this.initCountryCodePicker(parent);
+
+        // Load the progress bar and set it to gone:
+        this.pbLocationLoader = parent.findViewById(R.id.fragInput2PbLocationLoader);
+        this.pbLocationLoader.setVisibility(View.GONE);
+
+        // Load the location layout:
+        this.locationLayout = parent.findViewById(R.id.fragInput2LayoutLocationDetails);
+
+        // Hide all the location details:
+        this.locationLayout.setVisibility(View.GONE);
+
+        // Initialize the map:
+        this.mapView = parent.findViewById(R.id.fragInput2MapView);
         // Check if we have proper permissions and google services are available:
         if (checkMapPermission() && checkGooglePlayServices()) {
             // Use the onCreate life-cycle method on the map:
@@ -78,6 +125,59 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         }
 
         return parent;
+    }
+
+    private void initInputLayouts(View parent) {
+        this.tilPhone = parent.findViewById(R.id.fragInput2TilPhoneNumber);
+    }
+
+    private void initEditTexts(View parent) {
+        this.etPhone = parent.findViewById(R.id.fragInput2EtPhoneNumber);
+        this.etCountryCode = parent.findViewById(R.id.fragInput2EtCountryCode);
+        this.etCity = parent.findViewById(R.id.fragInput2EtCity);
+        this.etAddress = parent.findViewById(R.id.fragInput2EtAddress);
+    }
+
+    private void initCountryCodePicker(View parent) {
+        this.countryCodePicker = parent.findViewById(R.id.fragInput2CountryCodePicker);
+
+        // Bind the phone number edit text to the CCP:
+        this.countryCodePicker.registerCarrierNumberEditText(this.etPhone);
+
+        // Create a validator for the phone number:
+        final Function<String, Result<Void, String>> validator = _input -> {
+            if (this.countryCodePicker.isValidFullNumber())
+                return Result.success(null);
+            else if (Util.getTextFromEt(this.etPhone).isEmpty())
+                return Result.failure(Constants.MANDATORY_INPUT_ERROR);
+            else
+                return Result.failure("Invalid phone number");
+        };
+
+        // Add the onValidityChanged listener for the CCP:
+        this.countryCodePicker.setPhoneNumberValidityChangeListener(
+                _b -> Util.validateAndSetError(this.tilPhone, this.etPhone, validator)
+        );
+
+        // Add textWatcher for the CCP:
+        this.etPhone.addTextChangedListener(
+                (ImprovedTextWatcher)
+                        (_c, _i1, _i2, _i3) ->
+                                Util.validateAndSetError(this.tilPhone, this.etPhone, validator)
+        );
+
+        // Change country code number:
+        this.countryCodePicker.setOnCountryChangeListener(this::updateDisplayedCountryCode);
+    }
+
+    private void updateDisplayedCountryCode() {
+        this.etCountryCode.setText(
+                String.format(
+                        Locale.getDefault(),
+                        "+%s",
+                        this.countryCodePicker.getSelectedCountryCode()
+                )
+        );
     }
 
     private boolean checkGooglePlayServices() {
@@ -105,6 +205,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
      */
     public InputFragment2.PackagedInfo getPackagedInfo() {
         return new PackagedInfo(
+                this.countryCodePicker.getFullNumberWithPlus(),
                 this.getCountry(),
                 this.getCity(),
                 this.getAddress()
@@ -136,6 +237,10 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     public void onMapClick(@NonNull LatLng latLng) {
         // Update the marker on the map:
         this.setMarkerOnMap(latLng);
+
+        // The user has picked a location, show the progress bar until the info is loaded:
+        this.pbLocationLoader.setVisibility(View.VISIBLE);
+        this.locationLayout.setVisibility(View.GONE);
 
         // Load the country, city and address from the location:
         this.loadInfoFromLocation(latLng.latitude, latLng.longitude);

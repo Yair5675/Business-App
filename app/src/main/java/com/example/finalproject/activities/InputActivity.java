@@ -175,7 +175,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     private void loadSecondPage(@AnimRes int enter, @AnimRes int exit) {
         // Creating the second page if it hadn't been created already:
         if (this.secondPage == null)
-            this.secondPage = new InputFragment2(this.firstPageInfo.COUNTRY);
+            this.secondPage = new InputFragment2();
 
         // Get a fragment transaction object:
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:paddingHorizontal="8dp"
     android:background="@drawable/transparent_background">
 
@@ -14,13 +12,177 @@
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fragInput2GlTopMapBoundary"
         android:layout_marginBottom="16dp"
+
         android:text="@string/frag_input_2_title"
         android:textSize="28sp" />
 
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/fragInput2MapView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        app:layout_constraintBottom_toBottomOf="@id/fragInput2GlBottomMapBoundary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/fragInput2GlTopMapBoundary"
+        tools:ignore="SpeakableTextPresentCheck" />
+    
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/fragInput2GlTopMapBoundary"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/fragInput2GlBottomMapBoundary"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"
+        />
+
+    <LinearLayout
+        android:id="@+id/fragInput2LayoutLocationDetails"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+
+        app:layout_constraintTop_toTopOf="@id/fragInput2GlBottomMapBoundary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fragInput2PbLocationLoader"
+        >
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/fragInput2CountryCodePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:padding="10dp"
+            app:ccp_showFullName="true"
+            app:ccp_showPhoneCode="false"
+            app:ccp_showArrow="false"
+            app:ccp_excludedCountries="PS"
+            app:ccp_defaultNameCode="IL"
+            android:clickable="false"
+            app:ccp_clickable="false"
+            android:focusable="false"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragInput2EtCountryCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:maxLength="4"
+                    android:focusable="false"
+                    android:clickable="false"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragInput2TilPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/frag_input1_phone_hint"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragInput2EtPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:drawableStart="@drawable/phone_icon"
+                    android:drawablePadding="8dp"
+
+                    android:imeOptions="actionDone"
+
+                    android:inputType="phone"
+                    android:digits="0123456789"
+                    android:maxLines="1"
+                    android:maxLength="12"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/frag_input2_city_hint"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragInput2EtCity"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawableStart="@drawable/city_icon"
+                android:drawablePadding="8dp"
+
+                android:focusable="false"
+                android:clickable="false"
+                android:inputType="none"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/frag_input2_address_hint"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragInput2EtAddress"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawableStart="@drawable/location_icon"
+                android:drawablePadding="8dp"
+
+                android:focusable="false"
+                android:clickable="false"
+                android:inputType="none"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/fragInput2PbLocationLoader"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/fragInput2LayoutLocationDetails"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
