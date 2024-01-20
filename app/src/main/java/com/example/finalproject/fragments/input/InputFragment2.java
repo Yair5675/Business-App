@@ -14,9 +14,13 @@ import androidx.fragment.app.Fragment;
 import com.example.finalproject.R;
 import com.example.finalproject.database.entities.User;
 import com.example.finalproject.util.Constants;
+import com.example.finalproject.util.Util.Zoom;
 import com.example.finalproject.util.ImprovedTextWatcher;
 import com.example.finalproject.util.Result;
 import com.example.finalproject.util.Util;
+
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -231,6 +235,9 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
         this.map.setOnMapClickListener(this);
+
+        // Enable zoom controls:
+        this.map.getUiSettings().setZoomControlsEnabled(true);
     }
 
     @Override
@@ -251,8 +258,17 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     }
 
     private void setMarkerOnMap(@NonNull LatLng latLng) {
+        // Set marker:
         this.map.clear();
         this.map.addMarker(new MarkerOptions().position(latLng).title("Chosen Location"));
+
+        // Move the camera to the marker:
+        moveToLocation(latLng, Zoom.STREETS, 1000);
+    }
+
+    private void moveToLocation(@NonNull LatLng latLng, Zoom zoomLevel, int duration) {
+        final CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel.level);
+        this.map.animateCamera(cameraUpdate, duration, null);
     }
 
     // Implement built-in life-cycle methods for the map:
