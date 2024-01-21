@@ -83,6 +83,50 @@
             android:focusable="false"
             />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/frag_input2_city_hint"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragInput2EtCity"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawableStart="@drawable/city_icon"
+                android:drawablePadding="8dp"
+
+                android:focusable="false"
+                android:clickable="false"
+                android:inputType="none"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/frag_input2_address_hint"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragInput2EtAddress"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawableStart="@drawable/location_icon"
+                android:drawablePadding="8dp"
+
+                android:focusable="false"
+                android:clickable="false"
+                android:inputType="none"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -129,50 +173,6 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:hint="@string/frag_input2_city_hint"
-            >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragInput2EtCity"
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:drawableStart="@drawable/city_icon"
-                android:drawablePadding="8dp"
-
-                android:focusable="false"
-                android:clickable="false"
-                android:inputType="none"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:hint="@string/frag_input2_address_hint"
-            >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragInput2EtAddress"
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:drawableStart="@drawable/location_icon"
-                android:drawablePadding="8dp"
-
-                android:focusable="false"
-                android:clickable="false"
-                android:inputType="none"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <ProgressBar
