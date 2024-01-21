@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
@@ -39,6 +41,9 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
     // The view of that map:
     private MapView mapView;
+
+    // The search view allowing the user to search a location:
+    private SearchView svMap;
 
     // The country that the user selected:
     private String selectedCountry;
@@ -107,6 +112,9 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         // Re-establish the CCP:
         this.initCountryCodePicker(parent);
 
+        // Initialize the search view and load the onSearchListener:
+        this.initSearchView(parent);
+
         // Load the progress bar and set it to gone:
         this.pbLocationLoader = parent.findViewById(R.id.fragInput2PbLocationLoader);
         this.pbLocationLoader.setVisibility(View.GONE);
@@ -129,6 +137,28 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         }
 
         return parent;
+    }
+
+    private void initSearchView(View parent) {
+        this.svMap = parent.findViewById(R.id.fragInput2MapSearch);
+
+        this.svMap.setOnSearchClickListener(_v -> {
+
+            // Get the input from the user:
+            CharSequence locationInput = this.svMap.getQuery();
+
+            // Check if the location is empty:
+            if (locationInput == null || locationInput.length() == 0) {
+                Toast.makeText(
+                        requireContext(),
+                        "Please enter a location",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            // TODO: Perform geo-coding using a thread
+        });
     }
 
     private void initInputLayouts(View parent) {
