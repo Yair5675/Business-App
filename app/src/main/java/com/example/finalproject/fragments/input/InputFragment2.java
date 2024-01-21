@@ -1,6 +1,11 @@
 package com.example.finalproject.fragments.input;
 
+import android.location.Address;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.entities.User;
+import com.example.finalproject.thread.GeocodingThread;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.Util.Zoom;
 import com.example.finalproject.util.ImprovedTextWatcher;
@@ -74,6 +80,9 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
     // The edit text holding the picked address:
     private TextInputEditText etAddress;
+
+    // A tag for logging purposes:
+    private static final String TAG = "InputFragment2";
 
     /**
      * After validation occurred, the info given by the user needs to be given to the activity which
@@ -157,8 +166,68 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
                 return;
             }
 
-            // TODO: Perform geo-coding using a thread
+            // Create a handler that accepts the location returned from the thread and sets the map
+            // to it:
+            final Handler geoHandler = new Handler(Looper.getMainLooper(), this::handleGeocoderResult);
+
+            // Create the thread and start it:
+            final GeocodingThread geoThread = GeocodingThread.getGeocoderThread(
+                    requireContext(),
+                    geoHandler,
+                    locationInput.toString()
+            );
+
+            geoThread.start();
         });
+    }
+
+    /**
+     * Handles a normal geocoding result. This function is meant to be the geocoding thread's
+     * callback.
+     * @param message The message returned from the geocoding thread containing the searched
+     *                address.
+     * @return False always to signal the message will need further handling.
+     * @noinspection SameReturnValue
+     */
+    private boolean handleGeocoderResult(@NonNull Message message) {
+        // Check that the thread returned a Result<Address, String>:
+        if (!(message.obj instanceof Result)) {
+            Log.e(
+                    TAG,
+                    "Unexpected type returned from geocoding thread (expected Result): "
+                            + message.obj.getClass().getName()
+            );
+            return false;
+        }
+
+        // Check if the result was a success:
+        Result<?, ?> result = (Result<?, ?>) message.obj;
+        if (result.isOk()) {
+            // Ensure type checking again and get the address:
+            if (!(result.getValue() instanceof Address)) {
+                Log.e(
+                        TAG,
+                        "Unexpected type for successful type returned from geocoding thread " +
+                                "(expected Address): " + result.getValue().getClass().getName()
+                );
+                return false;
+            }
+
+            // Load the info from the address:
+            final Address address = (Address) result.getValue();
+            this.displayLocationInfo(address);
+            this.setMarkerOnMap(new LatLng(address.getLatitude(), address.getLongitude()));
+
+        } else {
+            Log.e(TAG, result.getError().toString());
+        }
+
+        return false;
+    }
+
+    private void displayLocationInfo(Address address) {
+        // TODO: Set country, city and address. Show the location info layout and hide the progress
+        //  bar
     }
 
     private void initInputLayouts(View parent) {
@@ -292,6 +361,8 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         this.map.clear();
         this.map.addMarker(new MarkerOptions().position(latLng).title("Chosen Location"));
 
+        // TODO: Separate the setMarkerOnMap and moveToLocation functions. Although it is convenient
+        //  now, it is less flexible and goes against the separation of concerns principle
         // Move the camera to the marker:
         moveToLocation(latLng, Zoom.STREETS, 1000);
     }
