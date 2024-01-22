@@ -41,7 +41,7 @@ public class GeocodingThread extends Thread {
     private final Handler handler;
 
     private GeocodingThread(Context context, Handler handler, GeoService service) {
-        this.geocoder = new Geocoder(context, Locale.getDefault());
+        this.geocoder = new Geocoder(context, Locale.US);
         this.handler = handler;
         this.service = service;
     }
