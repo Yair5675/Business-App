@@ -168,6 +168,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
                     ).show();
                     return false;
                 }
+                Log.d(TAG, "Given query: " + locationInput);
 
                 // Create a handler that accepts the location returned from the thread and sets the
                 // map to it:
@@ -230,14 +231,31 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
             // Load the info from the address:
             final Address address = (Address) result.getValue();
+            printAddress(address);
             this.displayLocationInfo(address);
-            this.setMarkerOnMap(new LatLng(address.getLatitude(), address.getLongitude()));
+
+            // Set the marker on the map and move to it:
+            final LatLng coordinates = new LatLng(address.getLatitude(), address.getLongitude());
+            this.setMarkerOnMap(coordinates);
+            this.moveToLocation(coordinates, Zoom.STREETS, 1000);
 
         } else {
             Log.e(TAG, result.getError().toString());
         }
 
         return false;
+    }
+
+    private static void printAddress(Address address) {
+        final int MAX_INDEX = address.getMaxAddressLineIndex();
+        final StringBuilder builder = new StringBuilder();
+        String line;
+        for (int i = 0; i <= MAX_INDEX; i++) {
+            if ((line = address.getAddressLine(i)) != null)
+                builder.append(line);
+        }
+
+        Log.d(TAG, builder.toString());
     }
 
     private void displayLocationInfo(Address address) {
@@ -356,8 +374,9 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
     @Override
     public void onMapClick(@NonNull LatLng latLng) {
-        // Update the marker on the map:
+        // Update the marker on the map and move the map to it:
         this.setMarkerOnMap(latLng);
+        this.moveToLocation(latLng, Zoom.STREETS, 1000);
 
         // The user has picked a location, show the progress bar until the info is loaded:
         this.pbLocationLoader.setVisibility(View.VISIBLE);
@@ -375,11 +394,6 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         // Set marker:
         this.map.clear();
         this.map.addMarker(new MarkerOptions().position(latLng).title("Chosen Location"));
-
-        // TODO: Separate the setMarkerOnMap and moveToLocation functions. Although it is convenient
-        //  now, it is less flexible and goes against the separation of concerns principle
-        // Move the camera to the marker:
-        moveToLocation(latLng, Zoom.STREETS, 1000);
     }
 
     private void moveToLocation(@NonNull LatLng latLng, Zoom zoomLevel, int duration) {
