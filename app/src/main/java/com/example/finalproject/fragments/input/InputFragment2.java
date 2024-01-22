@@ -151,33 +151,48 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private void initSearchView(View parent) {
         this.svMap = parent.findViewById(R.id.fragInput2MapSearch);
 
-        this.svMap.setOnSearchClickListener(_v -> {
+        this.svMap.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d(TAG, "Search button pressed");
 
-            // Get the input from the user:
-            CharSequence locationInput = this.svMap.getQuery();
+                // Get the input from the user:
+                CharSequence locationInput = svMap.getQuery();
 
-            // Check if the location is empty:
-            if (locationInput == null || locationInput.length() == 0) {
-                Toast.makeText(
+                // Check if the location is empty:
+                if (locationInput == null || locationInput.length() == 0) {
+                    Toast.makeText(
+                            requireContext(),
+                            "Please enter a location",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    return false;
+                }
+
+                // Create a handler that accepts the location returned from the thread and sets the
+                // map to it:
+                final Handler geoHandler = new Handler(
+                        Looper.getMainLooper(),
+                        InputFragment2.this::handleGeocoderResult
+                );
+
+                // Create the thread and start it:
+                final GeocodingThread geoThread = GeocodingThread.getGeocoderThread(
                         requireContext(),
-                        "Please enter a location",
-                        Toast.LENGTH_SHORT
-                ).show();
-                return;
+                        geoHandler,
+                        locationInput.toString()
+                );
+
+                geoThread.start();
+
+                return false;
             }
 
-            // Create a handler that accepts the location returned from the thread and sets the map
-            // to it:
-            final Handler geoHandler = new Handler(Looper.getMainLooper(), this::handleGeocoderResult);
-
-            // Create the thread and start it:
-            final GeocodingThread geoThread = GeocodingThread.getGeocoderThread(
-                    requireContext(),
-                    geoHandler,
-                    locationInput.toString()
-            );
-
-            geoThread.start();
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // While the text is changing no geocoding operation is carried out
+                return false;
+            }
         });
     }
 
