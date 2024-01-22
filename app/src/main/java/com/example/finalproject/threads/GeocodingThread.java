@@ -1,4 +1,4 @@
-package com.example.finalproject.thread;
+package com.example.finalproject.threads;
 
 import android.content.Context;
 import android.location.Address;

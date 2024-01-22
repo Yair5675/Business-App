@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.entities.User;
-import com.example.finalproject.thread.GeocodingThread;
+import com.example.finalproject.threads.GeocodingThread;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.Util.Zoom;
 import com.example.finalproject.util.ImprovedTextWatcher;
