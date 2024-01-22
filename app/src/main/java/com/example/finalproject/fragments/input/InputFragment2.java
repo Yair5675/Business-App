@@ -68,6 +68,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private ProgressBar pbLocationLoader;
 
     // The edit text holding the picked city:
+    private TextInputLayout tilCity;
     private TextInputEditText etCity;
 
     // The edit text holding the picked address:
@@ -267,9 +268,17 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
             // If the address isn't in a country, there is not point continuing the address parsing:
             Toast.makeText(requireContext(), "Invalid location", Toast.LENGTH_SHORT).show();
             this.locationLayout.setVisibility(View.GONE);
+            return;
         }
 
-        // TODO: Display city and address next
+        // Display the city while checking if the address is in a city:
+        if (!this.setCity(address.getLocality())) {
+            // Here we don't close the location info layout because it will still display the
+            // country
+            Toast.makeText(requireContext(), "Invalid location", Toast.LENGTH_SHORT).show();
+        }
+
+        // TODO: Display address next
 
     }
 
@@ -308,6 +317,28 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         return true;
     }
 
+    /**
+     * Sets the city in the location info layout according to a given city name.
+     * @param city The name of the new city. If null or empty, the city edit text will not be shown.
+     * @return True if the city name isn't null or empty, false otherwise.
+     */
+    private boolean setCity(@Nullable String city) {
+        // if the city is null or empty:
+        if (city == null || city.isEmpty()) {
+            Log.e(TAG, "Given address does not contain a city");
+            this.tilCity.setVisibility(View.GONE);
+            return false;
+        }
+
+        Log.i(TAG, "City given: " + city);
+
+        // Show the city edit text and set the text to the new city:
+        this.tilCity.setVisibility(View.VISIBLE);
+        this.etCity.setText(city);
+
+        return true;
+    }
+
     private void hideLocationInfo() {
         // Hide the location info layout:
         this.locationLayout.setVisibility(View.GONE);
@@ -319,6 +350,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private void initInputLayouts(View parent) {
         this.tilPhone = parent.findViewById(R.id.fragInput2TilPhoneNumber);
         this.tilCountryCode = parent.findViewById(R.id.fragInput2TilCountryCode);
+        this.tilCity = parent.findViewById(R.id.fragInput2TilCity);
     }
 
     private void initEditTexts(View parent) {
