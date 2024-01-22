@@ -51,15 +51,6 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     // The search view allowing the user to search a location:
     private SearchView svMap;
 
-    // The country that the user selected:
-    private String selectedCountry;
-
-    // The city that the user selected:
-    private String selectedCity;
-
-    // The address that the user selected:
-    private String selectedAddress;
-
     // The layout containing all info about the selected location, will be shown only after
     // selection on the map:
     private LinearLayout locationLayout;
@@ -69,7 +60,8 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private TextInputEditText etPhone;
     private CountryCodePicker countryCodePicker;
 
-    // The edit code that displays the country code digits selected:
+    // The edit text that displays the country code digits selected:
+    private TextInputLayout tilCountryCode;
     private TextInputEditText etCountryCode;
 
     // The progress bar that will be shown while the reverse geocoding is happening:
@@ -186,6 +178,9 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
                 geoThread.start();
 
+                // Hide the location details layout and show the progress bar:
+                hideLocationInfo();
+
                 return false;
             }
 
@@ -261,10 +256,69 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private void displayLocationInfo(Address address) {
         // TODO: Set country, city and address. Show the location info layout and hide the progress
         //  bar
+        // Show the location info layout:
+        this.locationLayout.setVisibility(View.VISIBLE);
+
+        // Hide the progress bar:
+        this.pbLocationLoader.setVisibility(View.GONE);
+
+        // Display the country while checking if the address is in a country:
+        if (!this.setCountry(address.getCountryCode())) {
+            // If the address isn't in a country, there is not point continuing the address parsing:
+            Toast.makeText(requireContext(), "Invalid location", Toast.LENGTH_SHORT).show();
+            this.locationLayout.setVisibility(View.GONE);
+        }
+
+        // TODO: Display city and address next
+
+    }
+
+    /**
+     * Sets the country in the location info layout according to a given country code.
+     * @param countryCode The country code of the new country. If null or empty, the country code
+     *                    picker, the country code edit text and the phone edit text will be hidden.
+     *                    If it is a normal country code, the country will be displayed as usual.
+     * @return True if the country code isn't null or empty, false otherwise.
+     */
+    private boolean setCountry(@Nullable String countryCode) {
+        // If the address is not in a country:
+        if (countryCode == null || countryCode.isEmpty()) {
+            Log.e(TAG, "Given address does not contain a country code");
+
+            this.countryCodePicker.setVisibility(View.GONE);
+            this.tilPhone.setVisibility(View.GONE);
+            this.tilCountryCode.setVisibility(View.GONE);
+
+            return false;
+        }
+
+        Log.i(TAG, "Country code given: " + countryCode);
+
+        // Am Israel Hai!
+        if (countryCode.equals("PS"))
+            countryCode = "IL";
+
+        this.countryCodePicker.setVisibility(View.VISIBLE);
+        this.tilPhone.setVisibility(View.VISIBLE);
+        this.tilCountryCode.setVisibility(View.VISIBLE);
+
+        this.countryCodePicker.setCountryForNameCode(countryCode);
+        this.etCountryCode.setText(this.countryCodePicker.getSelectedCountryCodeWithPlus());
+
+        return true;
+    }
+
+    private void hideLocationInfo() {
+        // Hide the location info layout:
+        this.locationLayout.setVisibility(View.GONE);
+
+        // Show the progress bar:
+        this.pbLocationLoader.setVisibility(View.VISIBLE);
     }
 
     private void initInputLayouts(View parent) {
         this.tilPhone = parent.findViewById(R.id.fragInput2TilPhoneNumber);
+        this.tilCountryCode = parent.findViewById(R.id.fragInput2TilCountryCode);
     }
 
     private void initEditTexts(View parent) {
