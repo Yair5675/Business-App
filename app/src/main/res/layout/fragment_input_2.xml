@@ -115,6 +115,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fragInput2TilAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -129,6 +130,8 @@
 
                 android:drawableStart="@drawable/location_icon"
                 android:drawablePadding="8dp"
+
+                android:ellipsize="end"
 
                 android:focusable="false"
                 android:clickable="false"

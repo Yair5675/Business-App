@@ -22,6 +22,7 @@ import com.example.finalproject.R;
 import com.example.finalproject.database.entities.User;
 import com.example.finalproject.threads.GeocodingThread;
 import com.example.finalproject.util.Constants;
+import com.example.finalproject.util.InputValidation;
 import com.example.finalproject.util.Util.Zoom;
 import com.example.finalproject.util.ImprovedTextWatcher;
 import com.example.finalproject.util.Result;
@@ -38,6 +39,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -72,6 +74,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private TextInputEditText etCity;
 
     // The edit text holding the picked address:
+    private TextInputLayout tilAddress;
     private TextInputEditText etAddress;
 
     // A tag for logging purposes:
@@ -263,23 +266,30 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         // Hide the progress bar:
         this.pbLocationLoader.setVisibility(View.GONE);
 
+        // Saving the invalid toast message in case we'll use it:
+        final Toast invalidLocationToast = Toast.makeText(
+                requireContext(), "Invalid location", Toast.LENGTH_SHORT
+        );
+
         // Display the country while checking if the address is in a country:
         if (!this.setCountry(address.getCountryCode())) {
             // If the address isn't in a country, there is not point continuing the address parsing:
-            Toast.makeText(requireContext(), "Invalid location", Toast.LENGTH_SHORT).show();
+            invalidLocationToast.show();
             this.locationLayout.setVisibility(View.GONE);
             return;
         }
+        // A flag that indicates if the location is valid (prevents double toast messages):
+        boolean isAddressValid;
 
         // Display the city while checking if the address is in a city:
-        if (!this.setCity(address.getLocality())) {
-            // Here we don't close the location info layout because it will still display the
-            // country
-            Toast.makeText(requireContext(), "Invalid location", Toast.LENGTH_SHORT).show();
-        }
+        isAddressValid = this.setCity(address.getLocality());
 
-        // TODO: Display address next
+        // Display the specific address while checking if it even exists:
+        isAddressValid &= this.setAddress(address);
 
+        // if the location isn't valid show a toast message:
+        if (!isAddressValid)
+            invalidLocationToast.show();
     }
 
     /**
@@ -339,6 +349,56 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         return true;
     }
 
+    /**
+     * Sets the address in the location info layout, according to an address object. The function
+     * assumes that the given address is both in a valid country and in a valid city.
+     * @param address An address object describing the address.
+     * @return True if the address object contained a specific address and wasn't just a city or a
+     *         country or another location, false otherwise.
+     */
+    private boolean setAddress(Address address) {
+        // Parse the address and remove the city and country from it:
+        final String country = address.getCountryName(), city = address.getLocality();
+        final StringBuilder addressBuilder = new StringBuilder();
+        
+        // Go over the address lines:
+        String line;
+        final int maxIdx = address.getMaxAddressLineIndex();
+        for (int i = 0; i <= maxIdx; i++) {
+            if ((line = address.getAddressLine(i)) != null) {
+                final String[] addressParts = line.split(", ");
+                Arrays.stream(addressParts).forEach(part -> {
+                    // Check specifically for the abbreviation USA apart from country and city:
+                    if (!part.equals(country) && !part.equals(city) &&
+                        (!country.equals("United States") || !part.equals("USA")))
+                        addressBuilder.append(part).append(", ");
+                });
+            }
+        }
+
+        // Check if the builder is empty:
+        String specificAddress = addressBuilder.toString();
+        if (specificAddress.isEmpty()) {
+            Log.e(TAG, "Given location does not contain an address");
+            this.tilAddress.setVisibility(View.GONE);
+            return false;
+        }
+
+        // Remove the last ", " and we get the address:
+        if (specificAddress.endsWith(", "))
+            specificAddress = specificAddress.substring(0, specificAddress.length() - 2);
+
+        Log.i(TAG, "Given address: " + specificAddress);
+
+        // Set the additional address:
+        this.tilAddress.setVisibility(View.VISIBLE);
+        this.etAddress.setText(specificAddress);
+
+        // TODO: Make sure the address has a street number
+
+        return true;
+    }
+
     private void hideLocationInfo() {
         // Hide the location info layout:
         this.locationLayout.setVisibility(View.GONE);
@@ -351,6 +411,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         this.tilPhone = parent.findViewById(R.id.fragInput2TilPhoneNumber);
         this.tilCountryCode = parent.findViewById(R.id.fragInput2TilCountryCode);
         this.tilCity = parent.findViewById(R.id.fragInput2TilCity);
+        this.tilAddress = parent.findViewById(R.id.fragInput2TilAddress);
     }
 
     private void initEditTexts(View parent) {
