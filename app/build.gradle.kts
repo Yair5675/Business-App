@@ -67,6 +67,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
 
     // Google maps services:
+    implementation("org.slf4j:slf4j-simple:1.7.25")
+    implementation("com.google.maps:google-maps-services:2.2.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     val roomVersion = "2.6.0"

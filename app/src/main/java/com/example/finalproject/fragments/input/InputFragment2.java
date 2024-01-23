@@ -175,7 +175,6 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
                 // Create the thread and start it:
                 final GeocodingThread geoThread = GeocodingThread.getGeocoderThread(
-                        requireContext(),
                         geoHandler,
                         locationInput.toString()
                 );
@@ -218,6 +217,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         // Check if the result was a success:
         Result<?, ?> result = (Result<?, ?>) message.obj;
         if (result.isOk()) {
+            // TODO: New expected result type should be GeocodingResult
             // Ensure type checking again and get the address:
             if (!(result.getValue() instanceof Address)) {
                 Log.e(

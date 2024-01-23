@@ -1,22 +1,19 @@
 package com.example.finalproject.threads;
 
-import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Handler;
 import android.os.Message;
 
+import com.example.finalproject.BuildConfig;
 import com.example.finalproject.util.Result;
-import com.google.type.LatLng;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 public class GeocodingThread extends Thread {
-    // The geocoder itself:
-    private final Geocoder geocoder;
-
     // The service that this thread will provide (either geocoding or reverse-geocoding):
     private final GeoService service;
 
@@ -40,24 +37,33 @@ public class GeocodingThread extends Thread {
     // The handler of the thread, enables the thread to return its results to the calling thread:
     private final Handler handler;
 
-    private GeocodingThread(Context context, Handler handler, GeoService service) {
-        this.geocoder = new Geocoder(context, Locale.US);
+    // The geo api context, will be used in all API requests:
+    private static GeoApiContext context;
+
+    private GeocodingThread(Handler handler, GeoService service) {
         this.handler = handler;
         this.service = service;
+
+        // Set the new context only if it hadn't been set already:
+        if (GeocodingThread.context == null)
+            GeocodingThread.context = new GeoApiContext.Builder()
+                    .apiKey(BuildConfig.MAPS_API_KEY)
+                    .maxRetries(2)
+                    .build();
     }
 
-    public static GeocodingThread getGeocoderThread(Context context, Handler handler, String locationName) {
+    public static GeocodingThread getGeocoderThread(Handler handler, String locationName) {
         // Set the service to be normal geocoding and create the thread:
         GeoService service = new GeoService(locationName, null);
 
-        return new GeocodingThread(context, handler, service);
+        return new GeocodingThread(handler, service);
     }
 
-    public static GeocodingThread getReverseGeocoderThread(Context context, Handler handler, LatLng coordinates) {
+    public static GeocodingThread getReverseGeocoderThread(Handler handler, LatLng coordinates) {
         // Set the service to be reverse geocoding and create the thread:
         GeoService service = new GeoService(null, coordinates);
 
-        return new GeocodingThread(context, handler, service);
+        return new GeocodingThread(handler, service);
     }
 
     @Override
@@ -74,21 +80,21 @@ public class GeocodingThread extends Thread {
     private void runReverseGeocoding() {
         try  {
             // Get the address from the coordinates:
-            final double latitude = this.service.coordinates.getLatitude(),
-                         longitude = this.service.coordinates.getLongitude();
-            final List<Address> addresses = this.geocoder.getFromLocation(latitude, longitude, 1);
+            final GeocodingResult[] results = GeocodingApi.reverseGeocode(context, this.service.coordinates).await();
 
-            // The information will be sent back as a Result object:
-            Result<Address, String> result;
 
-            if (addresses == null || addresses.isEmpty())
-                result = Result.failure("Reverse geocoding failed: No results");
+            // Return the first result if one exists:
+            Result<GeocodingResult, String> result;
+
+            if (results.length == 0)
+                result = Result.failure("No results");
             else
-                result = Result.success(addresses.get(0));
+                result = Result.success(results[0]);
 
             // Send the result back to the creator of the thread:
             this.sendResultBack(result);
-        } catch (IOException e) {
+
+        } catch (IOException | ApiException | InterruptedException e) {
             // Send the error message back:
             this.sendResultBack(Result.failure(e.toString()));
         }
@@ -96,21 +102,21 @@ public class GeocodingThread extends Thread {
 
     private void runNormalGeocoding() {
         try {
-            // Get the address matching the name:
-            final List<Address> addresses = this.geocoder.getFromLocationName(this.service.locationName, 1);
+            // Get the results from the google maps API:
+            final GeocodingResult[] results = GeocodingApi.geocode(context, this.service.locationName).await();
 
-            // The information will be sent back as a Result object:
-            Result<Address, String> result;
+            // Return the first result if one exists:
+            Result<GeocodingResult, String> result;
 
-            if (addresses == null || addresses.isEmpty())
-                result = Result.failure("Geocoding failed: No results");
+            if (results.length == 0)
+                result = Result.failure("No results");
             else
-                result = Result.success(addresses.get(0));
+                result = Result.success(results[0]);
 
             // Send the result back to the creator of the thread:
             this.sendResultBack(result);
 
-        } catch (IOException e) {
+        } catch (IOException | ApiException | InterruptedException e) {
             // Send the error message back:
             this.sendResultBack(Result.failure(e.toString()));
         }
