@@ -29,6 +29,7 @@
             android:name=".activities.InputActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.MainActivity"
