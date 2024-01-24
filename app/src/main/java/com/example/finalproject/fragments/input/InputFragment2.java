@@ -142,7 +142,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         // Initialize the map:
         this.mapView = parent.findViewById(R.id.fragInput2MapView);
         // Check if we have proper permissions and google services are available:
-        if (checkMapPermission() && checkGooglePlayServices()) {
+        if (checkGooglePlayServices()) {
             // Use the onCreate life-cycle method on the map:
             this.mapView.onCreate(savedInstanceState);
 
@@ -456,11 +456,6 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
     private boolean checkGooglePlayServices() {
         // TODO: Complete the function and check for google play availability
-        return true;
-    }
-
-    private boolean checkMapPermission() {
-        // TODO: Complete the function and check for map and location permissions
         return true;
     }
 
