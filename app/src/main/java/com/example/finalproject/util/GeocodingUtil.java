@@ -58,6 +58,9 @@ public class GeocodingUtil {
 
     public static Result<LatLngBounds, String> getBounds(GeocodingResult geocodingResult) {
         // Get north-east and south-west borders:
+        if (geocodingResult.geometry.bounds == null)
+            return Result.failure("Missing bounds for result");
+
         final LatLng NE = geocodingResult.geometry.bounds.northeast;
         final LatLng SW = geocodingResult.geometry.bounds.southwest;
 

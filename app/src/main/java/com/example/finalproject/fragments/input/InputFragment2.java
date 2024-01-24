@@ -33,6 +33,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -78,6 +79,12 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
     // The selected country, city and address:
     private String selectedCountry, selectedCity, selectedAddress;
+
+    // The duration of the zoom animation in milliseconds:
+    private static final int ZOOM_DURATION = 1000;
+
+    // The zoom level used if no bounds are returned in the response:
+    public static final int DEFAULT_ZOOM_LEVEL = Zoom.STREETS.level;
 
     // A tag for logging purposes:
     private static final String TAG = "InputFragment2";
@@ -233,15 +240,20 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
             final GeocodingResult geocodingResult = (GeocodingResult) result.getValue();
             this.displayLocationInfo(geocodingResult);
 
-            // Log the result:
-            GeocodingUtil.logResult(geocodingResult, TAG);
-
             // Set the marker on the map and move to it:
             final LatLng coordinates = new LatLng(
                     geocodingResult.geometry.location.lat, geocodingResult.geometry.location.lng
             );
             this.setMarkerOnMap(coordinates);
-            this.moveToLocation(coordinates, Zoom.STREETS, 1000);
+
+            // Move to the location bounds:
+            final Result<LatLngBounds, String> bounds = GeocodingUtil.getBounds(geocodingResult);
+            if (bounds.isOk())
+                this.moveToLocation(bounds.getValue());
+            else {
+                Log.e(TAG, bounds.getError());
+                this.moveToLocation(coordinates);
+            }
 
         } else {
             Log.e(TAG, result.getError().toString());
@@ -346,6 +358,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
             this.selectedCity = null;
             Log.e(TAG, "Given address does not contain a city");
             this.tilCity.setVisibility(View.GONE);
+            return;
         }
 
         this.selectedCity = city;
@@ -366,6 +379,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
             this.selectedAddress = null;
             Log.e(TAG, "Empty address given");
             this.tilAddress.setVisibility(View.GONE);
+            return;
         }
 
         this.selectedAddress = address;
@@ -488,7 +502,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     public void onMapClick(@NonNull LatLng latLng) {
         // Update the marker on the map and move the map to it:
         this.setMarkerOnMap(latLng);
-        this.moveToLocation(latLng, Zoom.STREETS, 1000);
+        this.moveToLocation(latLng);
 
         // The user has picked a location, show the progress bar until the info is loaded:
         this.pbLocationLoader.setVisibility(View.VISIBLE);
@@ -508,9 +522,14 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         this.map.addMarker(new MarkerOptions().position(latLng).title("Chosen Location"));
     }
 
-    private void moveToLocation(@NonNull LatLng latLng, Zoom zoomLevel, int duration) {
-        final CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel.level);
-        this.map.animateCamera(cameraUpdate, duration, null);
+    private void moveToLocation(@NonNull LatLng latLng) {
+        final CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM_LEVEL);
+        this.map.animateCamera(cameraUpdate, ZOOM_DURATION, null);
+    }
+
+    private void moveToLocation(@NonNull LatLngBounds bounds) {
+        final CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10);
+        this.map.animateCamera(cameraUpdate, ZOOM_DURATION, null);
     }
 
     // Implement built-in life-cycle methods for the map:
