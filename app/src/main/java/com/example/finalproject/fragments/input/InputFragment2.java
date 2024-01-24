@@ -521,9 +521,8 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
     @Override
     public void onMapClick(@NonNull LatLng latLng) {
-        // Update the marker on the map and move the map to it:
+        // Update the marker on the map:
         this.setMarkerOnMap(latLng);
-        this.moveToLocation(latLng);
 
         // The user has picked a location, show the progress bar until the info is loaded:
         this.pbLocationLoader.setVisibility(View.VISIBLE);
@@ -534,7 +533,23 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     }
 
     private void loadInfoFromLocation(double latitude, double longitude) {
-        // TODO: Use reverse geocoding
+        // Create a handler that accepts the location returned from the thread and sets the
+        // map to it:
+        final Handler geoHandler = new Handler(
+                Looper.getMainLooper(),
+                this::handleGeocoderResult
+        );
+
+        // Create the thread and start it:
+        final GeocodingThread geoThread = GeocodingThread.getReverseGeocoderThread(
+                geoHandler,
+                new com.google.maps.model.LatLng(latitude, longitude)
+        );
+
+        geoThread.start();
+
+        // Hide the location details layout and show the progress bar:
+        hideLocationInfo();
     }
 
     private void setMarkerOnMap(@NonNull LatLng latLng) {
