@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments.input;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -27,6 +28,8 @@ import com.example.finalproject.util.ImprovedTextWatcher;
 import com.example.finalproject.util.Result;
 import com.example.finalproject.util.Util;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -79,6 +82,9 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
     // The selected country, city and address:
     private String selectedCountry, selectedCity, selectedAddress;
+
+    // A variable to handle if the google API is available:
+    private boolean isMapsApiAvailable;
 
     // The duration of the zoom animation in milliseconds:
     private static final int ZOOM_DURATION = 1000;
@@ -141,8 +147,9 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
         // Initialize the map:
         this.mapView = parent.findViewById(R.id.fragInput2MapView);
-        // Check if we have proper permissions and google services are available:
-        if (checkGooglePlayServices()) {
+        // Check that the service is available:
+        this.isMapsApiAvailable = checkGooglePlayServices();
+        if (this.isMapsApiAvailable) {
             // Use the onCreate life-cycle method on the map:
             this.mapView.onCreate(savedInstanceState);
 
@@ -159,6 +166,10 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         this.svMap.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                if (!isMapsApiAvailable) {
+                    Toast.makeText(requireContext(), "Google Maps is not available", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 Log.d(TAG, "Search button pressed");
 
                 // Get the input from the user:
@@ -455,8 +466,23 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     }
 
     private boolean checkGooglePlayServices() {
-        // TODO: Complete the function and check for google play availability
-        return true;
+        // Check if the service is available:
+        final GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        final int result = googleApiAvailability.isGooglePlayServicesAvailable(requireContext());
+
+        // Check if the result was a success:
+        if (result == ConnectionResult.SUCCESS)
+            return true;
+
+        // Check if the user can resolve this error:
+        else if (googleApiAvailability.isUserResolvableError(result)) {
+            // Show the error dialog to the user:
+            final Dialog dialog = googleApiAvailability.getErrorDialog(this, result, 201);
+            if (dialog != null)
+                dialog.show();
+        }
+
+        return false;
     }
 
     public boolean areInputsValid() {
@@ -532,48 +558,56 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     public void onStart() {
         super.onStart();
 
-        this.mapView.onStart();
+        if (this.isMapsApiAvailable)
+            this.mapView.onStart();
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        this.mapView.onResume();
+        // Check for API availability:
+        this.isMapsApiAvailable = checkGooglePlayServices();
+        if (this.isMapsApiAvailable)
+            this.mapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        this.mapView.onPause();
+        if (this.isMapsApiAvailable)
+            this.mapView.onPause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        this.mapView.onPause();
+        if (this.isMapsApiAvailable)
+            this.mapView.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        this.mapView.onDestroy();
+        if (this.isMapsApiAvailable)
+            this.mapView.onDestroy();
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        this.mapView.onSaveInstanceState(outState);
+        if (this.isMapsApiAvailable)
+            this.mapView.onSaveInstanceState(outState);
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
 
-        this.mapView.onLowMemory();
+        if (this.isMapsApiAvailable)
+            this.mapView.onLowMemory();
     }
 }
