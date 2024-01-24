@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -41,7 +42,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     // The inputs from the three pages:
     private InputFragment1.PackagedInfo firstPageInfo;
     private InputFragment2.PackagedInfo secondPageInfo;
-    private String userImgFileName;
+    private Bitmap userImg;
 
     // The buttons that go forwards or backwards in the pages:
     private Button btnNext, btnPrev;
@@ -131,7 +132,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
                     // Load the next page:
                     this.currentPage++;
-                    this.loadThirdPage(this.secondPageInfo.PHONE);
+                    this.loadThirdPage();
                 }
                 break;
             }
@@ -139,7 +140,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 // Validate the input:
                 if (this.thirdPage.areInputsValid(this)) {
                     // Get the info:
-                    this.userImgFileName = this.thirdPage.getImgFileName();
+                    this.userImg = this.thirdPage.getBitmapPhoto();
 
                     // Confirm the details and create a new user/update an existing one:
                     this.finishInputs();
@@ -199,10 +200,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.btnNext.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_forward, 0);
     }
 
-    private void loadThirdPage(String userPhoneNumber) {
+    private void loadThirdPage() {
         // Creating the third page if it hadn't been created already:
         if (this.thirdPage == null)
-            this.thirdPage = new InputFragment3(userPhoneNumber);
+            this.thirdPage = new InputFragment3();
 
         // Get a fragment transaction object:
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -249,7 +250,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.user.setEmail(this.firstPageInfo.EMAIL);
         this.user.setPassword(this.firstPageInfo.PASSWORD);
 
-        this.user.setPictureFileName(this.userImgFileName);
+        this.user.setPictureFileName("TEMPORARY");
 
         // If the user is new, add them to the database. If not, update them:
         if (this.isRegisterActivity)
