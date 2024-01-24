@@ -83,6 +83,10 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     // The selected country, city and address:
     private String selectedCountry, selectedCity, selectedAddress;
 
+    // The last result from the geocoding API. Is used to load the saved location if the user went
+    // back and forth in the fragments:
+    private GeocodingResult lastGeoResult;
+
     // A variable to handle if the google API is available:
     private boolean isMapsApiAvailable;
 
@@ -247,30 +251,35 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
                 return false;
             }
 
-            // Load the info from the address:
-            final GeocodingResult geocodingResult = (GeocodingResult) result.getValue();
-            this.displayLocationInfo(geocodingResult);
-
-            // Set the marker on the map and move to it:
-            final LatLng coordinates = new LatLng(
-                    geocodingResult.geometry.location.lat, geocodingResult.geometry.location.lng
-            );
-            this.setMarkerOnMap(coordinates);
-
-            // Move to the location bounds:
-            final Result<LatLngBounds, String> bounds = GeocodingUtil.getBounds(geocodingResult);
-            if (bounds.isOk())
-                this.moveToLocation(bounds.getValue());
-            else {
-                Log.e(TAG, bounds.getError());
-                this.moveToLocation(coordinates);
-            }
+            // Load the info from the address and save the result:
+            this.lastGeoResult = (GeocodingResult) result.getValue();
+            this.loadFromResult(this.lastGeoResult);
 
         } else {
             Log.e(TAG, result.getError().toString());
         }
 
         return false;
+    }
+
+    private void loadFromResult(GeocodingResult geocodingResult) {
+        // Display the result:
+        this.displayLocationInfo(geocodingResult);
+
+        // Set the marker on the map and move to it:
+        final LatLng coordinates = new LatLng(
+                geocodingResult.geometry.location.lat, geocodingResult.geometry.location.lng
+        );
+        this.setMarkerOnMap(coordinates);
+
+        // Move to the location bounds:
+        final Result<LatLngBounds, String> bounds = GeocodingUtil.getBounds(geocodingResult);
+        if (bounds.isOk())
+            this.moveToLocation(bounds.getValue());
+        else {
+            Log.e(TAG, bounds.getError());
+            this.moveToLocation(coordinates);
+        }
     }
 
     private void displayLocationInfo(GeocodingResult location) {
@@ -524,6 +533,10 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
 
         // Enable zoom controls:
         this.map.getUiSettings().setZoomControlsEnabled(true);
+
+        // Load the last saved result if one exists:
+        if (this.lastGeoResult != null)
+            this.loadFromResult(this.lastGeoResult);
     }
 
     @Override
@@ -579,6 +592,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart called");
 
         if (this.isMapsApiAvailable)
             this.mapView.onStart();
@@ -587,6 +601,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume called");
 
         // Check for API availability:
         this.isMapsApiAvailable = checkGooglePlayServices();
@@ -597,6 +612,8 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause called");
+
         if (this.isMapsApiAvailable)
             this.mapView.onPause();
     }
