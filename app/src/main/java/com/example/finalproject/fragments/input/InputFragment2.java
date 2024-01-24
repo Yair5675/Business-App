@@ -76,6 +76,9 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private TextInputLayout tilAddress;
     private TextInputEditText etAddress;
 
+    // The selected country, city and address:
+    private String selectedCountry, selectedCity, selectedAddress;
+
     // A tag for logging purposes:
     private static final String TAG = "InputFragment2";
 
@@ -308,6 +311,7 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private void setCountry(@Nullable String countryCode) {
         // If the address is not in a country:
         if (countryCode == null || countryCode.isEmpty()) {
+            this.selectedCountry = null;
             Log.e(TAG, "Given address does not contain a country code");
 
             this.countryCodePicker.setVisibility(View.GONE);
@@ -328,8 +332,8 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         this.tilCountryCode.setVisibility(View.VISIBLE);
 
         this.countryCodePicker.setCountryForNameCode(countryCode);
+        this.selectedCountry = this.countryCodePicker.getSelectedCountryName();
         this.etCountryCode.setText(this.countryCodePicker.getSelectedCountryCodeWithPlus());
-
     }
 
     /**
@@ -339,10 +343,12 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private void setCity(@Nullable String city) {
         // if the city is null or empty:
         if (city == null || city.isEmpty()) {
+            this.selectedCity = null;
             Log.e(TAG, "Given address does not contain a city");
             this.tilCity.setVisibility(View.GONE);
         }
 
+        this.selectedCity = city;
         Log.i(TAG, "City given: " + city);
 
         // Show the city edit text and set the text to the new city:
@@ -357,10 +363,12 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     private void setAddress(@Nullable String address) {
         // Check if the address is null or empty
         if (address == null || address.isEmpty()) {
+            this.selectedAddress = null;
             Log.e(TAG, "Empty address given");
             this.tilAddress.setVisibility(View.GONE);
         }
 
+        this.selectedAddress = address;
         Log.i(TAG, "Given address: " + address);
 
         // Set the additional address:
@@ -443,10 +451,12 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     }
 
     public boolean areInputsValid() {
-        // TODO: Complete the function and actually check if the inputs are valid
-        return true;
+        // Check that all input fields are not null:
+        return this.selectedCountry != null &&
+                this.selectedCity != null &&
+                this.selectedAddress != null &&
+                this.countryCodePicker.isValidFullNumber();
     }
-
 
 
     /**
@@ -459,25 +469,10 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     public InputFragment2.PackagedInfo getPackagedInfo() {
         return new PackagedInfo(
                 this.countryCodePicker.getFullNumberWithPlus(),
-                this.getCountry(),
-                this.getCity(),
-                this.getAddress()
+                this.selectedCountry,
+                this.selectedCity,
+                this.selectedAddress
         );
-    }
-
-    private String getCountry() {
-        // TODO: Complete the function to return the country after the map view is finished
-        return "";
-    }
-
-    private String getAddress() {
-        // TODO: Complete the function to return the address after the map view is finished
-        return "";
-    }
-
-    private String getCity() {
-        // TODO: Complete the function to return the city after the map view is finished
-        return "";
     }
 
     @Override
