@@ -13,5 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+secrets.properties
+/secrets.properties
+local.defaults.properties
+/local.defaults.properties
 /app/google-services.json
 **/Constants.java

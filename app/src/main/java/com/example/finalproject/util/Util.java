@@ -152,4 +152,21 @@ public class Util {
         final RequestOptions ro = new RequestOptions().circleCrop();
         Glide.with(context).load(image).apply(ro).into(imageHolder);
     }
+
+
+    // Zoom level for google maps:
+    public enum Zoom {
+        WORLD(1),
+        CONTINENT(5),
+        CITY(10),
+        STREETS(15),
+        BUILDINGS(20)
+        ;
+
+        public final int level;
+
+        Zoom(int level) {
+            this.level = level;
+        }
+    }
 }

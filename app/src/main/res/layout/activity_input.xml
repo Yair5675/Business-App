@@ -7,128 +7,101 @@
     android:background="@drawable/background"
     tools:context=".activities.InputActivity">
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:gravity="center_horizontal"
+        android:layout_marginHorizontal="18dp"
+
+        app:layout_constraintTop_toTopOf="@id/actInputTopEdge"
+        app:layout_constraintBottom_toBottomOf="@id/actInputBottomEdge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:orientation="vertical"
+        android:background="@drawable/white_background_circular_border"
+        >
+
+        <TextView
+            android:id="@+id/actInputTitle"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+
+            android:layout_marginVertical="8dp"
+
+            android:text="@string/act_input_title_register"
+            android:textSize="38sp"
+            />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:contentDescription="@string/act_input_scrollview_content_desc"
+            >
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/actInputFragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="8dp"
+            >
+
+            <android.widget.Button
+                android:id="@+id/actInputBtnBackOrCancel"
+                style="@style/ImprovedButtonAppearance"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="@string/act_input_cancel_btn_text"
+
+                android:layout_marginEnd="16dp"
+
+                android:paddingHorizontal="10dp"
+                android:drawableStart="@drawable/cancel_symbol"
+                android:drawablePadding="8dp"
+                />
+
+            <android.widget.Button
+                android:id="@+id/actInputBtnNextOrRegister"
+                style="@style/ImprovedButtonAppearance"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:drawableEnd="@drawable/arrow_forward"
+                android:drawablePadding="8dp"
+                android:paddingHorizontal="10dp"
+
+                android:text="@string/act_input_next_btn_text"
+                />
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/actInputTopEdge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/actInputLeftEdge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1"
-        />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/actInputRightEdge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9"
-        />
-
-    <TextView
-        android:id="@+id/actInputTitle"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginBottom="16dp"
-        android:text="@string/act_input_title_register"
-        android:textSize="38sp"
-
-        app:layout_constraintBottom_toTopOf="@id/actInputTopEdge"
-
-        app:layout_constraintEnd_toStartOf="@id/actInputRightEdge"
-        app:layout_constraintStart_toEndOf="@id/actInputLeftEdge"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-
-        app:layout_constraintTop_toTopOf="@id/actInputTopEdge"
-        app:layout_constraintBottom_toBottomOf="@id/actInputBottomEdge"
-        app:layout_constraintStart_toStartOf="@id/actInputLeftEdge"
-        app:layout_constraintEnd_toEndOf="@id/actInputRightEdge"
-
-        android:contentDescription="@string/act_input_scrollview_content_desc"
-        >
-
-        <FrameLayout
-            android:id="@+id/actInputFragmentContainer"
-            
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-    </ScrollView>
-
-    
-    <ProgressBar
-        android:id="@+id/actInputProgress"
-
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toBottomOf="@id/actInputBtnNextOrRegister"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/actInputLeftEdge"
-        app:layout_constraintEnd_toStartOf="@id/actInputRightEdge"
-
-        android:layout_marginTop="8dp"
-
-        style="?android:progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/custom_progress_bar"
-        app:layout_constraintVertical_chainStyle="packed"
-        />
-
-    <android.widget.Button
-        android:id="@+id/actInputBtnNextOrRegister"
-        style="@style/ImprovedButtonAppearance"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:drawableEnd="@drawable/arrow_forward"
-        android:paddingHorizontal="20dp"
-
-        android:text="@string/act_input_next_btn_text"
-
-        app:layout_constraintBottom_toTopOf="@id/actInputProgress"
-        app:layout_constraintEnd_toStartOf="@id/actInputRightEdge"
-        app:layout_constraintStart_toEndOf="@id/actInputBtnBackOrCancel"
-        app:layout_constraintTop_toBottomOf="@id/actInputBottomEdge"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <android.widget.Button
-        android:id="@+id/actInputBtnBackOrCancel"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toTopOf="@id/actInputBtnNextOrRegister"
-        app:layout_constraintBottom_toBottomOf="@id/actInputBtnNextOrRegister"
-        app:layout_constraintStart_toEndOf="@id/actInputLeftEdge"
-        app:layout_constraintEnd_toStartOf="@id/actInputBtnNextOrRegister"
-
-        style="@style/ImprovedButtonAppearance"
-        android:text="@string/act_input_cancel_btn_text"
-        android:paddingHorizontal="20dp"
-
-        android:drawableStart="@drawable/cancel_symbol"
-        />
+        app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/actInputBottomEdge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

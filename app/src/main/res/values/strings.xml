@@ -24,26 +24,26 @@
     <string name="act_input_title_register"><b>Register</b></string>
     <string name="act_input_title_update"><b>Update Info</b></string>
 
-    <string name="act_input_next_btn_text">Next\t\t</string>
-    <string name="act_input_confirm_btn_text">Confirm\t\t</string>
+    <string name="act_input_next_btn_text">Next</string>
+    <string name="act_input_confirm_btn_text">Confirm</string>
 
     <string name="act_input_back_btn_text">Previous</string>
-    <string name="act_input_cancel_btn_text">\tCancel</string>
+    <string name="act_input_cancel_btn_text">Cancel</string>
 
     <string name="act_input_scrollview_content_desc">A scrollView holding a page of the input form</string>
 
 
     <!-- Strings belonging to the first input fragment: -->
-    <string name="frag_input1_personal_info_txt"><b>Personal Info:</b></string>
     <string name="frag_input1_first_name_input_hint">First Name</string>
     <string name="frag_input1_last_name_input_hint">Last Name</string>
     <string name="frag_input1_birthdate_input_hint">Your Birthday</string>
     <string name="frag_input1_gender_btn_male_txt">Male</string>
     <string name="frag_input1_gender_btn_female_txt">Female</string>
+    <string name="frag_input1_phone_hint">Phone Number</string>
 
     <string name="frag_input1_location_info_txt"><b>Location Info:</b></string>
-    <string name="frag_input1_address_hint">Address</string>
-    <string name="frag_input1_city_hint">City</string>
+    <string name="frag_input2_address_hint">Address</string>
+    <string name="frag_input2_city_hint">City</string>
 
 
     <!-- Strings belonging to the second input fragment: -->
@@ -53,6 +53,7 @@
     <string name="frag_input2_password_input_hint">Password</string>
     <string name="frag_input2_confirm_password_input_hint">Confirm Password</string>
     <string name="frag_input2_phone_number_hint">Phone Number</string>
+    <string name="frag_input2_location_search_hint">Search for a place</string>
 
 
     <!-- Strings belonging to the third input fragment: -->
@@ -94,4 +95,7 @@
     <string name="row_users_sample_city">City Name</string>
     <string name="row_users_sample_email">someEmail123@gmail.com</string>
     <string name="row_users_sample_phone">051–111–1111</string>
+    <string name="frag_input_2_title"><b>Choose your location:</b></string>
+    <string name="frag_input_2_country_hint">Country</string>
+    <string name="frag_input_2_btn_location_txt">Pick Location!</string>
 </resources>

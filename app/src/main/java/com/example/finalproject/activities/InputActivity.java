@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,9 +46,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     // The buttons that go forwards or backwards in the pages:
     private Button btnNext, btnPrev;
 
-    // The progress bar that will indicate how many pages are left in the form:
-    private ProgressBar pbPages;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,17 +64,12 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
         // Initializing the pages (third one will be initialized later):
         this.firstPage = new InputFragment1();
-        this.secondPage = new InputFragment2();
 
         // Initialize the next and previous buttons:
         this.btnNext = findViewById(R.id.actInputBtnNextOrRegister);
         this.btnPrev = findViewById(R.id.actInputBtnBackOrCancel);
         this.btnNext.setOnClickListener(this);
         this.btnPrev.setOnClickListener(this);
-
-        // Loading the progress bar:
-        this.pbPages = findViewById(R.id.actInputProgress);
-        this.pbPages.setMax(100);
 
         // Loading the first page:
         this.currentPage = 1;
@@ -122,7 +113,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         switch (this.currentPage) {
             case 1: {
                 // Validate the inputs:
-                if (this.firstPage.areInputsValid(this)) {
+                if (this.firstPage.areInputsValid()) {
                     // Get the info from the page:
                     this.firstPageInfo = this.firstPage.getPackagedInfo();
 
@@ -172,9 +163,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         // Save change:
         transaction.commit();
 
-        // Set the progress bar to go to 0:
-        this.pbPages.setProgress(0, true);
-
         // Set the prev button to display 'cancel' and an X drawable:
         this.btnPrev.setText(R.string.act_input_cancel_btn_text);
         this.btnPrev.setCompoundDrawablesWithIntrinsicBounds(R.drawable.cancel_symbol, 0, 0, 0);
@@ -185,6 +173,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loadSecondPage(@AnimRes int enter, @AnimRes int exit) {
+        // Creating the second page if it hadn't been created already:
+        if (this.secondPage == null)
+            this.secondPage = new InputFragment2();
+
         // Get a fragment transaction object:
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -197,9 +189,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
         // Save change:
         transaction.commit();
-
-        // Set the progress bar to go to 33:
-        this.pbPages.setProgress(33, true);
 
         // Set the prev button to display 'previous' and a backwards arrow drawable:
         this.btnPrev.setText(R.string.act_input_back_btn_text);
@@ -227,9 +216,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         // Save change:
         transaction.commit();
 
-        // Set the progress bar to go to 67:
-        this.pbPages.setProgress(67, true);
-
         // Set the prev button to display 'previous' and a backwards arrow drawable:
         this.btnPrev.setText(R.string.act_input_back_btn_text);
         this.btnPrev.setCompoundDrawablesWithIntrinsicBounds(R.drawable.arrow_back, 0, 0, 0);
@@ -255,16 +241,13 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
     private void finishInputs() {
         // Enter the inputs to the user:
+        // TODO: Change details after all fragments are updated
         this.user.setName(this.firstPageInfo.NAME);
         this.user.setSurname(this.firstPageInfo.SURNAME);
-        this.user.setGender(this.firstPageInfo.GENDER);
         this.user.setBirthdate(this.firstPageInfo.BIRTHDATE);
-        this.user.setAddress(this.firstPageInfo.ADDRESS);
-        this.user.setCityByName(this, this.firstPageInfo.CITY);
-
         this.user.setPhoneNumber(this.secondPageInfo.PHONE);
-        this.user.setEmail(this.secondPageInfo.EMAIL);
-        this.user.setPassword(this.secondPageInfo.PASSWORD);
+        this.user.setEmail(this.firstPageInfo.EMAIL);
+        this.user.setPassword(this.firstPageInfo.PASSWORD);
 
         this.user.setPictureFileName(this.userImgFileName);
 
