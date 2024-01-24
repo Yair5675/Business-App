@@ -2,7 +2,6 @@ package com.example.finalproject.fragments.input;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +23,10 @@ import com.example.finalproject.database.entities.User;
 import com.example.finalproject.util.Util;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.hbb20.CountryCodePicker;
 
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.function.Function;
 
 public class InputFragment1 extends Fragment {
@@ -51,14 +48,6 @@ public class InputFragment1 extends Fragment {
     private TextInputLayout tilEmail;
     private TextInputEditText etEmail;
 
-    // The country code picker that receives the user's phone number and country:
-    private TextInputLayout tilPhone;
-    private TextInputEditText etPhone;
-    private CountryCodePicker countryCodePicker;
-
-    // The edit code that displays the country code digits selected:
-    private TextInputEditText etCountryCode;
-
     // The input field responsible for receiving the user's password:
     private TextInputLayout tilPassword;
     private TextInputEditText etPassword;
@@ -77,8 +66,6 @@ public class InputFragment1 extends Fragment {
         public final String SURNAME;
         public final LocalDate BIRTHDATE;
         public final String EMAIL;
-        public final String COUNTRY;
-        public final String PHONE;
         public final String PASSWORD;
 
         private PackagedInfo(
@@ -86,16 +73,12 @@ public class InputFragment1 extends Fragment {
                 String SURNAME,
                 LocalDate BIRTHDATE,
                 String EMAIL,
-                String COUNTRY,
-                String PHONE,
                 String PASSWORD
         ) {
             this.NAME = NAME;
             this.SURNAME = SURNAME;
             this.BIRTHDATE = BIRTHDATE;
             this.EMAIL = EMAIL;
-            this.COUNTRY = COUNTRY;
-            this.PHONE = PHONE;
             this.PASSWORD = PASSWORD;
         }
     }
@@ -111,9 +94,6 @@ public class InputFragment1 extends Fragment {
 
         // Check the email:
         areInputsEmpty &= Util.getTextFromEt(this.etEmail).isEmpty();
-
-        // Check the phone number:
-        areInputsEmpty &= this.countryCodePicker.getFullNumberWithPlus().isEmpty();
 
         // Check the password and return the result:
         return areInputsEmpty && Util.getTextFromEt(this.etPassword).isEmpty();
@@ -132,8 +112,6 @@ public class InputFragment1 extends Fragment {
 
             this.etEmail.setText(user.getEmail());
 
-            this.countryCodePicker.setFullNumber(user.getPhoneNumber());
-
             this.etPassword.setText(user.getPassword());
 
             // TODO: When switching to Firestore this function will have to be changed. Idea: Create
@@ -151,7 +129,6 @@ public class InputFragment1 extends Fragment {
         this.tilSurname.setError(null);
         this.tilBirthdate.setError(null);
         this.tilEmail.setError(null);
-        this.tilPhone.setError(null);
         this.tilPassword.setError(null);
     }
 
@@ -168,12 +145,6 @@ public class InputFragment1 extends Fragment {
         this.initEditTexts(parent);
         this.initInputLayouts(parent);
 
-        // Re-establish the CCP:
-        this.initCountryCodePicker(parent);
-
-        // Display the selected country code:
-        this.updateDisplayedCountryCode();
-
         // Add the text watchers to the input fields:
         this.loadInputFieldsTextWatchers();
 
@@ -186,23 +157,6 @@ public class InputFragment1 extends Fragment {
 
         this.clearErrors();
         return parent;
-    }
-
-    private void updateDisplayedCountryCode() {
-        this.etCountryCode.setText(
-                String.format(
-                        Locale.getDefault(),
-                        "+%s",
-                        this.countryCodePicker.getSelectedCountryCode()
-                )
-        );
-    }
-
-    private void initCountryCodePicker(View parent) {
-        this.countryCodePicker = parent.findViewById(R.id.fragInput1CountryCodePicker);
-
-        // Bind the phone number edit text to the CCP:
-        this.countryCodePicker.registerCarrierNumberEditText(this.etPhone);
     }
 
     private void initFocusChangingListeners() {
@@ -241,9 +195,6 @@ public class InputFragment1 extends Fragment {
 
         this.etEmail = parent.findViewById(R.id.fragInput1EtEmail);
 
-        this.etPhone = parent.findViewById(R.id.fragInput1EtPhoneNumber);
-        this.etCountryCode = parent.findViewById(R.id.fragInput1EtCountryCode);
-
         this.etPassword = parent.findViewById(R.id.fragInput1EtPassword);
     }
 
@@ -256,8 +207,6 @@ public class InputFragment1 extends Fragment {
 
         this.tilEmail = parent.findViewById(R.id.fragInput1TilEmail);
 
-        this.tilPhone = parent.findViewById(R.id.fragInput1TilPhoneNumber);
-
         this.tilPassword = parent.findViewById(R.id.fragInput1TilPassword);
     }
 
@@ -269,13 +218,13 @@ public class InputFragment1 extends Fragment {
 
     private EditText[] getEditTexts() {
         return new EditText[] {
-                this.etName, this.etSurname, this.etEmail, this.etPhone, this.etPassword
+                this.etName, this.etSurname, this.etEmail, this.etPassword
         };
     }
 
     private TextInputLayout[] getInputLayouts() {
         return new TextInputLayout[] {
-                this.tilName, this.tilSurname, this.tilEmail, this.tilPhone, this.tilPassword
+                this.tilName, this.tilSurname, this.tilEmail, this.tilPassword
         };
     }
 
@@ -285,14 +234,6 @@ public class InputFragment1 extends Fragment {
         this.validationFunctions.put(this.etName, InputValidation::validateFirstName);
         this.validationFunctions.put(this.etSurname, InputValidation::validateLastName);
         this.validationFunctions.put(this.etEmail, InputValidation::validateEmail);
-        this.validationFunctions.put(this.etPhone, _input -> {
-            if (this.countryCodePicker.isValidFullNumber())
-                return Result.success(null);
-            else if (Util.getTextFromEt(this.etPhone).isEmpty())
-                return Result.failure(Constants.MANDATORY_INPUT_ERROR);
-            else
-                return Result.failure("Invalid phone number");
-        });
         this.validationFunctions.put(this.etPassword, InputValidation::validatePassword);
 
         // List the input fields that need a text watcher:
@@ -313,21 +254,6 @@ public class InputFragment1 extends Fragment {
                             }
             );
         }
-
-        // Add the onValidityChanged listener for the CCP:
-        this.countryCodePicker.setPhoneNumberValidityChangeListener(isValidNumber -> {
-            Log.d("Given phone", this.countryCodePicker.getFullNumberWithPlus());
-            if (isValidNumber) {
-                this.tilPhone.setError(null);
-            } else if (Util.getTextFromEt(this.etPhone).isEmpty()){
-                this.tilPhone.setError(Constants.MANDATORY_INPUT_ERROR);
-            } else {
-                this.tilPhone.setError("Invalid phone number");
-            }
-        });
-
-        // Change country code number:
-        this.countryCodePicker.setOnCountryChangeListener(this::updateDisplayedCountryCode);
     }
 
     private void activateBirthdateDialog() {
@@ -392,9 +318,6 @@ public class InputFragment1 extends Fragment {
             areInputsValid &= layouts[i].getError() == null;
         }
 
-        // Check that the country code picker and phone number are valid:
-        areInputsValid &= this.countryCodePicker.isValidFullNumber();
-
         // Check that a birthdate was selected:
         final boolean birthdateSelected = this.birthdate != null;
         areInputsValid &= birthdateSelected;
@@ -415,8 +338,6 @@ public class InputFragment1 extends Fragment {
                 Util.fixNamingCapitalization(Util.getTextFromEt(this.etSurname)),
                 this.birthdate,
                 Util.getTextFromEt(this.etEmail),
-                this.countryCodePicker.getSelectedCountryName(),
-                this.countryCodePicker.getFullNumberWithPlus(),
                 Util.getTextFromEt(this.etPassword)
         );
     }

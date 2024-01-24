@@ -131,7 +131,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
                     // Load the next page:
                     this.currentPage++;
-                    this.loadThirdPage(this.firstPageInfo.PHONE);
+                    this.loadThirdPage(this.secondPageInfo.PHONE);
                 }
                 break;
             }
@@ -245,7 +245,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.user.setName(this.firstPageInfo.NAME);
         this.user.setSurname(this.firstPageInfo.SURNAME);
         this.user.setBirthdate(this.firstPageInfo.BIRTHDATE);
-        this.user.setPhoneNumber(this.firstPageInfo.PHONE);
+        this.user.setPhoneNumber(this.secondPageInfo.PHONE);
         this.user.setEmail(this.firstPageInfo.EMAIL);
         this.user.setPassword(this.firstPageInfo.PASSWORD);
 

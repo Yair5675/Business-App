@@ -125,71 +125,11 @@
             android:drawablePadding="8dp"
 
             android:imeOptions="actionNext"
-            android:nextFocusForward="@id/fragInput1CountryCodePicker"
+            android:nextFocusForward="@id/fragInput1EtPassword"
 
             android:inputType="textEmailAddress"
             />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <com.hbb20.CountryCodePicker
-        android:id="@+id/fragInput1CountryCodePicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:padding="10dp"
-        app:ccp_showFullName="true"
-        app:ccp_showPhoneCode="false"
-        app:ccp_excludedCountries="PS"
-        app:ccp_defaultNameCode="IL"
-        app:ccp_countryPreference="IL"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp"
-        >
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragInput1EtCountryCode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:maxLength="4"
-                android:focusable="false"
-                android:clickable="false"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragInput1TilPhoneNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/frag_input1_phone_hint"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragInput1EtPhoneNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:drawableStart="@drawable/phone_icon"
-                android:drawablePadding="8dp"
-
-                android:inputType="phone"
-                android:digits="0123456789"
-                android:maxLines="1"
-                android:maxLength="12"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragInput1TilPassword"
