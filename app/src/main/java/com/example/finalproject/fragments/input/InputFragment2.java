@@ -486,11 +486,18 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     }
 
     public boolean areInputsValid() {
-        // Check that all input fields are not null:
-        return this.selectedCountry != null &&
+        // Check the location:
+        final boolean isLocationValid =  this.selectedCountry != null &&
                 this.selectedCity != null &&
-                this.selectedAddress != null &&
-                this.countryCodePicker.isValidFullNumber();
+                this.selectedAddress != null;
+
+        if (!isLocationValid) {
+            Toast.makeText(requireContext(), "Please choose your address", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Return true if the phone is valid (error message is in the input field):
+        return this.countryCodePicker.isValidFullNumber();
     }
 
 
