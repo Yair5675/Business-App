@@ -17,8 +17,8 @@ import com.example.finalproject.R;
 import com.example.finalproject.fragments.input.InputFragment1;
 import com.example.finalproject.fragments.input.InputFragment2;
 import com.example.finalproject.fragments.input.InputFragment3;
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.local.AppDatabase;
+import com.example.finalproject.database.local.entities.User;
 
 public class InputActivity extends AppCompatActivity implements View.OnClickListener {
     // A pointer to the database:

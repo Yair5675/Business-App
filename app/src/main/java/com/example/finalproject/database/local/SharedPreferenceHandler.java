@@ -1,4 +1,4 @@
-package com.example.finalproject.database;
+package com.example.finalproject.database.local;
 
 import android.content.Context;
 import android.content.SharedPreferences;

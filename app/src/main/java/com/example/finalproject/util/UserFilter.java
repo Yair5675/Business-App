@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 import android.widget.Filter;
 
 import com.example.finalproject.custom_views.UserAdapter;
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.local.AppDatabase;
+import com.example.finalproject.database.local.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;

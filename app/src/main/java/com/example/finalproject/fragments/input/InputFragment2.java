@@ -19,7 +19,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.local.entities.User;
 import com.example.finalproject.threads.GeocodingThread;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.GeocodingUtil;

@@ -1,4 +1,4 @@
-package com.example.finalproject.database;
+package com.example.finalproject.database.local;
 
 import android.content.Context;
 
@@ -7,10 +7,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.example.finalproject.database.daos.CityDao;
-import com.example.finalproject.database.daos.UserDao;
-import com.example.finalproject.database.entities.City;
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.local.daos.CityDao;
+import com.example.finalproject.database.local.daos.UserDao;
+import com.example.finalproject.database.local.entities.City;
+import com.example.finalproject.database.local.entities.User;
 
 @TypeConverters(Converters.class)
 @Database(entities = {User.class, City.class}, version = 1, exportSchema = false)

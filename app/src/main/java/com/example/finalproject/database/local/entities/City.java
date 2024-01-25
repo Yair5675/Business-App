@@ -1,4 +1,4 @@
-package com.example.finalproject.database.entities;
+package com.example.finalproject.database.local.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

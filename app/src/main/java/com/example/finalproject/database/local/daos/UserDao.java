@@ -1,4 +1,4 @@
-package com.example.finalproject.database.daos;
+package com.example.finalproject.database.local.daos;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.local.entities.User;
 
 import java.util.List;
 

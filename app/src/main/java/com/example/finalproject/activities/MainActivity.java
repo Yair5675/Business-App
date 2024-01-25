@@ -19,10 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.SharedPreferenceHandler;
-import com.example.finalproject.database.entities.City;
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.local.AppDatabase;
+import com.example.finalproject.database.local.SharedPreferenceHandler;
+import com.example.finalproject.database.local.entities.City;
+import com.example.finalproject.database.local.entities.User;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.Result;
 import com.example.finalproject.util.Util;

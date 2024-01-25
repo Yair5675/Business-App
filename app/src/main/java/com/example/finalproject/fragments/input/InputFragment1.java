@@ -14,12 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.AppDatabase;
+import com.example.finalproject.database.local.AppDatabase;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.ImprovedTextWatcher;
 import com.example.finalproject.util.InputValidation;
 import com.example.finalproject.util.Result;
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.local.entities.User;
 import com.example.finalproject.util.Util;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;

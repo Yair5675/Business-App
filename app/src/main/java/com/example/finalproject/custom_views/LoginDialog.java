@@ -10,9 +10,9 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.activities.MainActivity;
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.SharedPreferenceHandler;
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.local.AppDatabase;
+import com.example.finalproject.database.local.SharedPreferenceHandler;
+import com.example.finalproject.database.local.entities.User;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.ImprovedTextWatcher;
 import com.example.finalproject.util.Result;

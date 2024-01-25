@@ -1,4 +1,4 @@
-package com.example.finalproject.database.entities;
+package com.example.finalproject.database.local.entities;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,8 +9,8 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.Converters;
+import com.example.finalproject.database.local.AppDatabase;
+import com.example.finalproject.database.local.Converters;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.Result;
 import com.example.finalproject.util.Util;

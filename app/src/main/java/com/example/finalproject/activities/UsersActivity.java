@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,7 +15,7 @@ import android.widget.Spinner;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.UserAdapter;
-import com.example.finalproject.database.AppDatabase;
+import com.example.finalproject.database.local.AppDatabase;
 import com.example.finalproject.util.UserFilter;
 
 public class UsersActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {

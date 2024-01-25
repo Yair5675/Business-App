@@ -24,8 +24,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.local.AppDatabase;
+import com.example.finalproject.database.local.entities.User;
 import com.example.finalproject.util.Permissions;
 import com.example.finalproject.util.Result;
 import com.example.finalproject.util.Util;
