@@ -50,6 +50,7 @@ dependencies {
     // Gifs and Glide:
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.22")
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     // Country code picker:
     implementation("com.hbb20:ccp:2.5.0")

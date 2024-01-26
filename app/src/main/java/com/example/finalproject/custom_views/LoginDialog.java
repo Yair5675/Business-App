@@ -154,7 +154,6 @@ public class LoginDialog {
     private void connectUserToDatabase(User user) {
         // Connect to the normal database:
         AppDatabase.connectUser(user);
-        mainActivity.userConnectivityChanged();
 
         // If the user checked the 'Remember me' option, save their ID:
         if (this.cbRememberMe.isChecked()) {

@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 )
         );
 
+        // Show the user's image:
+        this.db.loadUserImgFromStorage(this, user, this.imgUser, R.drawable.guest);
+
         // TODO: Check if the user is the admin and set the crown accordingly
 
         // Show the 'Edit Account' and 'Delete Account' buttons:
