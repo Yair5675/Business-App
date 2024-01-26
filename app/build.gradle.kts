@@ -66,6 +66,9 @@ dependencies {
     // Firestore library:
     implementation("com.google.firebase:firebase-firestore")
 
+    // Firebase storage:
+    implementation("com.google.firebase:firebase-storage")
+
     // Google maps services:
     implementation("org.slf4j:slf4j-simple:1.7.25")
     implementation("com.google.maps:google-maps-services:2.2.0")
