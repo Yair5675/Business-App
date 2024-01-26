@@ -33,6 +33,7 @@ android {
             )
 
             buildConfigField("String", "MAPS_API_KEY", "\"${apiKeysProperties["MAPS_API_KEY"]}\"")
+            buildConfigField("String", "ADMIN_PHONE_NUMBER", "\"${apiKeysProperties["ADMIN_PHONE_NUMBER"]}\"")
         }
     }
     compileOptions {

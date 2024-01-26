@@ -1,5 +1,6 @@
 package com.example.finalproject.database.online.collections;
 
+import com.example.finalproject.BuildConfig;
 import com.google.firebase.Timestamp;
 
 public class User {
@@ -24,6 +25,9 @@ public class User {
     // An empty constructor (requirement for firestore):
     public User() {}
 
+    public boolean isAdmin() {
+        return this.phoneNumber != null && this.phoneNumber.equals(BuildConfig.ADMIN_PHONE_NUMBER);
+    }
 
     // Getters (a requirement) and setters supporting the builder pattern:
     public String getUid() {
