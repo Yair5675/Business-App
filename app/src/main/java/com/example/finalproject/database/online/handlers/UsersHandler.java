@@ -4,7 +4,7 @@ import static com.example.finalproject.util.Util.toByteArray;
 
 import android.graphics.Bitmap;
 
-import com.example.finalproject.database.online.Util;
+import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -76,7 +76,7 @@ public class UsersHandler {
 
                     // Set the user ID and image path:
                     user.setUid(firebaseUser.getUid());
-                    user.setImagePath(Util.getStorageImagePath(user.getUid()));
+                    user.setImagePath(StorageUtil.getStorageImagePath(user.getUid()));
 
                     // Save the user's image in the storage:
                     storageRef.child(user.getImagePath())
