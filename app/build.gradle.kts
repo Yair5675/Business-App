@@ -69,6 +69,9 @@ dependencies {
     // Firebase storage:
     implementation("com.google.firebase:firebase-storage")
 
+    // Firebase storage UI (to work with Glide):
+    implementation("com.firebaseui:firebase-ui-storage:7.2.0")
+
     // Google maps services:
     implementation("org.slf4j:slf4j-simple:1.7.25")
     implementation("com.google.maps:google-maps-services:2.2.0")

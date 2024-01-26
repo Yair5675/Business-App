@@ -1,8 +1,15 @@
 package com.example.finalproject.database.online;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.ImageView;
 
+import androidx.annotation.DrawableRes;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.handlers.UsersHandler;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -93,5 +100,30 @@ public class OnlineDatabase {
         } else {
             onFailureListener.onFailure(new Exception("No user is connected"));
         }
+    }
+
+    /**
+     * Loads the image of the user into an image view.
+     * @param context The context calling the load, necessary for Glide.
+     * @param user The user whose image will be loaded into the image view.
+     * @param imageView The image view that the user's image will be loaded into.
+     * @param errorImg The ID of a drawable that will be shown if an error occurred while retrieving
+     *                 the user's image.
+     */
+    public void loadUserImgFromStorage(
+            Context context,
+            User user,
+            ImageView imageView,
+            @DrawableRes int errorImg
+    ) {
+        Glide.with(context)
+                .load(this.storageRef.child(user.getImagePath()))
+                .apply(
+                        new RequestOptions()
+                        .error(errorImg)
+                        .circleCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                )
+                .into(imageView);
     }
 }
