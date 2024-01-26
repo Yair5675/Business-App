@@ -8,21 +8,30 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.example.finalproject.database.online.FirebaseDatabase;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputFragment1;
 import com.example.finalproject.fragments.input.InputFragment2;
 import com.example.finalproject.fragments.input.InputFragment3;
 import com.example.finalproject.database.local.AppDatabase;
-import com.example.finalproject.database.local.entities.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class InputActivity extends AppCompatActivity implements View.OnClickListener {
     // A pointer to the database:
-    private AppDatabase db;
+    private FirebaseDatabase db;
 
     // Whether the input activity is registering a new user or updating the details of an existing
     // user:
@@ -30,9 +39,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
     // The current page displayed:
     private int currentPage;
-
-    // The user created in the activity:
-    private User user;
 
     // The three pages of the input form:
     private InputFragment1 firstPage;
@@ -53,14 +59,13 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_input);
 
         // Initialize the database:
-        this.db = AppDatabase.getInstance(this);
+        this.db = FirebaseDatabase.getInstance();
 
         // If a user was already connected, the activity will update their details. If not, it will
         // register a new user:
         this.isRegisterActivity = !AppDatabase.isUserLoggedIn();
         final TextView title = findViewById(R.id.actInputTitle);
 
-        this.user = isRegisterActivity ? new User() : AppDatabase.getConnectedUser();
         title.setText(isRegisterActivity ? R.string.act_input_title_register : R.string.act_input_title_update);
 
         // Initializing the pages (third one will be initialized later):
@@ -241,29 +246,56 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void finishInputs() {
-        // Enter the inputs to the user:
-        // TODO: Change details after all fragments are updated
-        this.user.setName(this.firstPageInfo.NAME);
-        this.user.setSurname(this.firstPageInfo.SURNAME);
-        this.user.setBirthdate(this.firstPageInfo.BIRTHDATE);
-        this.user.setPhoneNumber(this.secondPageInfo.PHONE);
-        this.user.setEmail(this.firstPageInfo.EMAIL);
-        this.user.setPassword(this.firstPageInfo.PASSWORD);
-
-        this.user.setPictureFileName("TEMPORARY");
-
-        // If the user is new, add them to the database. If not, update them:
+        // Register or update the user:
         if (this.isRegisterActivity)
-            this.db.userDao().insert(this.user);
+            this.registerNewUser();
         else
-            this.db.userDao().update(this.user);
+            this.updateUser();
+    }
 
-        // Signal the user they registered successfully:
-        Toast.makeText(this, "Registered Successfully!", Toast.LENGTH_SHORT).show();
+    private void updateUser() {
+        // TODO: Complete the update function
+    }
 
-        // Return to the main activity:
-        final Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+    private void registerNewUser() {
+        // Convert the birthdate to a timestamp:
+        final Timestamp timestamp = convertLocalDateToTimestamp(firstPageInfo.BIRTHDATE);
+
+        // Create the user object:
+        final User user = new User();
+        user
+                .setName(firstPageInfo.NAME)
+                .setSurname(firstPageInfo.SURNAME)
+                .setEmail(firstPageInfo.EMAIL)
+                .setBirthdate(timestamp)
+                .setPassword(firstPageInfo.PASSWORD)
+                .setCountry(secondPageInfo.COUNTRY)
+                .setCity(secondPageInfo.CITY)
+                .setAddress(secondPageInfo.ADDRESS)
+                .setPhoneNumber(secondPageInfo.PHONE);
+
+        // Initialize callbacks:
+        OnSuccessListener<Void> successListener = unused -> {
+            // Signal the user they registered successfully:
+            Toast.makeText(this, "Registered Successfully!", Toast.LENGTH_SHORT).show();
+
+            // Go to the main activity:
+            final Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        };
+        OnFailureListener failureListener = exception -> {
+            // Log the error and signal the user something went wrong:
+            Log.e("InputActivity", "Failed to register user", exception);
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+        };
+
+        // Save them in the database:
+        this.db.addNewUser(user, this.userImg, successListener, failureListener);
+    }
+
+    private static Timestamp convertLocalDateToTimestamp(LocalDate localDate) {
+        final Date date = Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        return new Timestamp(date);
     }
 }

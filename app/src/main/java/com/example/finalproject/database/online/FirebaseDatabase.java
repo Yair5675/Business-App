@@ -17,6 +17,8 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 
 public class FirebaseDatabase {
     // A reference to the actual database:
@@ -89,11 +91,12 @@ public class FirebaseDatabase {
                     // Get the firebase user:
                     FirebaseUser firebaseUser = task.getResult().getUser();
 
-                    // Get the user ID:
+                    // Set the user ID and image path:
                     user.setUid(firebaseUser.getUid());
+                    user.setImagePath(getImagePath(user.getUid()));
 
                     // Save the user's image in the storage:
-                    this.storageRef.child(getImagePath(user.getUid()))
+                    this.storageRef.child(user.getImagePath())
                             .putBytes(toByteArray(userImg))
                             .addOnCompleteListener(
                                     this.getImgUploadCallback(
@@ -130,13 +133,8 @@ public class FirebaseDatabase {
         };
     }
 
-    private static String getCurrentTime() {
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS");
-        return formatter.format(LocalDate.now());
-    }
-
     private static String getImagePath(String uid) {
-        return String.format("images/%s/%s", uid, getCurrentTime());
+        return String.format(Locale.getDefault(), "images/%s/%d", uid, System.currentTimeMillis());
     }
 
     private static byte[] toByteArray(Bitmap image) {
