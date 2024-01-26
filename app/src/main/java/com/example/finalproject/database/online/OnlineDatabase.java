@@ -126,4 +126,12 @@ public class OnlineDatabase {
                 )
                 .into(imageView);
     }
+
+    /**
+     * Disconnects the currently connected user.
+     */
+    public void disconnectUser() {
+        // Sign out. If no user is connected this function has no effect
+        this.auth.signOut();
+    }
 }

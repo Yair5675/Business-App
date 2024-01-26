@@ -170,7 +170,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // If they want to log out:
         else if (ID == R.id.menuUsersItemDisconnect) {
-            // TODO: Disconnect the user
+            // Disconnect the user:
+            this.db.disconnectUser();
+            this.initWithoutUser();
         }
 
         // If they want to read the "About Us" dialog:
