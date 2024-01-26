@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.online.FirebaseDatabase;
+import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputFragment1;
 import com.example.finalproject.fragments.input.InputFragment2;
@@ -32,7 +32,7 @@ import java.util.Date;
 
 public class InputActivity extends AppCompatActivity implements View.OnClickListener {
     // A pointer to the database:
-    private FirebaseDatabase db;
+    private OnlineDatabase db;
 
     // Whether the input activity is registering a new user or updating the details of an existing
     // user:
@@ -63,7 +63,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_input);
 
         // Initialize the database:
-        this.db = FirebaseDatabase.getInstance();
+        this.db = OnlineDatabase.getInstance();
 
         // If a user was already connected, the activity will update their details. If not, it will
         // register a new user:

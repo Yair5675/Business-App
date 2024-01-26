@@ -13,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class FirebaseDatabase {
+public class OnlineDatabase {
     // A reference to the actual database:
     private final FirebaseFirestore db;
 
@@ -24,20 +24,20 @@ public class FirebaseDatabase {
     private final StorageReference storageRef;
 
     // The only instance of the class:
-    private static FirebaseDatabase instance;
+    private static OnlineDatabase instance;
 
     // Tag used for logging purposes:
     public static final String TAG = "Online database";
 
-    private FirebaseDatabase() {
+    private OnlineDatabase() {
         this.db = FirebaseFirestore.getInstance();
         this.auth = FirebaseAuth.getInstance();
         this.storageRef = FirebaseStorage.getInstance().getReference();
     }
 
-    public static FirebaseDatabase getInstance() {
+    public static OnlineDatabase getInstance() {
         if (instance == null)
-            instance = new FirebaseDatabase();
+            instance = new OnlineDatabase();
         return instance;
     }
 
