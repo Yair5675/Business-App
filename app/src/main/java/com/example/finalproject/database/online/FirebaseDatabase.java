@@ -3,22 +3,13 @@ package com.example.finalproject.database.online;
 import android.graphics.Bitmap;
 
 import com.example.finalproject.database.online.collections.User;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.example.finalproject.database.online.handlers.UsersHandler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.ByteArrayOutputStream;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
 
 public class FirebaseDatabase {
     // A reference to the actual database:
@@ -60,86 +51,8 @@ public class FirebaseDatabase {
             User user, Bitmap userImg,
             OnSuccessListener<Void> successListener, OnFailureListener failureListener
     ) {
-        // Authenticate the user:
-        this.auth
-                .createUserWithEmailAndPassword(user.getEmail(), user.getPassword())
-                .addOnCompleteListener(
-                        this.getAuthCallback(user, userImg, successListener, failureListener)
-                );
-    }
-
-    /**
-     * Returns the callback that will be executed once authenticating the user was performed. If
-     * the authentication was successful, the callback will set the user's ID and try to upload the
-     * user's image to the storage. If the authentication failed, the callback will call the given
-     * failureListener callback.
-     * @param user The user object containing the user's information.
-     * @param userImg The user's image, will be uploaded to firebase storage.
-     * @param successListener The callback that will be executed once the entire creation process
-     *                        was finished successfully.
-     * @param failureListener The callback that will be executed if the creation of the user failed.
-     * @return The callback that will be executed once authenticating the user was performed.
-     */
-    private OnCompleteListener<AuthResult> getAuthCallback(
-            User user, Bitmap userImg,
-            OnSuccessListener<Void> successListener, OnFailureListener failureListener
-    ) {
-        return task -> {
-            // If the authentication was a success:
-            if (task.isSuccessful()) {
-                if (task.getResult().getUser() != null) {
-                    // Get the firebase user:
-                    FirebaseUser firebaseUser = task.getResult().getUser();
-
-                    // Set the user ID and image path:
-                    user.setUid(firebaseUser.getUid());
-                    user.setImagePath(getImagePath(user.getUid()));
-
-                    // Save the user's image in the storage:
-                    this.storageRef.child(user.getImagePath())
-                            .putBytes(toByteArray(userImg))
-                            .addOnCompleteListener(
-                                    this.getImgUploadCallback(
-                                            user, firebaseUser, successListener, failureListener
-                                    )
-                            );
-                }
-            }
-            // If not, call the failure callback:
-            else if (task.getException() != null)
-                failureListener.onFailure(task.getException());
-        };
-    }
-
-    private OnCompleteListener<UploadTask.TaskSnapshot> getImgUploadCallback(
-            User user, FirebaseUser firebaseUser,
-            OnSuccessListener<Void> successListener, OnFailureListener failureListener
-    ) {
-        return task -> {
-            // If the upload to storage was successful:
-            if (task.isSuccessful()) {
-                // Save the user in Firestore:
-                this.db.collection("users")
-                        .document(user.getUid())
-                        .set(user)
-                        .addOnSuccessListener(successListener)
-                        .addOnFailureListener(failureListener);
-            }
-            // If not, delete the user from the authentication and activate the onFailureListener:
-            else if (task.getException() != null) {
-                firebaseUser.delete();
-                failureListener.onFailure(task.getException());
-            }
-        };
-    }
-
-    private static String getImagePath(String uid) {
-        return String.format(Locale.getDefault(), "images/%s/%d", uid, System.currentTimeMillis());
-    }
-
-    private static byte[] toByteArray(Bitmap image) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        return baos.toByteArray();
+        UsersHandler.addNewUser(
+                this.auth, this.storageRef, this.db, user, userImg, successListener, failureListener
+        );
     }
 }
