@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     // The buttons that go forwards or backwards in the pages:
     private Button btnNext, btnPrev;
 
+    // The progress bar that will be shown while the user's details are saved in the database:
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +80,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.btnPrev = findViewById(R.id.actInputBtnBackOrCancel);
         this.btnNext.setOnClickListener(this);
         this.btnPrev.setOnClickListener(this);
+
+        // Initialize the progress bar and make it disappear:
+        this.progressBar = findViewById(R.id.actInputProgressBar);
+        this.progressBar.setVisibility(View.GONE);
 
         // Loading the first page:
         this.currentPage = 1;
@@ -279,6 +287,11 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             // Signal the user they registered successfully:
             Toast.makeText(this, "Registered Successfully!", Toast.LENGTH_SHORT).show();
 
+            // Make the progress bar disappear and the buttons re-appear:
+            this.progressBar.setVisibility(View.GONE);
+            this.btnNext.setVisibility(View.VISIBLE);
+            this.btnPrev.setVisibility(View.VISIBLE);
+
             // Go to the main activity:
             final Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -288,7 +301,17 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             // Log the error and signal the user something went wrong:
             Log.e("InputActivity", "Failed to register user", exception);
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+
+            // Make the progress bar disappear and the buttons re-appear:
+            this.progressBar.setVisibility(View.GONE);
+            this.btnNext.setVisibility(View.VISIBLE);
+            this.btnPrev.setVisibility(View.VISIBLE);
         };
+
+        // Show the progress bar and hide the buttons:
+        this.progressBar.setVisibility(View.VISIBLE);
+        this.btnNext.setVisibility(View.GONE);
+        this.btnPrev.setVisibility(View.GONE);
 
         // Save them in the database:
         this.db.addNewUser(user, this.userImg, successListener, failureListener);
