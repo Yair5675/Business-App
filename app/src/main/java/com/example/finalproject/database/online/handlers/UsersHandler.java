@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -114,5 +115,19 @@ public class UsersHandler {
                 failureListener.onFailure(task.getException());
             }
         };
+    }
+
+    public static void getUserById(
+            FirebaseFirestore db,
+            String uid,
+            OnSuccessListener<DocumentSnapshot> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        db
+                .collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(onSuccessListener)
+                .addOnFailureListener(onFailureListener);
     }
 }
