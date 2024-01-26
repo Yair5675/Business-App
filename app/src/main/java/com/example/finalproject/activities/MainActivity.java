@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // The profile picture of the user:
     private ImageView imgUser;
+
+    // The progress bar that will appear when the activity is loading:
+    private ProgressBar pbActivityLoading;
 
     // The textView which greets the user:
     private TextView tvUserGreeting;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Loading the various views of the activity:
         this.imgUser = findViewById(R.id.actMainImgUser);
         this.imgAdminCrown = findViewById(R.id.actMainImgAdminCrown);
+        this.pbActivityLoading = findViewById(R.id.actMainPbActivityLoading);
         this.tvUserGreeting = findViewById(R.id.actMainTvUserGreeting);
         this.btnEditAccount = findViewById(R.id.actMainImgBtnEdit);
         this.btnDeleteAccount = findViewById(R.id.actMainImgBtnDelete);
@@ -64,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         
         // Initialize the database reference:
         this.db = OnlineDatabase.getInstance();
+
+        // Show the progress bar until the activity is fully initialized:
+        this.pbActivityLoading.setVisibility(View.VISIBLE);
 
         // Try to initialize with a connected user (and initialize without one if no user is
         // connected):
@@ -101,6 +109,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.btnDeleteAccount.setVisibility(View.VISIBLE);
         this.tvEditAccountDesc.setVisibility(View.VISIBLE);
         this.tvDeleteAccountDesc.setVisibility(View.VISIBLE);
+
+        // Hide the progress bar:
+        this.pbActivityLoading.setVisibility(View.GONE);
     }
 
     private void initWithoutUser() {
@@ -118,6 +129,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.btnDeleteAccount.setVisibility(View.GONE);
         this.tvEditAccountDesc.setVisibility(View.GONE);
         this.tvDeleteAccountDesc.setVisibility(View.GONE);
+
+        // Hide the progress bar:
+        this.pbActivityLoading.setVisibility(View.GONE);
     }
 
     @Override

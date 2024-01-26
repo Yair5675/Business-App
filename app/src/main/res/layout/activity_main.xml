@@ -36,6 +36,8 @@
         app:layout_constraintStart_toStartOf="@id/actMainImgUser"
         app:layout_constraintEnd_toEndOf="@id/actMainImgUser"
 
+
+        android:visibility="gone"
         android:src="@drawable/crown_icon"
         />
 
@@ -50,6 +52,18 @@
         app:layout_constraintEnd_toEndOf="@id/actMainImgAdminCrown"
         app:layout_constraintStart_toStartOf="@id/actMainImgAdminCrown"
         app:layout_constraintTop_toBottomOf="@id/actMainImgAdminCrown" />
+
+    <ProgressBar
+        android:id="@+id/actMainPbActivityLoading"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toBottomOf="@id/guideline4"
+        app:layout_constraintTop_toBottomOf="@id/actMainTvUserGreeting"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -66,6 +80,8 @@
         android:background="@drawable/transparent_background"
         android:src="@drawable/edit_icon"
 
+        android:visibility="gone"
+
         app:layout_constraintBottom_toTopOf="@id/guideline5"
         app:layout_constraintEnd_toStartOf="@+id/actMainImgBtnDelete"
         app:layout_constraintHorizontal_bias="0.5"
@@ -81,6 +97,8 @@
         app:layout_constraintStart_toStartOf="@id/actMainImgBtnEdit"
         app:layout_constraintEnd_toEndOf="@id/actMainImgBtnEdit"
 
+        android:visibility="gone"
+
         android:text="@string/act_main_edit_account_btn_txt"
         android:lines="2"
         android:gravity="center"
@@ -95,6 +113,8 @@
         android:src="@drawable/trash_can_icon"
         app:layout_constraintBottom_toTopOf="@id/guideline5"
 
+        android:visibility="gone"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/actMainImgBtnEdit"
@@ -108,6 +128,8 @@
         app:layout_constraintTop_toBottomOf="@id/actMainImgBtnDelete"
         app:layout_constraintStart_toStartOf="@id/actMainImgBtnDelete"
         app:layout_constraintEnd_toEndOf="@id/actMainImgBtnDelete"
+
+        android:visibility="gone"
 
         android:text="@string/act_main_delete_account_btn_txt"
         android:lines="2"
