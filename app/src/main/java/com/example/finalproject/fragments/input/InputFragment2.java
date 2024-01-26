@@ -256,7 +256,13 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
             this.loadFromResult(this.lastGeoResult);
 
         } else {
+            // Remove the progress bar and alert the user:
             Log.e(TAG, result.getError().toString());
+            this.pbLocationLoader.setVisibility(View.GONE);
+            if (result.getError().toString().equals(GeocodingUtil.NO_RESULTS_ERROR))
+                Toast.makeText(requireContext(), GeocodingUtil.NO_RESULTS_ERROR, Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
         }
 
         return false;

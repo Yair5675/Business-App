@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.example.finalproject.BuildConfig;
+import com.example.finalproject.util.GeocodingUtil;
 import com.example.finalproject.util.Result;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
@@ -87,7 +88,7 @@ public class GeocodingThread extends Thread {
             Result<GeocodingResult, String> result;
 
             if (results.length == 0)
-                result = Result.failure("No results");
+                result = Result.failure(GeocodingUtil.NO_RESULTS_ERROR);
             else
                 result = Result.success(results[0]);
 
@@ -109,7 +110,7 @@ public class GeocodingThread extends Thread {
             Result<GeocodingResult, String> result;
 
             if (results.length == 0)
-                result = Result.failure("No results");
+                result = Result.failure(GeocodingUtil.NO_RESULTS_ERROR);
             else
                 result = Result.success(results[0]);
 
