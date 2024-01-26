@@ -263,6 +263,14 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
                 Toast.makeText(requireContext(), GeocodingUtil.NO_RESULTS_ERROR, Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+
+            // Remove the previously saved location:
+            this.selectedAddress = null;
+            this.selectedCity = null;
+            this.selectedCountry = null;
+
+            // Clear previous markers:
+            this.map.clear();
         }
 
         return false;
