@@ -1,13 +1,10 @@
 package com.example.finalproject.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,20 +16,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.local.AppDatabase;
-import com.example.finalproject.database.local.SharedPreferenceHandler;
-import com.example.finalproject.database.local.entities.City;
-import com.example.finalproject.database.local.entities.User;
-import com.example.finalproject.util.Constants;
-import com.example.finalproject.util.Result;
+import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Util;
 
-import java.io.FileNotFoundException;
 import java.util.Locale;
 
 import pl.droidsonroids.gif.GifImageButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    // A reference to the online database:
+    private OnlineDatabase db;
 
     // The profile picture of the user:
     private ImageView imgUser;
@@ -51,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GifImageButton btnDeleteAccount;
     private TextView tvDeleteAccountDesc;
 
-    // A reference to the shared preferences handler:
-    private SharedPreferenceHandler spHandler;
+    // Tag for debugging purposes:
+    public static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,29 +63,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.tvDeleteAccountDesc = findViewById(R.id.actMainTvDeleteBtn);
         
         // Initialize the database reference:
-        final AppDatabase db = AppDatabase.getInstance(this);
+        this.db = OnlineDatabase.getInstance();
 
-        // Initialize the shared preferences handler:
-        this.spHandler = SharedPreferenceHandler.getInstance(this);
+        // Try to initialize with a connected user (and initialize without one if no user is
+        // connected):
+        this.db.getCurrentUser(this::initWithUser, e -> {
+            // Log the error:
+            Log.e(TAG, "Failed to get connected user", e);
 
-        // Check if a user is saved in the shared preference for automatic log in:
-        final Result<Long, String> idResult = this.spHandler.getLong("id");
-        if (idResult.isOk())
-            AppDatabase.connectUser(db.userDao().getUserById(idResult.getValue()));
-
-        // Initializing the activity according to if a user is logged in:
-        this.userConnectivityChanged();
+            // Activate the activity without a user:
+            initWithoutUser();
+        });
 
         // Set OnClickListeners:
         this.btnEditAccount.setOnClickListener(this);
         this.btnDeleteAccount.setOnClickListener(this);
 
-        // Load countries if they hadn't been loaded already:
-        this.loadCities();
-
     }
 
-    private void initDefault() {
+    private void initWithUser(User user) {
+        // Change the greeting:
+        this.tvUserGreeting.setText(
+                String.format(
+                        Locale.getDefault(),
+                        "Hello, %s!",
+                        user.getName()
+                )
+        );
+
+        // TODO: Check if the user is the admin and set the crown accordingly
+
+        // Show the 'Edit Account' and 'Delete Account' buttons:
+        this.btnEditAccount.setVisibility(View.VISIBLE);
+        this.btnDeleteAccount.setVisibility(View.VISIBLE);
+        this.tvEditAccountDesc.setVisibility(View.VISIBLE);
+        this.tvDeleteAccountDesc.setVisibility(View.VISIBLE);
+    }
+
+    private void initWithoutUser() {
         // Setting the default picture for guests:
         Util.setCircularImage(this, this.imgUser, R.drawable.guest);
 
@@ -115,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getMenuInflater().inflate(R.menu.users_menu, menu);
 
         // Hide certain items according to if a user is logged in:
-        final boolean isUserLoggedIn = AppDatabase.isUserLoggedIn();
+        final boolean isUserLoggedIn = this.db.isUserSignedIn();
         menu.findItem(R.id.menuUsersItemSignUp).setVisible(!isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemSignIn).setVisible(!isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemShowUsers).setVisible(isUserLoggedIn);
@@ -143,9 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // If they want to log out:
         else if (ID == R.id.menuUsersItemDisconnect) {
-            // Disconnect and delete the shared preferences:
-            AppDatabase.disconnect();
-            this.spHandler.remove("id");
+            // TODO: Disconnect the user
         }
 
         // If they want to read the "About Us" dialog:
@@ -159,8 +166,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
             finish();
         }
-
-        userConnectivityChanged();
 
         return true;
     }
@@ -188,49 +193,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // TODO: Open up the sign in page using FireBase authentication built-in UI
     }
 
-    public void userConnectivityChanged() {
-        if (AppDatabase.isUserLoggedIn())
-            initWithUser();
-        else
-            initDefault();
-        supportInvalidateOptionsMenu();
-    }
-
-    private void initWithUser() {
-        // Get the connected user:
-        final User user = AppDatabase.getConnectedUser();
-
-        // Get the image bitmap:
-        final Result<Bitmap, FileNotFoundException> imageResult = Util.getImage(
-                this,
-                user.getPictureFileName()
-        );
-
-        // Set it as the user's photo if it was loaded successfully:
-        if (imageResult.isOk())
-            Util.setCircularImage(this, this.imgUser, imageResult.getValue());
-        else
-            Log.e("MainActivity - initWithUser", "Could not load photo: " + imageResult.getError());
-
-        // Change the greeting:
-        this.tvUserGreeting.setText(
-                String.format(
-                        Locale.getDefault(),
-                        "Hello, %s!",
-                        user.getName()
-                )
-        );
-
-        // Show the admin crown if it is an admin:
-        this.imgAdminCrown.setVisibility(user.isAdmin() ? View.VISIBLE : View.GONE);
-
-        // Show the 'Edit Account' and 'Delete Account' buttons:
-        this.btnEditAccount.setVisibility(View.VISIBLE);
-        this.btnDeleteAccount.setVisibility(View.VISIBLE);
-        this.tvEditAccountDesc.setVisibility(View.VISIBLE);
-        this.tvDeleteAccountDesc.setVisibility(View.VISIBLE);
-    }
-
     @Override
     public void onClick(View view) {
         // Getting the ID:
@@ -248,55 +210,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void activateDeleteDialog() {
-        // Define the onClickListener for the dialog:
-        final DialogInterface.OnClickListener onClickListener =
-                (dialogInterface, buttonClicked) -> {
-                    if (buttonClicked == DialogInterface.BUTTON_POSITIVE) {
-                        // Disconnect the user:
-                        final User connectedUser = AppDatabase.getConnectedUser();
-                        AppDatabase.disconnect();
-
-                        // Delete them from the database:
-                        final Result<Void, String> delResult = connectedUser.deleteUser(this);
-                        if (delResult.isErr())
-                            Log.e("Main delete user", delResult.getError());
-
-                        // Delete them from the shared preferences:
-                        this.spHandler.remove("id");
-
-                        // Refresh the activity:
-                        userConnectivityChanged();
-                    }
-                };
-
-        // Build the dialog:
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Delete Account")
-                .setMessage("Are you sure you want to delete your account?")
-                .setPositiveButton("Confirm", onClickListener)
-                .setNegativeButton("Cancel", onClickListener)
-                .setCancelable(false);
-
-        // Show the dialog:
-        builder.create().show();
-    }
-
-    private void loadCities() {
-        // Load cities only if they haven't been loaded already:
-        final AppDatabase db = AppDatabase.getInstance(this);
-        if (db.cityDao().getCitiesCount() == 0) {
-
-            // Load the cities on a separate thread:
-            final Thread thread = new Thread(() -> {
-                for (String cityName : Constants.CITIES) {
-                    // Create the city and add it:
-                    final City city = new City(cityName);
-
-                    db.cityDao().insert(city);
-                }
-            });
-
-            thread.start();
-        }
+        // TODO: Complete the deletion dialog
     }
 }
