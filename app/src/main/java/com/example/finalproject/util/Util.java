@@ -19,6 +19,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -151,6 +152,12 @@ public class Util {
     public static void setCircularImage(Context context, ImageView imageHolder, Bitmap image) {
         final RequestOptions ro = new RequestOptions().circleCrop();
         Glide.with(context).load(image).apply(ro).into(imageHolder);
+    }
+
+    public static byte[] toByteArray(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return baos.toByteArray();
     }
 
 

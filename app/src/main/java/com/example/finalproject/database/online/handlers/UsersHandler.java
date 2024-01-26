@@ -1,7 +1,10 @@
 package com.example.finalproject.database.online.handlers;
 
+import static com.example.finalproject.util.Util.toByteArray;
+
 import android.graphics.Bitmap;
 
+import com.example.finalproject.database.online.Util;
 import com.example.finalproject.database.online.collections.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -12,9 +15,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.ByteArrayOutputStream;
-import java.util.Locale;
 
 public class UsersHandler {
     /**
@@ -75,7 +75,7 @@ public class UsersHandler {
 
                     // Set the user ID and image path:
                     user.setUid(firebaseUser.getUid());
-                    user.setImagePath(getImagePath(user.getUid()));
+                    user.setImagePath(Util.getStorageImagePath(user.getUid()));
 
                     // Save the user's image in the storage:
                     storageRef.child(user.getImagePath())
@@ -114,15 +114,5 @@ public class UsersHandler {
                 failureListener.onFailure(task.getException());
             }
         };
-    }
-
-    private static String getImagePath(String uid) {
-        return String.format(Locale.getDefault(), "images/%s/%d", uid, System.currentTimeMillis());
-    }
-
-    private static byte[] toByteArray(Bitmap image) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        return baos.toByteArray();
     }
 }
