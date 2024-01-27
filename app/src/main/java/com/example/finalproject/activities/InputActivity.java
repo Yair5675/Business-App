@@ -21,12 +21,12 @@ import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputFragment1;
 import com.example.finalproject.fragments.input.InputFragment2;
 import com.example.finalproject.fragments.input.InputFragment3;
-import com.example.finalproject.database.local.AppDatabase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -34,6 +34,9 @@ import java.util.Date;
 public class InputActivity extends AppCompatActivity implements View.OnClickListener {
     // A pointer to the database:
     private OnlineDatabase db;
+
+    // The user whose info is being edited (if a new user is registered this field will be null):
+    private User user;
 
     // Whether the input activity is registering a new user or updating the details of an existing
     // user:
@@ -66,11 +69,12 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         // Initialize the database:
         this.db = OnlineDatabase.getInstance();
 
-        // If a user was already connected, the activity will update their details. If not, it will
-        // register a new user:
-        this.isRegisterActivity = !AppDatabase.isUserLoggedIn();
-        final TextView title = findViewById(R.id.actInputTitle);
+        // Try to load the user from the intent and check if this is a register activity:
+        this.loadUserFromIntent();
+        this.isRegisterActivity = this.user == null;
 
+        // Set the title accordingly:
+        final TextView title = findViewById(R.id.actInputTitle);
         title.setText(isRegisterActivity ? R.string.act_input_title_register : R.string.act_input_title_update);
 
         // Initializing the pages (third one will be initialized later):
@@ -92,6 +96,19 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
         // Implement custom back navigation when the user presses the back button:
         this.loadBackButtonCallback();
+    }
+
+    private void loadUserFromIntent() {
+        // Get the intent:
+        final Intent intent = getIntent();
+
+        // Check if a user was given:
+        if (intent.hasExtra("user")) {
+            // Perform type checking (just in case):
+            Serializable user = intent.getSerializableExtra("user");
+            if (user instanceof User)
+                this.user = (User) user;
+        }
     }
 
     private void loadBackButtonCallback() {
