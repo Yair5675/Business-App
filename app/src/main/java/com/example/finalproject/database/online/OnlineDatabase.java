@@ -150,12 +150,36 @@ public class OnlineDatabase {
                 .addOnFailureListener(onFailureListener);
     }
 
-
     public void getUserImage(
             User user,
             OnSuccessListener<Bitmap> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
         UsersHandler.getUserImage(user, this.storageRef, onSuccessListener, onFailureListener);
+    }
+
+    /**
+     * Updates a user in the database.
+     * @param user A user object with the updated info. The ID in this user will be used to find the
+     *             document in the database to update.
+     * @param image The updated image of the user.
+     * @param onSuccessListener A callback that will be activated once the user is fully updated.
+     * @param onFailureListener A callback that will be activated if any error occurred during the
+     *                          updating process.
+     */
+    public void updateUser(
+            User user,
+            Bitmap image,
+            OnSuccessListener<Void> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        UsersHandler.updateUser(
+                this.db,
+                this.storageRef,
+                user,
+                image,
+                onSuccessListener,
+                onFailureListener
+        );
     }
 }

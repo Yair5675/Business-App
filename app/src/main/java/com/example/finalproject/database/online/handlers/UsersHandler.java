@@ -1,12 +1,11 @@
 package com.example.finalproject.database.online.handlers;
 
-import static com.example.finalproject.util.Util.toByteArray;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.util.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -15,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -81,7 +81,7 @@ public class UsersHandler {
 
                     // Save the user's image in the storage:
                     storageRef.child(user.getImagePath())
-                            .putBytes(toByteArray(userImg))
+                            .putBytes(Util.toByteArray(userImg))
                             .addOnCompleteListener(
                                     getNewUserImgUploadCallback(
                                             db, user, firebaseUser, successListener, failureListener
@@ -149,5 +149,54 @@ public class UsersHandler {
                     onSuccessListener.onSuccess(image);
                 })
                 .addOnFailureListener(onFailureListener);
+    }
+
+    /**
+     * Updates a user in the database and their image.
+     * @param db A reference to the cloud database.
+     * @param storage A reference to the storage.
+     * @param user The user object containing the new info. The function will use the ID saved in
+     *             this object.
+     * @param image The new image of the user, will be saved in the storage under a different name.
+     *              The function will delete the previous image, and change the image path inside
+     *              the user object and the database.
+     * @param onSuccessListener A callback that will be activated once the user is fully updated.
+     * @param onFailureListener A callback that will be activated if any error occurred during the
+     *                          updating process.
+     */
+    public static void updateUser(
+            FirebaseFirestore db,
+            StorageReference storage,
+            User user,
+            Bitmap image,
+            OnSuccessListener<Void> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+       // Try to delete the previous image first:
+       storage.child(user.getImagePath())
+               .delete()
+               .addOnSuccessListener(unused -> {
+                   // The image was removed successfully, upload the new one:
+                   final String newPath = StorageUtil.getStorageImagePath(user.getUid());
+                   storage.child(newPath)
+                           .putBytes(Util.toByteArray(image))
+                           .addOnSuccessListener(taskSnapshot -> {
+                               // Only if the new image upload was a success, set the new image
+                               // path:
+                               user.setImagePath(newPath);
+
+                               // Try to update the user in the database:
+                               db
+                                       .collection("users")
+                                       .document(user.getUid())
+                                       .set(user, SetOptions.merge())
+                                       .addOnSuccessListener(onSuccessListener)
+                                       .addOnFailureListener(onFailureListener);
+                           })
+                           // If an error occurred while uploading the new image:
+                           .addOnFailureListener(onFailureListener);
+               })
+               // If an error occurred while deleting the old image:
+               .addOnFailureListener(onFailureListener);
     }
 }
