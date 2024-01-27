@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +24,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.function.Function;
 
 public class Util {
@@ -158,6 +162,11 @@ public class Util {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         return baos.toByteArray();
+    }
+
+    public static Timestamp convertLocalDateToTimestamp(LocalDate localDate) {
+        final Date date = Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        return new Timestamp(date);
     }
 
 

@@ -21,15 +21,13 @@ import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputFragment1;
 import com.example.finalproject.fragments.input.InputFragment2;
 import com.example.finalproject.fragments.input.InputFragment3;
+import com.example.finalproject.util.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 
 public class InputActivity extends AppCompatActivity implements View.OnClickListener {
     // A pointer to the database:
@@ -285,7 +283,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
     private void registerNewUser() {
         // Convert the birthdate to a timestamp:
-        final Timestamp timestamp = convertLocalDateToTimestamp(firstPageInfo.BIRTHDATE);
+        final Timestamp timestamp = Util.convertLocalDateToTimestamp(firstPageInfo.BIRTHDATE);
 
         // Create the user object:
         final User user = new User();
@@ -338,10 +336,5 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
         // Save them in the database:
         this.db.addNewUser(user, this.userImg, successListener, failureListener);
-    }
-
-    private static Timestamp convertLocalDateToTimestamp(LocalDate localDate) {
-        final Date date = Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        return new Timestamp(date);
     }
 }
