@@ -4,6 +4,7 @@ import com.example.finalproject.BuildConfig;
 import com.google.firebase.Timestamp;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class User implements Serializable {
     // The user ID (generated from authentication):
@@ -16,7 +17,7 @@ public class User implements Serializable {
     private String email, password, phoneNumber;
 
     // The birthdate of the user:
-    private Timestamp birthdate;
+    private Date birthdate;
 
     // The city, country and address of the user:
     private String city, country, address;
@@ -91,11 +92,11 @@ public class User implements Serializable {
     }
 
     public Timestamp getBirthdate() {
-        return birthdate;
+        return new Timestamp(this.birthdate);
     }
 
     public User setBirthdate(Timestamp birthdate) {
-        this.birthdate = birthdate;
+        this.birthdate = birthdate.toDate();
         return this;
     }
 
