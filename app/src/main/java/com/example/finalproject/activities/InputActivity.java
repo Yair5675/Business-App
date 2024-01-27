@@ -25,6 +25,7 @@ import com.example.finalproject.database.local.AppDatabase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -300,7 +301,12 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         OnFailureListener failureListener = exception -> {
             // Log the error and signal the user something went wrong:
             Log.e("InputActivity", "Failed to register user", exception);
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+
+            // Check if the email already exists:
+            if (exception instanceof FirebaseAuthUserCollisionException)
+                Toast.makeText(this, "Email is already registered", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
 
             // Make the progress bar disappear and the buttons re-appear:
             this.progressBar.setVisibility(View.GONE);
