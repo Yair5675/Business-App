@@ -111,6 +111,11 @@ public class LoginDialog {
         // Make the progress bar disappear:
         this.pbValidating.setVisibility(View.GONE);
 
+        // Clear previous focus:
+        final View focusedView = this.dialog.getCurrentFocus();
+        if (focusedView != null)
+            focusedView.clearFocus();
+
         // Show the dialog:
         this.dialog.show();
     }
@@ -188,6 +193,9 @@ public class LoginDialog {
             }, e -> {
                 // Log the error:
                 Log.e(TAG, "Error signing in", e);
+
+                // Make a toast message:
+                Toast.makeText(context, "Incorrect info given", Toast.LENGTH_SHORT).show();
 
                 // Hide the progress bar and show the button:
                 pbValidating.setVisibility(View.GONE);
