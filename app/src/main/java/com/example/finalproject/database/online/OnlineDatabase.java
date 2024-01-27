@@ -134,4 +134,19 @@ public class OnlineDatabase {
         // Sign out. If no user is connected this function has no effect
         this.auth.signOut();
     }
+
+    public void logUserIn(
+            String email, String password,
+            OnSuccessListener<User> onSuccessListener, OnFailureListener onFailureListener
+    ) {
+        // Log in the user:
+        this.auth
+                .signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(authResult -> {
+                    // If the user successfully logged in, get them from the database and use the
+                    // given callback:
+                    getCurrentUser(onSuccessListener, onFailureListener);
+                })
+                .addOnFailureListener(onFailureListener);
+    }
 }
