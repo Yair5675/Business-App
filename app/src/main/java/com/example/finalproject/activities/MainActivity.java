@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.custom_views.LoginDialog;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Util;
@@ -49,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GifImageButton btnDeleteAccount;
     private TextView tvDeleteAccountDesc;
 
+    // The login dialog (it is reusable so it's an attribute to save resources):
+    private LoginDialog loginDialog;
+
     // Tag for debugging purposes:
     public static final String TAG = "MainActivity";
 
@@ -66,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.btnDeleteAccount = findViewById(R.id.actMainImgBtnDelete);
         this.tvEditAccountDesc = findViewById(R.id.actMainTvEditBtn);
         this.tvDeleteAccountDesc = findViewById(R.id.actMainTvDeleteBtn);
+
+        // Initialize the login dialog:
+        this.loginDialog = new LoginDialog(this, getResources(), this::initWithUser);
         
         // Initialize the database reference:
         this.db = OnlineDatabase.getInstance();
@@ -113,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Hide the progress bar:
         this.pbActivityLoading.setVisibility(View.GONE);
+
+        // Update the menu:
+        supportInvalidateOptionsMenu();
     }
 
     private void initWithoutUser() {
@@ -164,15 +174,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
             finish();
         }
-        // If they want to log in to a user, create the login dialog:
+        // If they want to log in to a user, show the login dialog:
         else if (ID == R.id.menuUsersItemSignIn)
-            activateSignInPage();
+            this.loginDialog.show();
 
         // If they want to log out:
         else if (ID == R.id.menuUsersItemDisconnect) {
             // Disconnect the user:
             this.db.disconnectUser();
             this.initWithoutUser();
+            supportInvalidateOptionsMenu();
         }
 
         // If they want to read the "About Us" dialog:
@@ -207,10 +218,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Show the dialog:
         dialog.show();
-    }
-
-    private void activateSignInPage() {
-        // TODO: Open up the sign in page using FireBase authentication built-in UI
     }
 
     @Override
