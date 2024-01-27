@@ -124,14 +124,19 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
     }
 
     public void loadInputsFromUser(User user) {
-        // Combine the address, city and country:
-        final String location = String.format("%s, %s, %s", user.getAddress(), user.getCity(), user.getCountry());
+        // Check that the inputs are empty:
+        if (selectedAddress == null && selectedCity == null && selectedCountry == null) {
+            // Combine the address, city and country:
+            final String location = String.format(
+                    "%s, %s, %s", user.getAddress(), user.getCity(), user.getCountry()
+            );
 
-        // Use reverse geocoding:
-        this.loadFromLocation(location);
+            // Use reverse geocoding:
+            this.loadFromLocation(location);
 
-        // Set the phone:
-        this.countryCodePicker.setFullNumber(user.getPhoneNumber());
+            // Set the phone:
+            this.countryCodePicker.setFullNumber(user.getPhoneNumber());
+        }
     }
 
     @Nullable
