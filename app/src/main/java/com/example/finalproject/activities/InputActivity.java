@@ -270,7 +270,61 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void updateUser() {
-        // TODO: Complete the update function
+        // Set the new information in the user's object:
+        this.user
+                .setName(firstPageInfo.NAME)
+                .setSurname(firstPageInfo.SURNAME)
+                .setEmail(firstPageInfo.EMAIL)
+                .setBirthdate(firstPageInfo.BIRTHDATE)
+                .setPassword(firstPageInfo.PASSWORD)
+                .setPhoneNumber(secondPageInfo.PHONE)
+                .setCountry(secondPageInfo.COUNTRY)
+                .setCity(secondPageInfo.CITY)
+                .setAddress(secondPageInfo.ADDRESS)
+        ;
+
+        // Initialize callbacks:
+        OnSuccessListener<Void> successListener = unused -> {
+            // Signal the user their info was updated successfully:
+            Toast.makeText(this, "Updated Successfully!", Toast.LENGTH_SHORT).show();
+
+            // Make the progress bar disappear and the buttons re-appear:
+            this.progressBar.setVisibility(View.GONE);
+            this.btnNext.setVisibility(View.VISIBLE);
+            this.btnPrev.setVisibility(View.VISIBLE);
+
+            // Go to the main activity:
+            final Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        };
+        OnFailureListener failureListener = exception -> {
+            // Log the error and signal the user something went wrong:
+            Log.e("InputActivity", "Failed to update user", exception);
+
+            // Check if the email is used by another user:
+            if (exception instanceof FirebaseAuthUserCollisionException)
+                Toast.makeText(
+                        this,
+                        "The email you entered is already used by another user",
+                        Toast.LENGTH_SHORT
+                ).show();
+            else
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+
+            // Make the progress bar disappear and the buttons re-appear:
+            this.progressBar.setVisibility(View.GONE);
+            this.btnNext.setVisibility(View.VISIBLE);
+            this.btnPrev.setVisibility(View.VISIBLE);
+        };
+
+        // Show the progress bar and hide the buttons:
+        this.progressBar.setVisibility(View.VISIBLE);
+        this.btnNext.setVisibility(View.GONE);
+        this.btnPrev.setVisibility(View.GONE);
+
+        // Update the user in the database
+        this.db.updateUser(user, this.userImg, successListener, failureListener);
     }
 
     private void registerNewUser() {
@@ -285,7 +339,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 .setCountry(secondPageInfo.COUNTRY)
                 .setCity(secondPageInfo.CITY)
                 .setAddress(secondPageInfo.ADDRESS)
-                .setPhoneNumber(secondPageInfo.PHONE);
+                .setPhoneNumber(secondPageInfo.PHONE)
+        ;
 
         // Initialize callbacks:
         OnSuccessListener<Void> successListener = unused -> {
