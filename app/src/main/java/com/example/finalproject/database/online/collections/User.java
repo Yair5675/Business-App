@@ -3,7 +3,9 @@ package com.example.finalproject.database.online.collections;
 import com.example.finalproject.BuildConfig;
 import com.google.firebase.Timestamp;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     // The user ID (generated from authentication):
     private String uid;
 

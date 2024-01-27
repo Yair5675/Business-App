@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // A reference to the online database:
     private OnlineDatabase db;
 
+    // The currently connected user (null if no user is connected):
+    private User connectedUser;
+
     // The profile picture of the user:
     private ImageView imgUser;
 
@@ -97,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initWithUser(User user) {
+        // Save the user:
+        this.connectedUser = user;
+
         // Change the greeting:
         this.tvUserGreeting.setText(
                 String.format(
@@ -126,6 +132,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initWithoutUser() {
+        // Set the user to null:
+        this.connectedUser = null;
+
         // Setting the default picture for guests:
         Util.setCircularImage(this, this.imgUser, R.drawable.guest);
 
@@ -226,7 +235,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final int ID = view.getId();
 
         if (ID == R.id.actMainImgBtnEdit) {
+            // Open the input activity but send the connected user in the intent:
             Intent intent = new Intent(this, InputActivity.class);
+            intent.putExtra("user", this.connectedUser);
             startActivity(intent);
             finish();
         }
