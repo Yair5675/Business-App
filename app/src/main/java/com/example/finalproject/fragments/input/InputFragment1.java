@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
+import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.ImprovedTextWatcher;
@@ -32,6 +33,9 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 public class InputFragment1 extends Fragment {
+    // A reference to the database:
+    private OnlineDatabase db;
+
     // A reference to the user whose details are being changed:
     private final User user;
 
@@ -120,11 +124,6 @@ public class InputFragment1 extends Fragment {
 
             this.etPassword.setText(user.getPassword());
 
-            // TODO: When switching to Firestore this function will have to be changed. Idea: Create
-            //  an interface called "UserReactive", which will have two methods: one sets the UI
-            //  when the user is not connected and the other sets the UI when they are connected
-            //  (or updated)
-
             // Clear all errors:
             this.clearErrors();
         }
@@ -143,6 +142,9 @@ public class InputFragment1 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the first registration fragment:
         final View parent = inflater.inflate(R.layout.fragment_input_1, container, false);
+
+        // Initialize the database:
+        this.db = OnlineDatabase.getInstance();
 
         // Initialize the edit texts and input layouts for them:
         this.initEditTexts(parent);
@@ -236,7 +238,15 @@ public class InputFragment1 extends Fragment {
         this.validationFunctions = new HashMap<>();
         this.validationFunctions.put(this.etName, InputValidation::validateFirstName);
         this.validationFunctions.put(this.etSurname, InputValidation::validateLastName);
-        this.validationFunctions.put(this.etEmail, InputValidation::validateEmail);
+        this.validationFunctions.put(this.etEmail, email -> {
+            // If the user has not validated their email address, don't let them change it at
+            // all:
+            if (user != null && !db.isConnectedUserEmailVerified())
+                return Result.failure("Cannot change unverified email");
+
+            // Resume normal syntax validation:
+            return InputValidation.validateEmail(email);
+        });
         this.validationFunctions.put(this.etPassword, InputValidation::validatePassword);
 
         // List the input fields that need a text watcher:

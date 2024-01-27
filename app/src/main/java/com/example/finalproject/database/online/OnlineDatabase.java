@@ -72,6 +72,13 @@ public class OnlineDatabase {
         return this.auth.getCurrentUser() != null;
     }
 
+    public boolean isConnectedUserEmailVerified() {
+        final FirebaseUser connectedUser = this.auth.getCurrentUser();
+        if (connectedUser != null)
+            return connectedUser.isEmailVerified();
+        return false;
+    }
+
     public void getCurrentUser(
             OnSuccessListener<User> onSuccessListener,
             OnFailureListener onFailureListener
