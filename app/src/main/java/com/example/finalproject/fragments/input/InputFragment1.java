@@ -14,25 +14,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.local.AppDatabase;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.ImprovedTextWatcher;
 import com.example.finalproject.util.InputValidation;
 import com.example.finalproject.util.Result;
-import com.example.finalproject.database.local.entities.User;
 import com.example.finalproject.util.Util;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.function.Function;
 
 public class InputFragment1 extends Fragment {
-    // A reference to the app database:
-    private AppDatabase db;
-
     // The input fields responsible for getting the name of the user:
     private TextInputLayout tilName, tilSurname;
     private TextInputEditText etName, etSurname;
@@ -42,7 +41,7 @@ public class InputFragment1 extends Fragment {
     private TextInputEditText etBirthdate;
 
     // The actual birthdate given by the user:
-    private LocalDate birthdate;
+    private Timestamp birthdate;
 
     // Input field responsible for receiving the user's email:
     private TextInputLayout tilEmail;
@@ -64,14 +63,14 @@ public class InputFragment1 extends Fragment {
     public static class PackagedInfo {
         public final String NAME;
         public final String SURNAME;
-        public final LocalDate BIRTHDATE;
+        public final Timestamp BIRTHDATE;
         public final String EMAIL;
         public final String PASSWORD;
 
         private PackagedInfo(
                 String NAME,
                 String SURNAME,
-                LocalDate BIRTHDATE,
+                Timestamp BIRTHDATE,
                 String EMAIL,
                 String PASSWORD
         ) {
@@ -138,9 +137,6 @@ public class InputFragment1 extends Fragment {
         // Inflate the first registration fragment:
         final View parent = inflater.inflate(R.layout.fragment_input_1, container, false);
 
-        // Initialize a pointer to the database:
-        this.db = AppDatabase.getInstance(parent.getContext());
-
         // Initialize the edit texts and input layouts for them:
         this.initEditTexts(parent);
         this.initInputLayouts(parent);
@@ -150,10 +146,6 @@ public class InputFragment1 extends Fragment {
 
         // Initialize the custom focus changing:
         this.initFocusChangingListeners();
-
-        // If a user is logged in, load the info from them:
-        if (AppDatabase.isUserLoggedIn())
-            this.loadInputsFromUser(AppDatabase.getConnectedUser());
 
         this.clearErrors();
         return parent;
@@ -274,9 +266,10 @@ public class InputFragment1 extends Fragment {
             YEAR = calendar.get(Calendar.YEAR);
         }
         else {
-            DAY = this.birthdate.getDayOfMonth();
-            MONTH = this.birthdate.getMonthValue() - 1;
-            YEAR = this.birthdate.getYear();
+            final ZonedDateTime dateTime = birthdate.toDate().toInstant().atZone(ZoneId.systemDefault());
+            DAY = dateTime.getDayOfMonth();
+            MONTH = dateTime.getMonthValue() - 1; // 1 - 12 so subtract 1
+            YEAR = dateTime.getYear();
         }
 
         // Creating the DatePicker object:
@@ -345,21 +338,20 @@ public class InputFragment1 extends Fragment {
     private class BirthdateDialogManager implements DatePickerDialog.OnDateSetListener {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            // Converting the date into a LocalDate object and saving it:
-            final LocalDate date = LocalDate.of(year, month + 1, day);
-            birthdate = date;
+            // Create a timestamp from the date (the month is 0-based already):
+            birthdate = Util.getTimestampFromDate(year, month, day);
 
             // Set the text of the birthdate input and remove its error (if there was one):
-            setBirthdateEtFromDate(date);
+            setBirthdateEtFromDate(birthdate);
 
             // Request focus for the next input field:
             Util.openKeyboard(requireContext(), etEmail);
         }
     }
 
-    private void setBirthdateEtFromDate(LocalDate date) {
+    private void setBirthdateEtFromDate(Timestamp date) {
         // Set the text of the birthdate input and remove its error (if there was one):
-        final String formattedDate = date.format(Constants.DATE_FORMATTER);
+        final String formattedDate = Constants.DATE_FORMAT.format(date.toDate());
         etBirthdate.setText(formattedDate);
         tilBirthdate.setError(null);
     }

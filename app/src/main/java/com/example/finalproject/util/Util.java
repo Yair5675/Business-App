@@ -24,8 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -164,9 +163,26 @@ public class Util {
         return baos.toByteArray();
     }
 
-    public static Timestamp convertLocalDateToTimestamp(LocalDate localDate) {
-        final Date date = Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        return new Timestamp(date);
+    /**
+     * Creates a timestamp from a date.
+     * @param year The year.
+     * @param month The month INDEX (meaning, January is 0).
+     * @param day The day of the month.
+     * @return A Timestamp object of this date.
+     */
+    public static Timestamp getTimestampFromDate(int year, int month, int day) {
+        // Create a calendar and set it to the given date (at the start of the day):
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // Create the timestamp and return it:
+        return new Timestamp(Date.from(calendar.toInstant()));
     }
 
 

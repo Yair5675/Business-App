@@ -21,10 +21,8 @@ import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputFragment1;
 import com.example.finalproject.fragments.input.InputFragment2;
 import com.example.finalproject.fragments.input.InputFragment3;
-import com.example.finalproject.util.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import java.io.Serializable;
@@ -282,16 +280,13 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void registerNewUser() {
-        // Convert the birthdate to a timestamp:
-        final Timestamp timestamp = Util.convertLocalDateToTimestamp(firstPageInfo.BIRTHDATE);
-
         // Create the user object:
         final User user = new User();
         user
                 .setName(firstPageInfo.NAME)
                 .setSurname(firstPageInfo.SURNAME)
                 .setEmail(firstPageInfo.EMAIL)
-                .setBirthdate(timestamp)
+                .setBirthdate(firstPageInfo.BIRTHDATE)
                 .setPassword(firstPageInfo.PASSWORD)
                 .setCountry(secondPageInfo.COUNTRY)
                 .setCity(secondPageInfo.CITY)

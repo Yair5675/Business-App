@@ -24,6 +24,10 @@ public class User implements Serializable {
     // The path to the user's image in firebase storage:
     private String imagePath;
 
+    // The minimum and maximum age of the user:
+    private static final int MIN_AGE = 16;
+    private static final int MAX_AGE = 80;
+
     // An empty constructor (requirement for firestore):
     public User() {}
 
@@ -129,5 +133,13 @@ public class User implements Serializable {
     public User setImagePath(String imagePath) {
         this.imagePath = imagePath;
         return this;
+    }
+
+    public static int getMinAge() {
+        return MIN_AGE;
+    }
+
+    public static int getMaxAge() {
+        return MAX_AGE;
     }
 }

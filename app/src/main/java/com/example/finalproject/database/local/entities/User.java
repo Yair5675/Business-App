@@ -9,6 +9,7 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.example.finalproject.BuildConfig;
 import com.example.finalproject.database.local.AppDatabase;
 import com.example.finalproject.database.local.Converters;
 import com.example.finalproject.util.Constants;
@@ -82,7 +83,7 @@ public class User {
      * @return True if the connected user is an admin, false otherwise.
      */
     public boolean isAdmin() {
-        return this.phoneNumber.equals(Constants.ADMIN_PHONE_NUMBER);
+        return this.phoneNumber.equals(BuildConfig.ADMIN_PHONE_NUMBER);
     }
 
     public long getUserId() {
