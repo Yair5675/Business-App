@@ -24,17 +24,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.local.AppDatabase;
-import com.example.finalproject.database.local.entities.User;
+import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Permissions;
-import com.example.finalproject.util.Result;
 import com.example.finalproject.util.Util;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
 public class InputFragment3 extends Fragment implements View.OnClickListener {
+    public static final String TAG = "InputFragment3";
+    // A reference to the database:
+    private final OnlineDatabase db;
+
+    // A reference to the user whose details are being changed:
+    private final User user;
 
     // The imageView which displays the image of the user:
     private ImageView imgUser;
@@ -53,22 +57,25 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
 
     private ActivityResultLauncher<Intent> imageReceiver;
 
+    public InputFragment3(@Nullable User connectedUser) {
+        this.user = connectedUser;
+        this.db = OnlineDatabase.getInstance();
+    }
+
     public void loadInputsFromUser(User user) {
-        // Check that there is not image loaded:
-        if (this.bitmapPhoto == null) {
-            // Load the image bitmap from the user:
-            final Result<Bitmap, FileNotFoundException> result = Util.getImage(
-                    requireContext(),
-                    user.getPictureFileName()
-            );
-            if (result.isOk()) {
-                this.bitmapPhoto = result.getValue();
-                Util.setCircularImage(this.requireContext(), this.imgUser, this.bitmapPhoto);
-            } else {
-                Log.e("InputFragment3 load user", result.getError().toString());
-                Toast.makeText(requireActivity(), "Couldn't load image", Toast.LENGTH_SHORT).show();
-            }
-        }
+        // Make sure no other bitmap was saved:
+        if (this.bitmapPhoto == null)
+            // Get the bitmap from the database and set it:
+            this.db.getUserImage(user, userImage -> {
+                // Save the user's image:
+                bitmapPhoto = userImage;
+
+                // Set the photo:
+                Util.setCircularImage(requireContext(), imgUser, userImage);
+            }, e -> {
+                Log.e(TAG, "Failed to download image", e);
+                Toast.makeText(requireContext(), "Couldn't load image", Toast.LENGTH_SHORT).show();
+            });
     }
 
     @Nullable
@@ -98,9 +105,9 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
         parent.findViewById(R.id.fragInput3BtnUploadCamera).setOnClickListener(this);
         parent.findViewById(R.id.fragInput3BtnUploadGallery).setOnClickListener(this);
 
-        // If a user is connected, load the inputs from them:
-        if (AppDatabase.isUserLoggedIn())
-            this.loadInputsFromUser(AppDatabase.getConnectedUser());
+        // Check if a connected user was given:
+        if (this.user != null)
+            this.loadInputsFromUser(this.user);
 
         return parent;
     }

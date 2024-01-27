@@ -76,7 +76,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         // Initializing the pages and giving the user to them (it's ok if we are giving null):
         this.firstPage = new InputFragment1(this.user);
         this.secondPage = new InputFragment2(this.user);
-        this.thirdPage = new InputFragment3();
+        this.thirdPage = new InputFragment3(this.user);
 
         // Initialize the next and previous buttons:
         this.btnNext = findViewById(R.id.actInputBtnNextOrRegister);
