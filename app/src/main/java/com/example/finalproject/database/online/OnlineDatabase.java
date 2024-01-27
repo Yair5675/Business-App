@@ -92,7 +92,9 @@ public class OnlineDatabase {
                             // Activate the given onSuccessListener with the user object:
                             onSuccessListener.onSuccess(user);
                         } else {
-                            Log.e(TAG, "User is authenticated but is missing from the database");
+                            String error = "User is authenticated but is missing from the database";
+                            Log.e(TAG, error);
+                            onFailureListener.onFailure(new Exception(error));
                         }
                     },
                     onFailureListener
@@ -169,13 +171,16 @@ public class OnlineDatabase {
      */
     public void updateUser(
             User user,
+            String oldPassword,
             Bitmap image,
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
         UsersHandler.updateUser(
+                this.auth,
                 this.db,
                 this.storageRef,
+                oldPassword,
                 user,
                 image,
                 onSuccessListener,

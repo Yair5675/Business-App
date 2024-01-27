@@ -270,6 +270,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void updateUser() {
+        // Save the old password:
+        final String oldPassword = this.user.getPassword();
+
         // Set the new information in the user's object:
         this.user
                 .setName(firstPageInfo.NAME)
@@ -324,7 +327,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.btnPrev.setVisibility(View.GONE);
 
         // Update the user in the database
-        this.db.updateUser(user, this.userImg, successListener, failureListener);
+        this.db.updateUser(user, oldPassword, this.userImg, successListener, failureListener);
     }
 
     private void registerNewUser() {
