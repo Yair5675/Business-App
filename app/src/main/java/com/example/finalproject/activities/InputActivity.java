@@ -73,8 +73,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         final TextView title = findViewById(R.id.actInputTitle);
         title.setText(isRegisterActivity ? R.string.act_input_title_register : R.string.act_input_title_update);
 
-        // Initializing the pages (third one will be initialized later):
-        this.firstPage = new InputFragment1();
+        // Initializing the pages and giving the user to them (it's ok if we are giving null):
+        this.firstPage = new InputFragment1(this.user);
+        this.secondPage = new InputFragment2();
+        this.thirdPage = new InputFragment3();
 
         // Initialize the next and previous buttons:
         this.btnNext = findViewById(R.id.actInputBtnNextOrRegister);
@@ -201,10 +203,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loadSecondPage(@AnimRes int enter, @AnimRes int exit) {
-        // Creating the second page if it hadn't been created already:
-        if (this.secondPage == null)
-            this.secondPage = new InputFragment2();
-
         // Get a fragment transaction object:
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -228,10 +226,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loadThirdPage() {
-        // Creating the third page if it hadn't been created already:
-        if (this.thirdPage == null)
-            this.thirdPage = new InputFragment3();
-
         // Get a fragment transaction object:
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 

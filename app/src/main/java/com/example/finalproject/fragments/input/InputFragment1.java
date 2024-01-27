@@ -32,6 +32,9 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 public class InputFragment1 extends Fragment {
+    // A reference to the user whose details are being changed:
+    private final User user;
+
     // The input fields responsible for getting the name of the user:
     private TextInputLayout tilName, tilSurname;
     private TextInputEditText etName, etSurname;
@@ -80,6 +83,10 @@ public class InputFragment1 extends Fragment {
             this.EMAIL = EMAIL;
             this.PASSWORD = PASSWORD;
         }
+    }
+
+    public InputFragment1(@Nullable User connectedUser) {
+        this.user = connectedUser;
     }
 
     private boolean areInputsEmpty() {
@@ -146,6 +153,10 @@ public class InputFragment1 extends Fragment {
 
         // Initialize the custom focus changing:
         this.initFocusChangingListeners();
+
+        // Check if a user was given, and if so load the info from them:
+        if (this.user != null)
+            this.loadInputsFromUser(this.user);
 
         this.clearErrors();
         return parent;
