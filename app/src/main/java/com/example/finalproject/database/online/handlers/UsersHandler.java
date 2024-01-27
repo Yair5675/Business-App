@@ -3,6 +3,7 @@ package com.example.finalproject.database.online.handlers;
 import static com.example.finalproject.util.Util.toByteArray;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
@@ -128,6 +129,25 @@ public class UsersHandler {
                 .document(uid)
                 .get()
                 .addOnSuccessListener(onSuccessListener)
+                .addOnFailureListener(onFailureListener);
+    }
+
+    public static void getUserImage(
+            User user,
+            StorageReference storage,
+            OnSuccessListener<Bitmap> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        // Download the file (limit to 1.5 megabytes):
+        final long MAX_DOWNLOAD_SIZE = (long) (1.5 * 1024 * 1024);
+
+        // Download the bytes:
+        storage.child(user.getImagePath()).getBytes(MAX_DOWNLOAD_SIZE)
+                .addOnSuccessListener(bytes -> {
+                    // Convert the bytes to a bitmap and call the success callback:
+                    Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    onSuccessListener.onSuccess(image);
+                })
                 .addOnFailureListener(onFailureListener);
     }
 }

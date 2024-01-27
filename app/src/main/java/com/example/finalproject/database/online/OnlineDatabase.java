@@ -149,4 +149,13 @@ public class OnlineDatabase {
                 })
                 .addOnFailureListener(onFailureListener);
     }
+
+
+    public void getUserImage(
+            User user,
+            OnSuccessListener<Bitmap> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        UsersHandler.getUserImage(user, this.storageRef, onSuccessListener, onFailureListener);
+    }
 }
