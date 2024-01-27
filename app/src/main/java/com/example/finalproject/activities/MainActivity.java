@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.LoginDialog;
@@ -152,6 +153,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Hide the progress bar:
         this.pbActivityLoading.setVisibility(View.GONE);
+
+        supportInvalidateOptionsMenu();
     }
 
     @Override
@@ -164,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final boolean isUserLoggedIn = this.db.isUserSignedIn();
         menu.findItem(R.id.menuUsersItemSignUp).setVisible(!isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemSignIn).setVisible(!isUserLoggedIn);
+        menu.findItem(R.id.menuUsersItemVerification).setVisible(isUserLoggedIn && !this.db.isConnectedUserEmailVerified());
         menu.findItem(R.id.menuUsersItemShowUsers).setVisible(isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemDisconnect).setVisible(isUserLoggedIn);
 
@@ -193,6 +197,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             this.db.disconnectUser();
             this.initWithoutUser();
             supportInvalidateOptionsMenu();
+        }
+
+        // If the want to verify the email:
+        else if (ID == R.id.menuUsersItemVerification) {
+            this.db.sendVerificationEmail(task -> {
+                if (task.isSuccessful())
+                    Toast.makeText(this, "Verification email sent!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Failed to send verification email", Toast.LENGTH_SHORT).show();
+            });
         }
 
         // If they want to read the "About Us" dialog:

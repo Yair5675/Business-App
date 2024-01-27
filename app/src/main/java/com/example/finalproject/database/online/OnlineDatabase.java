@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.handlers.UsersHandler;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -76,7 +77,26 @@ public class OnlineDatabase {
         final FirebaseUser connectedUser = this.auth.getCurrentUser();
         if (connectedUser != null)
             return connectedUser.isEmailVerified();
-        return false;
+        return true;
+    }
+
+    public void sendVerificationEmail() {
+        final FirebaseUser connectedUser = this.auth.getCurrentUser();
+        if (connectedUser != null)
+            connectedUser.sendEmailVerification()
+                    .addOnCompleteListener(task ->
+                            Log.d(TAG, "Verification email sent: " + task.isSuccessful())
+                    );
+    }
+
+    public void sendVerificationEmail(OnCompleteListener<Void> onCompleteListener) {
+        final FirebaseUser connectedUser = this.auth.getCurrentUser();
+        if (connectedUser != null)
+            connectedUser.sendEmailVerification()
+                    .addOnCompleteListener(task -> {
+                        Log.d(TAG, "Verification email sent: " + task.isSuccessful());
+                        onCompleteListener.onComplete(task);
+                    });
     }
 
     public void getCurrentUser(
@@ -178,6 +198,7 @@ public class OnlineDatabase {
      */
     public void updateUser(
             User user,
+            String oldEmail,
             String oldPassword,
             Bitmap image,
             OnSuccessListener<Void> onSuccessListener,
@@ -187,6 +208,7 @@ public class OnlineDatabase {
                 this.auth,
                 this.db,
                 this.storageRef,
+                oldEmail,
                 oldPassword,
                 user,
                 image,

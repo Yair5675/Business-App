@@ -177,6 +177,7 @@ public class UsersHandler {
             FirebaseAuth auth,
             FirebaseFirestore db,
             StorageReference storage,
+            String oldEmail,
             String oldPassword,
             User user,
             Bitmap image,
@@ -194,20 +195,17 @@ public class UsersHandler {
         }
 
         // Update the user's authentication details:
-        if (connectedUser.getEmail() != null)
-            updateAuthDetails(
-                    connectedUser, connectedUser.getEmail(), oldPassword, user.getEmail(),
-                    user.getPassword(), unused -> {
-                        // If the authentication update was successful, update the user's image:
-                        updateUserImage(storage, user, image, unused1 -> {
-                            // If the image was updated successfully, save the user in the database:
-                            updateUserOnFirestore(db, user, onSuccessListener, onFailureListener);
-                            // If the image update failed:
-                        }, onFailureListener);
-                        // If the authentication update failed:
-                    }, onFailureListener);
-        else
-            onFailureListener.onFailure(new Exception("User is missing email"));
+        updateAuthDetails(
+            connectedUser, oldEmail, oldPassword, user.getEmail(),
+            user.getPassword(), unused -> {
+                // If the authentication update was successful, update the user's image:
+                updateUserImage(storage, user, image, unused1 -> {
+                    // If the image was updated successfully, save the user in the database:
+                    updateUserOnFirestore(db, user, onSuccessListener, onFailureListener);
+                    // If the image update failed:
+                }, onFailureListener);
+                // If the authentication update failed:
+            }, onFailureListener);
 
     }
 
@@ -218,6 +216,7 @@ public class UsersHandler {
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
+        Log.d(TAG, "Given email: " + email);
         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
         user.reauthenticate(credential)
                 .addOnSuccessListener(onSuccessListener)
@@ -239,6 +238,7 @@ public class UsersHandler {
 
         // If the new email is similar to the old email, skip the email and update the password:
         if (similarEmails && !similarPasswords) {
+            Log.d(TAG, "emails are the same");
             user.updatePassword(newPassword)
                     .addOnSuccessListener(onSuccessListener)
                     .addOnFailureListener(onFailureListener);
@@ -248,7 +248,7 @@ public class UsersHandler {
             reauthenticateUser(user, oldEmail, oldPassword, _v1 -> {
                 // Update the email:
                 Log.d(TAG, "sending email verification");
-                user.updateEmail(newEmail)
+                user.verifyBeforeUpdateEmail(newEmail)
                         .addOnSuccessListener(_v2 -> {
                             // Update the password too:
                             if (!similarPasswords) {
@@ -265,8 +265,11 @@ public class UsersHandler {
             }, onFailureListener);
 
         // If both as similar, activate the on success listener:
-        else
+        else {
+            Log.d(TAG, "Old email: " + oldEmail);
+            Log.d(TAG, "New email: " + newEmail);
             onSuccessListener.onSuccess(null);
+        }
     }
 
     private static void updateUserImage(

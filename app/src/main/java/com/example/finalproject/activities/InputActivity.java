@@ -270,8 +270,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void updateUser() {
-        // Save the old password:
-        final String oldPassword = this.user.getPassword();
+        // Save the old email and password:
+        final String oldEmail = this.user.getEmail(), oldPassword = this.user.getPassword();
 
         // Set the new information in the user's object:
         this.user
@@ -327,7 +327,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.btnPrev.setVisibility(View.GONE);
 
         // Update the user in the database
-        this.db.updateUser(user, oldPassword, this.userImg, successListener, failureListener);
+        this.db.updateUser(user, oldEmail, oldPassword, this.userImg, successListener, failureListener);
     }
 
     private void registerNewUser() {
@@ -354,6 +354,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             this.progressBar.setVisibility(View.GONE);
             this.btnNext.setVisibility(View.VISIBLE);
             this.btnPrev.setVisibility(View.VISIBLE);
+
+            // Send a verification email:
+            this.db.sendVerificationEmail();
 
             // Go to the main activity:
             final Intent intent = new Intent(this, MainActivity.class);
