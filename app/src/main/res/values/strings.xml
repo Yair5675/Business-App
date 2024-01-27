@@ -98,4 +98,7 @@
     <string name="frag_input_2_title"><b>Choose your location:</b></string>
     <string name="frag_input_2_country_hint">Country</string>
     <string name="frag_input_2_btn_location_txt">Pick Location!</string>
+    <string name="dialog_email_verification_title"><b>Verify your account</b></string>
+    <string name="dialog_email_verification_intructions">A verification email has been sent to you. Please press the link in it to verify your account</string>
+    <string name="dialog_email_verification_resend_email_txt">Resend email</string>
 </resources>
