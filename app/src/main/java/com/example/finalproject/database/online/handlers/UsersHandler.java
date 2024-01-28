@@ -159,7 +159,9 @@ public class UsersHandler {
 
     /**
      * Updates a user in the database and their image. The updated user MUST BE CONNECTED when
-     * calling this function. If not, the update process won't be realized.
+     * calling this function. If not, the update process won't be realized. Pay attention that the
+     * email is not updated even if it is changed in the user object. To do that use method
+     * "updateEmail".
      * @param auth A reference to firebase authentication system.
      * @param db A reference to the cloud database.
      * @param storage A reference to the storage.
@@ -173,7 +175,7 @@ public class UsersHandler {
      * @param onFailureListener A callback that will be activated if any error occurred during the
      *                          updating process.
      */
-    public static void updateUser(
+    public static void updateUserInfo(
             FirebaseAuth auth,
             FirebaseFirestore db,
             StorageReference storage,
@@ -194,19 +196,65 @@ public class UsersHandler {
             onFailureListener.onFailure(new Exception("Updated user is not the connected user"));
         }
 
-        // Update the user's authentication details:
-        updateAuthDetails(
-            connectedUser, oldEmail, oldPassword, user.getEmail(),
-            user.getPassword(), unused -> {
-                // If the authentication update was successful, update the user's image:
-                updateUserImage(storage, user, image, unused1 -> {
-                    // If the image was updated successfully, save the user in the database:
-                    updateUserOnFirestore(db, user, onSuccessListener, onFailureListener);
-                    // If the image update failed:
-                }, onFailureListener);
-                // If the authentication update failed:
+        // Prepare the update callback:
+        OnSuccessListener<Void> updateCallback = unused -> {
+            // Update the user's image:
+            updateUserImage(storage, user, image, unused1 -> {
+                // If the image was updated successfully, save the user in the database:
+                updateUserOnFirestore(db, user, onSuccessListener, onFailureListener);
+                // If the image update failed:
             }, onFailureListener);
+        };
 
+        // Update the password if it was changed:
+        if (!oldPassword.equals(user.getPassword())) {
+            updatePassword(
+                    connectedUser, oldEmail, oldPassword, user.getPassword(), updateCallback,
+                    onFailureListener
+            );
+        }
+        // If not, just update the other details:
+        else
+            updateCallback.onSuccess(null);
+    }
+
+    public static void updatePassword(
+            FirebaseUser user,
+            String oldEmail,
+            String oldPassword,
+            String newPassword,
+            OnSuccessListener<Void> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        // Re-authenticate user:
+        reauthenticateUser(user, oldEmail, oldPassword, unused -> {
+            // If the re-authentication was a success, change the password:
+            Log.d(TAG, "Updating password");
+            user.updatePassword(newPassword)
+                    .addOnSuccessListener(onSuccessListener)
+                    .addOnFailureListener(onFailureListener);
+        }, onFailureListener);
+    }
+
+    public static void updateEmail(
+            FirebaseUser user,
+            String oldEmail,
+            String newEmail,
+            String password,
+            OnSuccessListener<Void> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        // Re-authenticate the user:
+        reauthenticateUser(
+                user, oldEmail, password,
+                unused -> {
+                    // Send a verification email and update the user's email:
+                    user.verifyBeforeUpdateEmail(newEmail)
+                            .addOnSuccessListener(onSuccessListener)
+                            .addOnFailureListener(onFailureListener);
+                },
+                onFailureListener
+        );
     }
 
     private static void reauthenticateUser(
@@ -221,55 +269,6 @@ public class UsersHandler {
         user.reauthenticate(credential)
                 .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(onFailureListener);
-    }
-
-    private static void updateAuthDetails(
-            FirebaseUser user,
-            String oldEmail,
-            String oldPassword,
-            String newEmail,
-            String newPassword,
-            OnSuccessListener<Void> onSuccessListener,
-            OnFailureListener onFailureListener
-    ) {
-        // Check if the authentication details are similar:
-        final boolean similarEmails = oldEmail.equals(newEmail),
-                similarPasswords = oldPassword.equals(newPassword);
-
-        // If the new email is similar to the old email, skip the email and update the password:
-        if (similarEmails && !similarPasswords) {
-            Log.d(TAG, "emails are the same");
-            user.updatePassword(newPassword)
-                    .addOnSuccessListener(onSuccessListener)
-                    .addOnFailureListener(onFailureListener);
-        }
-        else if (!similarEmails)
-            // Re-authenticate the user:
-            reauthenticateUser(user, oldEmail, oldPassword, _v1 -> {
-                // Update the email:
-                Log.d(TAG, "sending email verification");
-                user.verifyBeforeUpdateEmail(newEmail)
-                        .addOnSuccessListener(_v2 -> {
-                            // Update the password too:
-                            if (!similarPasswords) {
-                                Log.d(TAG, "Updating password");
-                                user.updatePassword(newPassword)
-                                        .addOnSuccessListener(onSuccessListener)
-                                        .addOnFailureListener(onFailureListener);
-                            }
-                            // If the password is similar, activate the on success listener:
-                            else
-                                onSuccessListener.onSuccess(null);
-                        })
-                        .addOnFailureListener(onFailureListener);
-            }, onFailureListener);
-
-        // If both as similar, activate the on success listener:
-        else {
-            Log.d(TAG, "Old email: " + oldEmail);
-            Log.d(TAG, "New email: " + newEmail);
-            onSuccessListener.onSuccess(null);
-        }
     }
 
     private static void updateUserImage(

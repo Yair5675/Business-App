@@ -104,6 +104,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Save the user:
         this.connectedUser = user;
 
+        // Fix the user's email:
+        this.db.fixUserEmail(this.connectedUser);
+
         // Change the greeting:
         this.tvUserGreeting.setText(
                 String.format(
@@ -120,10 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.imgAdminCrown.setVisibility(user.isAdmin() ? View.VISIBLE : View.GONE);
 
         // Show the 'Edit Account' and 'Delete Account' buttons:
-        this.btnEditAccount.setVisibility(View.VISIBLE);
-        this.btnDeleteAccount.setVisibility(View.VISIBLE);
-        this.tvEditAccountDesc.setVisibility(View.VISIBLE);
-        this.tvDeleteAccountDesc.setVisibility(View.VISIBLE);
+        this.changeButtonsVisibility(View.VISIBLE);
 
         // Hide the progress bar:
         this.pbActivityLoading.setVisibility(View.GONE);
@@ -146,10 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.imgAdminCrown.setVisibility(View.GONE);
 
         // Make the 'Edit Account' and 'Delete Account' disappear:
-        this.btnEditAccount.setVisibility(View.GONE);
-        this.btnDeleteAccount.setVisibility(View.GONE);
-        this.tvEditAccountDesc.setVisibility(View.GONE);
-        this.tvDeleteAccountDesc.setVisibility(View.GONE);
+        this.changeButtonsVisibility(View.GONE);
 
         // Hide the progress bar:
         this.pbActivityLoading.setVisibility(View.GONE);
@@ -250,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (ID == R.id.actMainImgBtnEdit) {
             // Open the input activity but send the connected user in the intent:
-            Intent intent = new Intent(this, InputActivity.class);
+            Intent intent = new Intent(MainActivity.this, InputActivity.class);
             intent.putExtra("user", this.connectedUser);
             startActivity(intent);
             finish();
@@ -261,7 +258,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void changeButtonsVisibility(int visibility) {
+        this.btnEditAccount.setVisibility(visibility);
+        this.btnDeleteAccount.setVisibility(visibility);
+        this.tvEditAccountDesc.setVisibility(visibility);
+        this.tvDeleteAccountDesc.setVisibility(visibility);
+    }
+
     private void activateDeleteDialog() {
         // TODO: Complete the deletion dialog
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Before exiting the activity, check if the input activity sent a new email for the user:
+        final Intent intent = getIntent();
+        if (this.connectedUser != null) {
+            if (intent.hasExtra("new email")) {
+                final String newEmail = intent.getStringExtra("new email");
+                if (newEmail != null) {
+                    this.db.logUserIn(
+                            newEmail,
+                            this.connectedUser.getPassword(),
+                            user -> connectedUser = user,
+                            e -> Log.e(TAG, "Failed to log in with new email", e)
+                    );
+                }
+            }
+            // If there is no new email, refresh the user:
+            else {
+                this.db.refreshUser(
+                        this.connectedUser.getPassword(),
+                        user -> connectedUser = user,
+                        e -> Log.e(TAG, "Failed to refresh user", e)
+                );
+            }
+        }
     }
 }

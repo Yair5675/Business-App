@@ -179,12 +179,87 @@ public class OnlineDatabase {
                 .addOnFailureListener(onFailureListener);
     }
 
+    public void refreshUser(
+            String password,
+            OnSuccessListener<User> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        Log.d(TAG, "Given password: " + password);
+        FirebaseUser user;
+        if ((user = this.auth.getCurrentUser()) != null) {
+            user.reload()
+                    .addOnCompleteListener(task -> {
+                        Log.d(TAG, "User email after trying to reload: " + user.getEmail());
+                        // If the operation logged the user out, get them back in:
+                        if (task.isSuccessful()) {
+                            if (!isUserSignedIn())
+                                logUserIn(user.getEmail(), password, onSuccessListener, onFailureListener);
+                            else
+                                getCurrentUser(onSuccessListener, onFailureListener);
+                        }
+                        else if (task.getException() != null) {
+                            Log.e(TAG, "Refreshing user failed", task.getException());
+                            onFailureListener.onFailure(task.getException());
+                        }
+                    });
+        }
+    }
+
     public void getUserImage(
             User user,
             OnSuccessListener<Bitmap> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
         UsersHandler.getUserImage(user, this.storageRef, onSuccessListener, onFailureListener);
+    }
+
+    /**
+     * Updates the user's email.
+     * @param oldEmail The old email that will be change.
+     * @param newEmail The new email.
+     * @param password The password of the user.
+     * @param onSuccessListener A callback that will be activated when the verification email is
+     *                          sent (not necessarily when the email is changed).
+     * @param onFailureListener A callback that will be activated if the email update failed at some
+     *                          point.
+     */
+    public void updateUserEmail(
+            String oldEmail,
+            String newEmail,
+            String password,
+            OnSuccessListener<Void> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        UsersHandler.updateEmail(
+                this.auth.getCurrentUser(),
+                oldEmail,
+                newEmail,
+                password,
+                onSuccessListener,
+                onFailureListener
+        );
+    }
+
+    /**
+     * Sometimes when the user changes their email, it is not immediately changed due to the email
+     * verification step. Therefor, this function checks if the connected user has different email
+     * than the given user, changes the user object, and saves it in the database.
+     * @param user The not necessarily updated user who might have out-dated email.
+     */
+    public void fixUserEmail(User user) {
+        FirebaseUser connectedUser;
+        if ((connectedUser = this.auth.getCurrentUser()) != null && connectedUser.getEmail() != null) {
+            Log.d(TAG, "Updated email: " + connectedUser.getEmail());
+            Log.d(TAG, "Saved email: " + user.getEmail());
+            if (!connectedUser.getEmail().equals(user.getEmail())) {
+                Log.d(TAG, "fixed user email");
+                user.setEmail(connectedUser.getEmail());
+                this.db
+                        .collection("users")
+                        .document(user.getUid())
+                        .update("email", connectedUser.getEmail());
+            }
+        }
     }
 
     /**
@@ -204,7 +279,7 @@ public class OnlineDatabase {
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-        UsersHandler.updateUser(
+        UsersHandler.updateUserInfo(
                 this.auth,
                 this.db,
                 this.storageRef,

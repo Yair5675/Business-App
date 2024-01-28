@@ -270,14 +270,13 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void updateUser() {
-        // Save the old email and password:
-        final String oldEmail = this.user.getEmail(), oldPassword = this.user.getPassword();
+        // Save the old password:
+        final String oldPassword = this.user.getPassword();
 
-        // Set the new information in the user's object:
+        // Set the new information in the user's object (except for the new email):
         this.user
                 .setName(firstPageInfo.NAME)
                 .setSurname(firstPageInfo.SURNAME)
-                .setEmail(firstPageInfo.EMAIL)
                 .setBirthdate(firstPageInfo.BIRTHDATE)
                 .setPassword(firstPageInfo.PASSWORD)
                 .setPhoneNumber(secondPageInfo.PHONE)
@@ -296,8 +295,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             this.btnNext.setVisibility(View.VISIBLE);
             this.btnPrev.setVisibility(View.VISIBLE);
 
-            // Go to the main activity:
+            // Go to the main activity and send the new email to them:
             final Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("new email", firstPageInfo.EMAIL);
             startActivity(intent);
             finish();
         };
@@ -326,8 +326,16 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.btnNext.setVisibility(View.GONE);
         this.btnPrev.setVisibility(View.GONE);
 
+        // Update the email if it is different:
+        if (!user.getEmail().equals(firstPageInfo.EMAIL))
+            this.db.updateUserEmail(
+                    user.getEmail(), firstPageInfo.EMAIL, oldPassword,
+                    unused -> Log.d("InputActivity", "Sent verification email"),
+                    e -> Log.e("InputActivity", "Failed to change email", e)
+            );
+
         // Update the user in the database
-        this.db.updateUser(user, oldEmail, oldPassword, this.userImg, successListener, failureListener);
+        this.db.updateUser(user, user.getEmail(), oldPassword, this.userImg, successListener, failureListener);
     }
 
     private void registerNewUser() {
