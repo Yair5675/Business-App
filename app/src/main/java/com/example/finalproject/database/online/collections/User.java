@@ -11,7 +11,7 @@ public class User implements Serializable {
     private String uid;
 
     // The name and surname of the user:
-    private String name, surname;
+    private String name, surname, fullName;
 
     // The email, password and phone number of the user:
     private String email, password, phoneNumber;
@@ -52,7 +52,21 @@ public class User implements Serializable {
 
     public User setName(String name) {
         this.name = name;
+
+        // Update the full name field:
+        if (this.surname != null)
+            this.setFullName(this.name + " " + this.surname);
+        else
+            this.setFullName(this.name);
         return this;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    private void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getSurname() {
@@ -61,6 +75,12 @@ public class User implements Serializable {
 
     public User setSurname(String surname) {
         this.surname = surname;
+
+        // Update the full name field:
+        if (this.name != null)
+            this.setFullName(this.name + " " + this.surname);
+        else
+            this.setFullName(this.surname);
         return this;
     }
 

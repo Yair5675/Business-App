@@ -39,10 +39,8 @@ public class OnlineUsersAdapter extends FirestoreRecyclerAdapter<User, OnlineUse
 
     @Override
     protected void onBindViewHolder(@NonNull UserVH holder, int position, @NonNull User user) {
-        Log.d("Online adapter", "User number " + position + " was set");
         // Set the details of the user:
-        final String fullName = user.getName() + " " + user.getSurname();
-        holder.tvName.setText(fullName);
+        holder.tvName.setText(user.getFullName());
 
         // Convert the birthdate to local date:
         final LocalDate localBirthdate = convertDateToLocalDate(user.getBirthdate().toDate());
