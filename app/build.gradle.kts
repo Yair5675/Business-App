@@ -68,6 +68,9 @@ dependencies {
     // Firestore library:
     implementation("com.google.firebase:firebase-firestore")
 
+    // Firebase UI for cloud firestore:
+    implementation("com.firebaseui:firebase-ui-firestore:8.0.2")
+
     // Firebase storage:
     implementation("com.google.firebase:firebase-storage")
 

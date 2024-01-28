@@ -10,10 +10,11 @@
 
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:layout_marginVertical="8dp"
 
-        android:layout_marginTop="8dp"
         android:contentDescription="@string/act_main_content_description_user_img"
 
+        app:layout_constraintBottom_toTopOf="@id/rowUsersClMoreInfo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/guest" />
@@ -65,71 +66,40 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="8dp"
         android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="8dp"
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rowUsersImgUser"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
-        android:visibility="gone"
-        >
-        
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rowUsersImgUser">
+
         <TextView
-            android:id="@+id/rowUsersTvGenderTitle"
+            android:id="@+id/rowUsersTvCountryTitle"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:text="Country:"
+            android:textStyle="bold"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            android:text="Gender:"
-            android:textStyle="bold"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/rowUsersTvGender"
+            android:id="@+id/rowUsersTvCountry"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            app:layout_constraintTop_toTopOf="@id/rowUsersTvGenderTitle"
-            app:layout_constraintStart_toEndOf="@id/rowUsersTvGenderTitle"
+            android:text="Israel 1#"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.25"
+            app:layout_constraintHorizontal_bias="0.27"
+            app:layout_constraintStart_toEndOf="@id/rowUsersTvCountryTitle"
 
-            android:text="@string/row_users_sample_gender"
-            />
-
-        <TextView
-            android:id="@+id/rowUsersTvAddressTitle"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            app:layout_constraintTop_toBottomOf="@id/rowUsersTvGenderTitle"
-            app:layout_constraintStart_toStartOf="@id/rowUsersTvGenderTitle"
-            android:layout_marginTop="8dp"
-
-            android:text="Address:"
-            android:textStyle="bold"
-            />
-
-        <TextView
-            android:id="@+id/rowUsersTvAddress"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            app:layout_constraintTop_toTopOf="@id/rowUsersTvAddressTitle"
-            app:layout_constraintStart_toStartOf="@id/rowUsersTvGender"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-
-            android:text="@string/row_users_sample_address"
-            android:maxLines="2"
-            />
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvCountryTitle" />
 
         <TextView
             android:id="@+id/rowUsersTvCityTitle"
@@ -137,13 +107,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            app:layout_constraintTop_toBottomOf="@id/rowUsersTvAddressTitle"
-            app:layout_constraintStart_toStartOf="@id/rowUsersTvAddressTitle"
             android:layout_marginTop="8dp"
-
             android:text="City:"
             android:textStyle="bold"
-            />
+
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvCountryTitle"
+            app:layout_constraintTop_toBottomOf="@id/rowUsersTvCountryTitle" />
 
         <TextView
             android:id="@+id/rowUsersTvCity"
@@ -151,12 +120,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            app:layout_constraintTop_toTopOf="@id/rowUsersTvCityTitle"
-            app:layout_constraintStart_toStartOf="@id/rowUsersTvAddress"
+            android:maxLines="2"
+            android:text="@string/row_users_sample_city"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
 
-            android:text="@string/row_users_sample_city"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvCountry"
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvCityTitle" />
+
+        <TextView
+            android:id="@+id/rowUsersTvAddressTitle"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="8dp"
+            android:text="Address:"
+            android:textStyle="bold"
+
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvCityTitle"
+            app:layout_constraintTop_toBottomOf="@id/rowUsersTvCityTitle" />
+
+        <TextView
+            android:id="@+id/rowUsersTvAddress"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="@string/row_users_sample_address"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvCity"
+
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvAddressTitle"
 
             />
 
@@ -166,13 +162,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            app:layout_constraintTop_toBottomOf="@id/rowUsersTvCityTitle"
-            app:layout_constraintStart_toStartOf="@id/rowUsersTvCityTitle"
             android:layout_marginTop="8dp"
-
             android:text="Email:"
             android:textStyle="bold"
-            />
+
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvAddressTitle"
+            app:layout_constraintTop_toBottomOf="@id/rowUsersTvAddressTitle" />
 
         <TextView
             android:id="@+id/rowUsersTvEmail"
@@ -180,13 +175,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            app:layout_constraintTop_toTopOf="@id/rowUsersTvEmailTitle"
-            app:layout_constraintStart_toStartOf="@id/rowUsersTvCity"
+            android:text="@string/row_users_sample_email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvAddress"
 
-            android:text="@string/row_users_sample_email"
-            />
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvEmailTitle" />
 
         <TextView
             android:id="@+id/rowUsersTvPhoneTitle"
@@ -194,13 +188,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            app:layout_constraintTop_toBottomOf="@id/rowUsersTvEmailTitle"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="8dp"
-
             android:text="Phone Number:"
             android:textStyle="bold"
-            />
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rowUsersTvEmailTitle" />
 
         <TextView
             android:id="@+id/rowUsersTvPhone"
@@ -208,13 +201,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            app:layout_constraintTop_toTopOf="@id/rowUsersTvPhoneTitle"
-            app:layout_constraintStart_toStartOf="@id/rowUsersTvEmail"
+            android:text="@string/row_users_sample_phone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/rowUsersTvEmail"
 
-            android:text="@string/row_users_sample_phone"
-            />
+            app:layout_constraintTop_toTopOf="@id/rowUsersTvPhoneTitle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

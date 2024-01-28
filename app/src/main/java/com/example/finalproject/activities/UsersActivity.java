@@ -8,122 +8,85 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import com.example.finalproject.R;
-import com.example.finalproject.custom_views.UserAdapter;
-import com.example.finalproject.database.local.AppDatabase;
-import com.example.finalproject.util.UserFilter;
+import com.example.finalproject.custom_views.OnlineUsersAdapter;
+import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.collections.User;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.Query;
 
 public class UsersActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
-    // The spinner that enables sorting options:
-    private Spinner spinner;
+    // A reference to the online database:
+    private OnlineDatabase db;
 
-    // The search view that allows the admin to search for specific users:
+    // The search view, allows searching for a specific user:
     private SearchView svUsers;
 
-    // The adapter for the recycler view:
-    private UserAdapter adapter;
+    // The recycler view of the users:
+    private RecyclerView rvUsers;
+
+    // The online adapter populating the recycler view:
+    private OnlineUsersAdapter onlineAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
 
-        // Load the search view and set up its queries functionality:
-        this.svUsers = findViewById(R.id.actUsersSvUserSearch);
-        this.svUsers.setOnQueryTextListener(this);
+        // Load the activity's views:
+        this.svUsers = findViewById(R.id.actUsersSearchUsers);
+        this.rvUsers = findViewById(R.id.actUsersRvUsers);
 
-        // Initialize the adapter:
-        this.adapter = new UserAdapter(this);
+        // Initialize layout manager:
+        this.rvUsers.setLayoutManager(new LinearLayoutManager(this));
 
-        // Initialize the spinner:
-        this.initSpinner();
+        // Initialize the database:
+        this.db = OnlineDatabase.getInstance();
 
-        // Set up the recycler view:
-        this.setRecyclerView();
+        // Initialize the back press callback:
+        this.initOnBackPressedCallback();
 
-        // Set up back button functionality:
-        this.setBackBtn();
-
-        // If the connected user isn't an admin he shouldn't be able to search people:
-        final int searchVisibility = AppDatabase.getConnectedUser().isAdmin() ? View.VISIBLE : View.GONE;
-        this.svUsers.setVisibility(searchVisibility);
-        this.spinner.setVisibility(searchVisibility);
-
-        // Don't forget the text view:
-        findViewById(R.id.actUsersTvSortBy).setVisibility(searchVisibility);
+        // Initialize the online adapter:
+        this.initAdapter();
     }
 
-    private void initSpinner() {
-        // Load the spinner:
-        this.spinner = findViewById(R.id.actUsersSpinSorting);
-
-        // Load the sorting options:
-        final String[] options = getResources().getStringArray(R.array.act_users_spinner_sorting_options);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        this.spinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> _a, View _v, int index, long _l) {
-                        // If something was selected, set the sorting option in the filter:
-                        final UserFilter filter = UsersActivity.this.adapter.getFilter();
-                        filter.setSortingOption(options[index]);
-
-                        // Re-filter based on this sorting:
-                        final String query = UsersActivity.this.svUsers.getQuery().toString();
-                        filter.filter(query);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> _a) {
-                        // If nothing was selected, set the sorting option to 'Nothing':
-                        UsersActivity.this.adapter.getFilter().setSortingOption("Nothing");
-                    }
-                }
-        );
-
-        // Load the adapter:
-        this.spinner.setAdapter(adapter);
-    }
-
-    private void setRecyclerView() {
-        final RecyclerView usersList = findViewById(R.id.actUsersRvUsers);
-        usersList.setAdapter(this.adapter);
-        usersList.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    private void setBackBtn() {
-        // If the user presses the back button, go back to the main activity:
+    private void initOnBackPressedCallback() {
+        // Define the callback:
         final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                // Go to the main activity:
                 final Intent intent = new Intent(UsersActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
         };
+        // Add the callback:
         getOnBackPressedDispatcher().addCallback(callback);
     }
 
-    public void clearQuery() {
-        this.svUsers.setQuery("", true);
-        this.adapter.getFilter().filter(this.svUsers.getQuery());
+    private void initAdapter() {
+        // Use a simple query to get the first 50 users:
+        final Query query = this.db.getFirestoreReference()
+                .collection("users")
+                .orderBy("birthdate")
+                .limit(50);
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
+                .setLifecycleOwner(this)
+                .setQuery(query, User.class)
+                .build();
+        this.onlineAdapter = new OnlineUsersAdapter(this, options);
+        this.rvUsers.setAdapter(this.onlineAdapter);
     }
 
     @Override
-    public boolean onQueryTextSubmit(String nameSearched) {
-        return onQueryTextChange(nameSearched);
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 
     @Override
-    public boolean onQueryTextChange(String nameSearched) {
-        this.adapter.getFilter().filter(nameSearched);
+    public boolean onQueryTextChange(String newText) {
         return false;
     }
 }

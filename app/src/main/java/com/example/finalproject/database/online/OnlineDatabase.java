@@ -69,6 +69,10 @@ public class OnlineDatabase {
         );
     }
 
+    public FirebaseFirestore getFirestoreReference() {
+        return db;
+    }
+
     public boolean isUserSignedIn() {
         return this.auth.getCurrentUser() != null;
     }
