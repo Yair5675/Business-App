@@ -142,9 +142,16 @@ public class Util {
     public static String fixNamingCapitalization(String name) {
         if (name == null || name.isEmpty())
             return "";
-        name = name.toLowerCase();
-        final char first = (char) (name.charAt(0) - 32);
-        return first + name.substring(1);
+        // Separate into words:
+        String[] words = name.split(" ");
+        for (int i = 0; i < words.length; i++) {
+            if (!words[i].isEmpty()) {
+                words[i] = words[i].toLowerCase();
+                final char first = (char) (words[i].charAt(0) - 32);
+                words[i] = first + words[i].substring(1);
+            }
+        }
+        return String.join(" ", words);
     }
 
     public static void setCircularImage(Context context, ImageView imageHolder, @DrawableRes int id) {

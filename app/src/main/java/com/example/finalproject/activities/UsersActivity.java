@@ -13,6 +13,7 @@ import com.example.finalproject.R;
 import com.example.finalproject.custom_views.OnlineUsersAdapter;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.util.Util;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 
@@ -36,6 +37,7 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
 
         // Load the activity's views:
         this.svUsers = findViewById(R.id.actUsersSearchUsers);
+        this.svUsers.setOnQueryTextListener(this);
         this.rvUsers = findViewById(R.id.actUsersRvUsers);
 
         // Initialize layout manager:
@@ -70,7 +72,7 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
         // Use a simple query to get the first 50 users:
         final Query query = this.db.getFirestoreReference()
                 .collection("users")
-                .orderBy("birthdate")
+                .orderBy("birthdate", Query.Direction.DESCENDING)
                 .limit(50);
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setLifecycleOwner(this)
@@ -82,6 +84,22 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        // Edit the query to have regular capitalization:
+        if (query.isEmpty())
+            return false;
+        query = Util.fixNamingCapitalization(query);
+        // Perform a like query:
+        final Query searchQuery = this.db.getFirestoreReference()
+                .collection("users")
+                .whereGreaterThanOrEqualTo("fullName", query)
+                .whereLessThan("fullName", query + "\uf8ff")
+                .orderBy("birthdate", Query.Direction.DESCENDING)
+                .limit(50);
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
+                .setLifecycleOwner(this)
+                .setQuery(searchQuery, User.class)
+                .build();
+        this.onlineAdapter.updateOptions(options);
         return false;
     }
 
