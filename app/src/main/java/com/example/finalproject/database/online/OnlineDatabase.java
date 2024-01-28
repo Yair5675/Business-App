@@ -283,16 +283,32 @@ public class OnlineDatabase {
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-        UsersHandler.updateUserInfo(
-                this.auth,
-                this.db,
-                this.storageRef,
-                oldEmail,
-                oldPassword,
-                user,
-                image,
-                onSuccessListener,
-                onFailureListener
-        );
+        // Check that the phone number isn't already saved:
+        this.db.collection("users")
+                        .whereEqualTo("phoneNumber", user.getPhoneNumber())
+                        .get()
+                .addOnCompleteListener(task -> {
+                    // If the task was a success:
+                    if (task.isSuccessful()) {
+                        // Check if a similar phone number was found:
+                        if (task.getResult().isEmpty()) {
+                            UsersHandler.updateUserInfo(
+                                    auth,
+                                    db,
+                                    storageRef,
+                                    oldEmail,
+                                    oldPassword,
+                                    user,
+                                    image,
+                                    onSuccessListener,
+                                    onFailureListener
+                            );
+                        }
+                        else
+                            onFailureListener.onFailure(new Exception("Existing phone number"));
+                    }
+                    else if (task.getException() != null)
+                        onFailureListener.onFailure(task.getException());
+                });
     }
 }

@@ -81,24 +81,55 @@ public class UsersHandler {
                     // Get the firebase user:
                     FirebaseUser firebaseUser = task.getResult().getUser();
 
-                    // Set the user ID and image path:
-                    user.setUid(firebaseUser.getUid());
-                    user.setImagePath(StorageUtil.getStorageImagePath(user.getUid()));
+                    // Verify the phone number:
+                    verifyPhoneNumber(db, firebaseUser, user.getPhoneNumber(), unused -> {
+                        // Set the user ID and image path:
+                        user.setUid(firebaseUser.getUid());
+                        user.setImagePath(StorageUtil.getStorageImagePath(user.getUid()));
 
-                    // Save the user's image in the storage:
-                    storageRef.child(user.getImagePath())
-                            .putBytes(Util.toByteArray(userImg))
-                            .addOnCompleteListener(
-                                    getNewUserImgUploadCallback(
-                                            db, user, firebaseUser, successListener, failureListener
-                                    )
-                            );
+                        // Save the user's image in the storage:
+                        storageRef.child(user.getImagePath())
+                                .putBytes(Util.toByteArray(userImg))
+                                .addOnCompleteListener(
+                                        getNewUserImgUploadCallback(
+                                                db, user, firebaseUser, successListener, failureListener
+                                        )
+                                );
+                    }, failureListener);
                 }
             }
             // If not, call the failure callback:
             else if (task.getException() != null)
                 failureListener.onFailure(task.getException());
         };
+    }
+
+    private static void verifyPhoneNumber(
+            FirebaseFirestore db,
+            FirebaseUser connectedUser,
+            String newPhone,
+            OnSuccessListener<Void> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        db.collection("users")
+                .whereEqualTo("phoneNumber", newPhone)
+                .get()
+                .addOnCompleteListener(task -> {
+                    // If the task was a success:
+                    if (task.isSuccessful()) {
+                        // Check if a similar phone number was found:
+                        if (task.getResult().isEmpty()) {
+                            onSuccessListener.onSuccess(null);
+                        }
+                        else
+                            onFailureListener.onFailure(new Exception("Existing phone number"));
+                    }
+                    else if (task.getException() != null) {
+                        // Delete the saved firebase user:
+                        connectedUser.delete();
+                        onFailureListener.onFailure(task.getException());
+                    }
+                });
     }
 
     private static OnCompleteListener<UploadTask.TaskSnapshot> getNewUserImgUploadCallback(

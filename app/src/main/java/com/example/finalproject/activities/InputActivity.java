@@ -312,8 +312,16 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                         "The email you entered is already used by another user",
                         Toast.LENGTH_SHORT
                 ).show();
-            else
+            else if (exception.getMessage() != null && exception.getMessage().equals("Existing phone number"))
+                Toast.makeText(
+                        this,
+                        "The phone number you entered is already used by another user",
+                        Toast.LENGTH_SHORT
+                ).show();
+            else {
+                Log.e("InputActivity", "User update failed", exception);
                 Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
 
             // Make the progress bar disappear and the buttons re-appear:
             this.progressBar.setVisibility(View.GONE);
@@ -378,8 +386,12 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             // Check if the email already exists:
             if (exception instanceof FirebaseAuthUserCollisionException)
                 Toast.makeText(this, "Email is already registered", Toast.LENGTH_SHORT).show();
-            else
+            else if (exception.getMessage() != null && exception.getMessage().equals("Existing phone number"))
+                Toast.makeText(this, "Phone is already registered", Toast.LENGTH_SHORT).show();
+            else {
+                Log.e("InputActivity", "Failed to register user", exception);
                 Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
 
             // Make the progress bar disappear and the buttons re-appear:
             this.progressBar.setVisibility(View.GONE);
