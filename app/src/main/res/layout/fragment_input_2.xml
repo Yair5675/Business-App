@@ -167,7 +167,7 @@
                 android:id="@+id/fragInput2TilPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/frag_input1_phone_hint"
+                android:hint="@string/frag_input2_phone_hint"
                 >
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/fragInput2EtPhoneNumber"
