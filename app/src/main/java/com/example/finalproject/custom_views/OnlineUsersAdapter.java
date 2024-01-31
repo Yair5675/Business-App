@@ -1,15 +1,14 @@
 package com.example.finalproject.custom_views;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
@@ -81,7 +80,7 @@ public class OnlineUsersAdapter extends FirestoreRecyclerAdapter<User, OnlineUse
         private final ImageView imgUser;
 
         // The layout containing additional info about the user:
-        private final ConstraintLayout clMoreInfo;
+        private final LinearLayout clMoreInfo;
 
         // The text views in the row:
         private final TextView tvName, tvAge, tvCountry, tvAddress, tvCity, tvEmail, tvPhone;

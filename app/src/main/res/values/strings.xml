@@ -1,4 +1,5 @@
 <resources>
+    <!-- TODO: Some strings here are unused/with wrong name. Fix it later -->
     <string name="app_name">Final Project</string>
 
     <!-- Strings belonging to the main activity: -->
@@ -47,6 +48,9 @@
 
 
     <!-- Strings belonging to the second input fragment: -->
+    <string name="frag_input_2_title"><b>Choose your location:</b></string>
+    <string name="frag_input_2_country_hint">Country</string>
+    <string name="frag_input_2_btn_location_txt">Pick Location!</string>
     <string name="frag_input2_security_info_txt"><b>Security Info:</b></string>
     <string name="frag_input2_old_password_hint">Old Password</string>
     <string name="frag_input2_email_input_hint">Email</string>
@@ -67,7 +71,6 @@
     <string name="dialog_login_button_txt">Log In</string>
     <string name="dialog_login_checkbox_txt">Remember me</string>
 
-
     <!-- Strings belonging to the about dialog: -->
     <string name="dialog_about_title"><b>About Us</b></string>
     <string name="dialog_about_text">
@@ -87,7 +90,14 @@
         <item>Age</item>
     </string-array>
 
-    <!-- Strings belonging to the user list row XML: -->
+    <!-- Strings belonging to the user recyclerview row XML: -->
+    <string name="row_user_country_title">Country:</string>
+    <string name="row_users_city_title">City:</string>
+    <string name="row_users_address_title">Address:</string>
+    <string name="row_users_email_title">Email:</string>
+    <string name="row_users_phone_title">Phone Number:</string>
+
+    <string name="row_users_sample_country">Israel 1#</string>
     <string name="row_users_sample_name">Guest name</string>
     <string name="row_users_sample_age">X years old</string>
     <string name="row_users_sample_gender">Male/Female</string>
@@ -95,10 +105,4 @@
     <string name="row_users_sample_city">City Name</string>
     <string name="row_users_sample_email">someEmail123@gmail.com</string>
     <string name="row_users_sample_phone">051–111–1111</string>
-    <string name="frag_input_2_title"><b>Choose your location:</b></string>
-    <string name="frag_input_2_country_hint">Country</string>
-    <string name="frag_input_2_btn_location_txt">Pick Location!</string>
-    <string name="dialog_email_verification_title"><b>Verify your account</b></string>
-    <string name="dialog_email_verification_intructions">A verification email has been sent to you. Please press the link in it to verify your account</string>
-    <string name="dialog_email_verification_resend_email_txt">Resend email</string>
 </resources>
