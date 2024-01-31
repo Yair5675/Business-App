@@ -121,8 +121,11 @@ public class UsersHandler {
                         if (task.getResult().isEmpty()) {
                             onSuccessListener.onSuccess(null);
                         }
-                        else
+                        else {
+                            // Delete the saved firebase user:
+                            connectedUser.delete();
                             onFailureListener.onFailure(new Exception("Existing phone number"));
+                        }
                     }
                     else {
                         // Delete the saved firebase user:
