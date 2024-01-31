@@ -37,21 +37,17 @@
     <string name="frag_input1_first_name_input_hint">First Name</string>
     <string name="frag_input1_last_name_input_hint">Last Name</string>
     <string name="frag_input1_birthdate_input_hint">Your Birthday</string>
-    <string name="frag_input1_gender_btn_male_txt">Male</string>
-    <string name="frag_input1_gender_btn_female_txt">Female</string>
-    <string name="frag_input1_phone_hint">Phone Number</string>
-
-    <string name="frag_input1_location_info_txt"><b>Location Info:</b></string>
-    <string name="frag_input2_address_hint">Address</string>
-    <string name="frag_input2_city_hint">City</string>
+    <string name="frag_input1_email_input_hint">Email</string>
+    <string name="frag_input1_password_input_hint">Password</string>
 
 
     <!-- Strings belonging to the second input fragment: -->
+    <string name="frag_input_2_title"><b>Choose your location:</b></string>
+    <string name="frag_input2_phone_hint">Phone Number</string>
+    <string name="frag_input2_address_hint">Address</string>
+    <string name="frag_input2_city_hint">City</string>
     <string name="frag_input2_security_info_txt"><b>Security Info:</b></string>
     <string name="frag_input2_old_password_hint">Old Password</string>
-    <string name="frag_input2_email_input_hint">Email</string>
-    <string name="frag_input2_password_input_hint">Password</string>
-    <string name="frag_input2_confirm_password_input_hint">Confirm Password</string>
     <string name="frag_input2_phone_number_hint">Phone Number</string>
     <string name="frag_input2_location_search_hint">Search for a place</string>
 
@@ -65,8 +61,6 @@
     <!-- Strings belonging to the login dialog: -->
     <string name="dialog_login_title"><b>Log In</b></string>
     <string name="dialog_login_button_txt">Log In</string>
-    <string name="dialog_login_checkbox_txt">Remember me</string>
-
 
     <!-- Strings belonging to the about dialog: -->
     <string name="dialog_about_title"><b>About Us</b></string>
@@ -78,24 +72,19 @@
 
     <!-- Strings belonging to the users activity: -->
     <string name="act_users_title"><b>The App\'s Users:</b></string>
-    <string name="act_users_sort_by_txt">Sort by:</string>
-    <string name="act_users_query_hint">Search for a name</string>
-    <string-array name="act_users_spinner_sorting_options">
-        <item>Nothing</item>
-        <item>Name</item>
-        <item>Surname</item>
-        <item>Age</item>
-    </string-array>
 
-    <!-- Strings belonging to the user list row XML: -->
+    <!-- Strings belonging to the user recyclerview row XML: -->
+    <string name="row_user_country_title">Country:</string>
+    <string name="row_users_city_title">City:</string>
+    <string name="row_users_address_title">Address:</string>
+    <string name="row_users_email_title">Email:</string>
+    <string name="row_users_phone_title">Phone Number:</string>
+
+    <string name="row_users_sample_country">Israel 1#</string>
     <string name="row_users_sample_name">Guest name</string>
     <string name="row_users_sample_age">X years old</string>
-    <string name="row_users_sample_gender">Male/Female</string>
     <string name="row_users_sample_address">Some Address 99</string>
     <string name="row_users_sample_city">City Name</string>
     <string name="row_users_sample_email">someEmail123@gmail.com</string>
     <string name="row_users_sample_phone">051–111–1111</string>
-    <string name="frag_input_2_title"><b>Choose your location:</b></string>
-    <string name="frag_input_2_country_hint">Country</string>
-    <string name="frag_input_2_btn_location_txt">Pick Location!</string>
 </resources>

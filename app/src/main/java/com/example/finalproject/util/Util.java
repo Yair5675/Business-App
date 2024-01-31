@@ -16,12 +16,16 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.function.Function;
 
 public class Util {
@@ -138,9 +142,16 @@ public class Util {
     public static String fixNamingCapitalization(String name) {
         if (name == null || name.isEmpty())
             return "";
-        name = name.toLowerCase();
-        final char first = (char) (name.charAt(0) - 32);
-        return first + name.substring(1);
+        // Separate into words:
+        String[] words = name.split(" ");
+        for (int i = 0; i < words.length; i++) {
+            if (!words[i].isEmpty()) {
+                words[i] = words[i].toLowerCase();
+                final char first = (char) (words[i].charAt(0) - 32);
+                words[i] = first + words[i].substring(1);
+            }
+        }
+        return String.join(" ", words);
     }
 
     public static void setCircularImage(Context context, ImageView imageHolder, @DrawableRes int id) {
@@ -151,6 +162,34 @@ public class Util {
     public static void setCircularImage(Context context, ImageView imageHolder, Bitmap image) {
         final RequestOptions ro = new RequestOptions().circleCrop();
         Glide.with(context).load(image).apply(ro).into(imageHolder);
+    }
+
+    public static byte[] toByteArray(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return baos.toByteArray();
+    }
+
+    /**
+     * Creates a timestamp from a date.
+     * @param year The year.
+     * @param month The month INDEX (meaning, January is 0).
+     * @param day The day of the month.
+     * @return A Timestamp object of this date.
+     */
+    public static Timestamp getTimestampFromDate(int year, int month, int day) {
+        // Create a calendar and set it to the given date (at the start of the day):
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // Create the timestamp and return it:
+        return new Timestamp(Date.from(calendar.toInstant()));
     }
 
 

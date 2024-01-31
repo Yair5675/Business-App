@@ -14,24 +14,30 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.AppDatabase;
+import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.ImprovedTextWatcher;
 import com.example.finalproject.util.InputValidation;
 import com.example.finalproject.util.Result;
-import com.example.finalproject.database.entities.User;
 import com.example.finalproject.util.Util;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.function.Function;
 
 public class InputFragment1 extends Fragment {
-    // A reference to the app database:
-    private AppDatabase db;
+    // A reference to the database:
+    private OnlineDatabase db;
+
+    // A reference to the user whose details are being changed:
+    private final User user;
 
     // The input fields responsible for getting the name of the user:
     private TextInputLayout tilName, tilSurname;
@@ -42,7 +48,7 @@ public class InputFragment1 extends Fragment {
     private TextInputEditText etBirthdate;
 
     // The actual birthdate given by the user:
-    private LocalDate birthdate;
+    private Timestamp birthdate;
 
     // Input field responsible for receiving the user's email:
     private TextInputLayout tilEmail;
@@ -51,6 +57,9 @@ public class InputFragment1 extends Fragment {
     // The input field responsible for receiving the user's password:
     private TextInputLayout tilPassword;
     private TextInputEditText etPassword;
+
+    // The initial email of the user prior to the update:
+    private final String initialEmail;
 
     // A hashmap connecting input fields to their validation functions:
     private HashMap<EditText, Function<String, Result<Void, String>>> validationFunctions;
@@ -64,14 +73,14 @@ public class InputFragment1 extends Fragment {
     public static class PackagedInfo {
         public final String NAME;
         public final String SURNAME;
-        public final LocalDate BIRTHDATE;
+        public final Timestamp BIRTHDATE;
         public final String EMAIL;
         public final String PASSWORD;
 
         private PackagedInfo(
                 String NAME,
                 String SURNAME,
-                LocalDate BIRTHDATE,
+                Timestamp BIRTHDATE,
                 String EMAIL,
                 String PASSWORD
         ) {
@@ -81,6 +90,11 @@ public class InputFragment1 extends Fragment {
             this.EMAIL = EMAIL;
             this.PASSWORD = PASSWORD;
         }
+    }
+
+    public InputFragment1(@Nullable User connectedUser) {
+        this.user = connectedUser;
+        initialEmail = user == null ? null : user.getEmail();
     }
 
     private boolean areInputsEmpty() {
@@ -114,11 +128,6 @@ public class InputFragment1 extends Fragment {
 
             this.etPassword.setText(user.getPassword());
 
-            // TODO: When switching to Firestore this function will have to be changed. Idea: Create
-            //  an interface called "UserReactive", which will have two methods: one sets the UI
-            //  when the user is not connected and the other sets the UI when they are connected
-            //  (or updated)
-
             // Clear all errors:
             this.clearErrors();
         }
@@ -138,8 +147,8 @@ public class InputFragment1 extends Fragment {
         // Inflate the first registration fragment:
         final View parent = inflater.inflate(R.layout.fragment_input_1, container, false);
 
-        // Initialize a pointer to the database:
-        this.db = AppDatabase.getInstance(parent.getContext());
+        // Initialize the database:
+        this.db = OnlineDatabase.getInstance();
 
         // Initialize the edit texts and input layouts for them:
         this.initEditTexts(parent);
@@ -151,9 +160,9 @@ public class InputFragment1 extends Fragment {
         // Initialize the custom focus changing:
         this.initFocusChangingListeners();
 
-        // If a user is logged in, load the info from them:
-        if (AppDatabase.isUserLoggedIn())
-            this.loadInputsFromUser(AppDatabase.getConnectedUser());
+        // Check if a user was given, and if so load the info from them:
+        if (this.user != null)
+            this.loadInputsFromUser(this.user);
 
         this.clearErrors();
         return parent;
@@ -233,7 +242,15 @@ public class InputFragment1 extends Fragment {
         this.validationFunctions = new HashMap<>();
         this.validationFunctions.put(this.etName, InputValidation::validateFirstName);
         this.validationFunctions.put(this.etSurname, InputValidation::validateLastName);
-        this.validationFunctions.put(this.etEmail, InputValidation::validateEmail);
+        this.validationFunctions.put(this.etEmail, email -> {
+            // If the user has not validated their email address, don't let them change it at
+            // all:
+            if (initialEmail != null && !initialEmail.equals(email) && !db.isConnectedUserEmailVerified())
+                return Result.failure("Cannot change unverified email");
+
+            // Resume normal syntax validation:
+            return InputValidation.validateEmail(email);
+        });
         this.validationFunctions.put(this.etPassword, InputValidation::validatePassword);
 
         // List the input fields that need a text watcher:
@@ -274,9 +291,10 @@ public class InputFragment1 extends Fragment {
             YEAR = calendar.get(Calendar.YEAR);
         }
         else {
-            DAY = this.birthdate.getDayOfMonth();
-            MONTH = this.birthdate.getMonthValue() - 1;
-            YEAR = this.birthdate.getYear();
+            final ZonedDateTime dateTime = birthdate.toDate().toInstant().atZone(ZoneId.systemDefault());
+            DAY = dateTime.getDayOfMonth();
+            MONTH = dateTime.getMonthValue() - 1; // 1 - 12 so subtract 1
+            YEAR = dateTime.getYear();
         }
 
         // Creating the DatePicker object:
@@ -345,21 +363,20 @@ public class InputFragment1 extends Fragment {
     private class BirthdateDialogManager implements DatePickerDialog.OnDateSetListener {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            // Converting the date into a LocalDate object and saving it:
-            final LocalDate date = LocalDate.of(year, month + 1, day);
-            birthdate = date;
+            // Create a timestamp from the date (the month is 0-based already):
+            birthdate = Util.getTimestampFromDate(year, month, day);
 
             // Set the text of the birthdate input and remove its error (if there was one):
-            setBirthdateEtFromDate(date);
+            setBirthdateEtFromDate(birthdate);
 
             // Request focus for the next input field:
             Util.openKeyboard(requireContext(), etEmail);
         }
     }
 
-    private void setBirthdateEtFromDate(LocalDate date) {
+    private void setBirthdateEtFromDate(Timestamp date) {
         // Set the text of the birthdate input and remove its error (if there was one):
-        final String formattedDate = date.format(Constants.DATE_FORMATTER);
+        final String formattedDate = Constants.DATE_FORMAT.format(date.toDate());
         etBirthdate.setText(formattedDate);
         tilBirthdate.setError(null);
     }

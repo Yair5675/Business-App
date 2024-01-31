@@ -19,7 +19,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.entities.User;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.threads.GeocodingThread;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.GeocodingUtil;
@@ -47,14 +47,14 @@ import java.util.Locale;
 import java.util.function.Function;
 
 public class InputFragment2 extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+    // A reference to the user whose details are being changed:
+    private final User user;
+
     // The map that allows the user to choose a location:
     private GoogleMap map;
 
     // The view of that map:
     private MapView mapView;
-
-    // The search view allowing the user to search a location:
-    private SearchView svMap;
 
     // The layout containing all info about the selected location, will be shown only after
     // selection on the map:
@@ -119,8 +119,24 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
         }
     }
 
+    public InputFragment2(@Nullable User connectedUser) {
+        this.user = connectedUser;
+    }
+
     public void loadInputsFromUser(User user) {
-        // TODO: When switching to Firestore this function will have to be changed
+        // Check that the inputs are empty:
+        if (selectedAddress == null && selectedCity == null && selectedCountry == null) {
+            // Combine the address, city and country:
+            final String location = String.format(
+                    "%s, %s, %s", user.getAddress(), user.getCity(), user.getCountry()
+            );
+
+            // Use reverse geocoding:
+            this.loadFromLocation(location);
+
+            // Set the phone:
+            this.countryCodePicker.setFullNumber(user.getPhoneNumber());
+        }
     }
 
     @Nullable
@@ -161,53 +177,23 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
             this.mapView.getMapAsync(this);
         }
 
+        // If a user was given, use them to load their location:
+        if (this.user != null)
+            this.loadInputsFromUser(this.user);
+
         return parent;
     }
 
     private void initSearchView(View parent) {
-        this.svMap = parent.findViewById(R.id.fragInput2MapSearch);
+        // The search view allowing the user to search a location:
+        final SearchView svMap = parent.findViewById(R.id.fragInput2MapSearch);
 
-        this.svMap.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        svMap.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (!isMapsApiAvailable) {
-                    Toast.makeText(requireContext(), "Google Maps is not available", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
+                // Perform the reverse geocoding:
                 Log.d(TAG, "Search button pressed");
-
-                // Get the input from the user:
-                CharSequence locationInput = svMap.getQuery();
-
-                // Check if the location is empty:
-                if (locationInput == null || locationInput.length() == 0) {
-                    Toast.makeText(
-                            requireContext(),
-                            "Please enter a location",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                    return false;
-                }
-                Log.d(TAG, "Given query: " + locationInput);
-
-                // Create a handler that accepts the location returned from the thread and sets the
-                // map to it:
-                final Handler geoHandler = new Handler(
-                        Looper.getMainLooper(),
-                        InputFragment2.this::handleGeocoderResult
-                );
-
-                // Create the thread and start it:
-                final GeocodingThread geoThread = GeocodingThread.getGeocoderThread(
-                        geoHandler,
-                        locationInput.toString()
-                );
-
-                geoThread.start();
-
-                // Hide the location details layout and show the progress bar:
-                hideLocationInfo();
-
+                loadFromLocation(query);
                 return false;
             }
 
@@ -217,6 +203,43 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
                 return false;
             }
         });
+    }
+
+    private void loadFromLocation(String location) {
+        if (!isMapsApiAvailable) {
+            Toast.makeText(requireContext(), "Google Maps is not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check if the location is empty:
+        if (location == null || location.length() == 0) {
+            Toast.makeText(
+                    requireContext(),
+                    "Please enter a location",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        Log.d(TAG, "Given address: " + location);
+
+        // Create a handler that accepts the location returned from the thread and sets the
+        // map to it:
+        final Handler geoHandler = new Handler(
+                Looper.getMainLooper(),
+                InputFragment2.this::handleGeocoderResult
+        );
+
+        // Create the thread and start it:
+        final GeocodingThread geoThread = GeocodingThread.getGeocoderThread(
+                geoHandler,
+                location
+        );
+
+        geoThread.start();
+
+        // Hide the location details layout and show the progress bar:
+        hideLocationInfo();
     }
 
     /**
@@ -256,7 +279,21 @@ public class InputFragment2 extends Fragment implements OnMapReadyCallback, Goog
             this.loadFromResult(this.lastGeoResult);
 
         } else {
+            // Remove the progress bar and alert the user:
             Log.e(TAG, result.getError().toString());
+            this.pbLocationLoader.setVisibility(View.GONE);
+            if (result.getError().toString().equals(GeocodingUtil.NO_RESULTS_ERROR))
+                Toast.makeText(requireContext(), GeocodingUtil.NO_RESULTS_ERROR, Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+
+            // Remove the previously saved location:
+            this.selectedAddress = null;
+            this.selectedCity = null;
+            this.selectedCountry = null;
+
+            // Clear previous markers:
+            this.map.clear();
         }
 
         return false;

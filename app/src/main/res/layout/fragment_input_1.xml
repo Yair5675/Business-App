@@ -103,7 +103,7 @@
 
         android:layout_marginBottom="8dp"
 
-        android:hint="@string/frag_input2_email_input_hint"
+        android:hint="@string/frag_input1_email_input_hint"
 
         app:layout_constraintEnd_toEndOf="parent"
 
@@ -138,7 +138,7 @@
         android:layout_height="wrap_content"
 
         android:layout_marginBottom="8dp"
-        android:hint="@string/frag_input2_password_input_hint"
+        android:hint="@string/frag_input1_password_input_hint"
 
         app:passwordToggleEnabled="true">
 

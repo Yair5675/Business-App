@@ -67,11 +67,17 @@
 
                 android:text="@string/act_input_cancel_btn_text"
 
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
 
                 android:paddingHorizontal="10dp"
                 android:drawableStart="@drawable/cancel_symbol"
                 android:drawablePadding="8dp"
+                />
+
+            <ProgressBar
+                android:id="@+id/actInputProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 />
 
             <android.widget.Button
@@ -81,6 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
+                android:layout_marginStart="8dp"
                 android:drawableEnd="@drawable/arrow_forward"
                 android:drawablePadding="8dp"
                 android:paddingHorizontal="10dp"

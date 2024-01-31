@@ -1,13 +1,11 @@
 package com.example.finalproject.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,26 +14,32 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.SharedPreferenceHandler;
-import com.example.finalproject.database.entities.City;
-import com.example.finalproject.database.entities.User;
-import com.example.finalproject.util.Constants;
-import com.example.finalproject.util.Result;
+import com.example.finalproject.custom_views.LoginDialog;
+import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Util;
 
-import java.io.FileNotFoundException;
 import java.util.Locale;
 
 import pl.droidsonroids.gif.GifImageButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    // A reference to the online database:
+    private OnlineDatabase db;
+
+    // The currently connected user (null if no user is connected):
+    private User connectedUser;
 
     // The profile picture of the user:
     private ImageView imgUser;
+
+    // The progress bar that will appear when the activity is loading:
+    private ProgressBar pbActivityLoading;
 
     // The textView which greets the user:
     private TextView tvUserGreeting;
@@ -51,8 +55,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GifImageButton btnDeleteAccount;
     private TextView tvDeleteAccountDesc;
 
-    // A reference to the shared preferences handler:
-    private SharedPreferenceHandler spHandler;
+    // The login dialog (it is reusable so it's an attribute to save resources):
+    private LoginDialog loginDialog;
+
+    // Tag for debugging purposes:
+    public static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,36 +69,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Loading the various views of the activity:
         this.imgUser = findViewById(R.id.actMainImgUser);
         this.imgAdminCrown = findViewById(R.id.actMainImgAdminCrown);
+        this.pbActivityLoading = findViewById(R.id.actMainPbActivityLoading);
         this.tvUserGreeting = findViewById(R.id.actMainTvUserGreeting);
         this.btnEditAccount = findViewById(R.id.actMainImgBtnEdit);
         this.btnDeleteAccount = findViewById(R.id.actMainImgBtnDelete);
         this.tvEditAccountDesc = findViewById(R.id.actMainTvEditBtn);
         this.tvDeleteAccountDesc = findViewById(R.id.actMainTvDeleteBtn);
+
+        // Initialize the login dialog:
+        this.loginDialog = new LoginDialog(this, getResources(), this::initWithUser);
         
         // Initialize the database reference:
-        final AppDatabase db = AppDatabase.getInstance(this);
+        this.db = OnlineDatabase.getInstance();
 
-        // Initialize the shared preferences handler:
-        this.spHandler = SharedPreferenceHandler.getInstance(this);
+        // Show the progress bar until the activity is fully initialized:
+        this.pbActivityLoading.setVisibility(View.VISIBLE);
 
-        // Check if a user is saved in the shared preference for automatic log in:
-        final Result<Long, String> idResult = this.spHandler.getLong("id");
-        if (idResult.isOk())
-            AppDatabase.connectUser(db.userDao().getUserById(idResult.getValue()));
+        // Try to initialize with a connected user (and initialize without one if no user is
+        // connected):
+        this.db.getCurrentUser(this::initWithUser, e -> {
+            // Log the error:
+            Log.e(TAG, "Failed to get connected user", e);
 
-        // Initializing the activity according to if a user is logged in:
-        this.userConnectivityChanged();
+            // Activate the activity without a user:
+            initWithoutUser();
+        });
 
         // Set OnClickListeners:
         this.btnEditAccount.setOnClickListener(this);
         this.btnDeleteAccount.setOnClickListener(this);
 
-        // Load countries if they hadn't been loaded already:
-        this.loadCities();
-
     }
 
-    private void initDefault() {
+    private void initWithUser(User user) {
+        // Save the user:
+        this.connectedUser = user;
+
+        // Fix the user's email:
+        this.db.fixUserEmail(this.connectedUser);
+
+        // Change the greeting:
+        this.tvUserGreeting.setText(
+                String.format(
+                        Locale.getDefault(),
+                        "Hello, %s!",
+                        user.getName()
+                )
+        );
+
+        // Show the user's image:
+        this.db.loadUserImgFromStorage(this, user, this.imgUser, R.drawable.guest);
+
+        // Show the crown image if the user is the admin:
+        this.imgAdminCrown.setVisibility(user.isAdmin() ? View.VISIBLE : View.GONE);
+
+        // Show the 'Edit Account' and 'Delete Account' buttons:
+        this.changeButtonsVisibility(View.VISIBLE);
+
+        // Hide the progress bar:
+        this.pbActivityLoading.setVisibility(View.GONE);
+
+        // Update the menu:
+        supportInvalidateOptionsMenu();
+    }
+
+    private void initWithoutUser() {
+        // Set the user to null:
+        this.connectedUser = null;
+
         // Setting the default picture for guests:
         Util.setCircularImage(this, this.imgUser, R.drawable.guest);
 
@@ -102,10 +147,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.imgAdminCrown.setVisibility(View.GONE);
 
         // Make the 'Edit Account' and 'Delete Account' disappear:
-        this.btnEditAccount.setVisibility(View.GONE);
-        this.btnDeleteAccount.setVisibility(View.GONE);
-        this.tvEditAccountDesc.setVisibility(View.GONE);
-        this.tvDeleteAccountDesc.setVisibility(View.GONE);
+        this.changeButtonsVisibility(View.GONE);
+
+        // Hide the progress bar:
+        this.pbActivityLoading.setVisibility(View.GONE);
+
+        supportInvalidateOptionsMenu();
     }
 
     @Override
@@ -115,9 +162,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getMenuInflater().inflate(R.menu.users_menu, menu);
 
         // Hide certain items according to if a user is logged in:
-        final boolean isUserLoggedIn = AppDatabase.isUserLoggedIn();
+        final boolean isUserLoggedIn = this.db.isUserSignedIn();
         menu.findItem(R.id.menuUsersItemSignUp).setVisible(!isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemSignIn).setVisible(!isUserLoggedIn);
+        menu.findItem(R.id.menuUsersItemVerification).setVisible(isUserLoggedIn && !this.db.isConnectedUserEmailVerified());
         menu.findItem(R.id.menuUsersItemShowUsers).setVisible(isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemDisconnect).setVisible(isUserLoggedIn);
 
@@ -137,15 +185,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
             finish();
         }
-        // If they want to log in to a user, create the login dialog:
+        // If they want to log in to a user, show the login dialog:
         else if (ID == R.id.menuUsersItemSignIn)
-            activateSignInPage();
+            this.loginDialog.show();
 
         // If they want to log out:
         else if (ID == R.id.menuUsersItemDisconnect) {
-            // Disconnect and delete the shared preferences:
-            AppDatabase.disconnect();
-            this.spHandler.remove("id");
+            // Disconnect the user:
+            this.db.disconnectUser();
+            this.initWithoutUser();
+            supportInvalidateOptionsMenu();
+        }
+
+        // If the want to verify the email:
+        else if (ID == R.id.menuUsersItemVerification) {
+            this.db.sendVerificationEmail(task -> {
+                if (task.isSuccessful())
+                    Toast.makeText(this, "Verification email sent!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Failed to send verification email", Toast.LENGTH_SHORT).show();
+            });
         }
 
         // If they want to read the "About Us" dialog:
@@ -155,12 +214,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // If they want to see the users:
         else if (ID == R.id.menuUsersItemShowUsers) {
+            // Send the activity the current user:
             final Intent intent = new Intent(this, UsersActivity.class);
+            intent.putExtra("user", connectedUser);
             startActivity(intent);
             finish();
         }
-
-        userConnectivityChanged();
 
         return true;
     }
@@ -184,60 +243,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialog.show();
     }
 
-    private void activateSignInPage() {
-        // TODO: Open up the sign in page using FireBase authentication built-in UI
-    }
-
-    public void userConnectivityChanged() {
-        if (AppDatabase.isUserLoggedIn())
-            initWithUser();
-        else
-            initDefault();
-        supportInvalidateOptionsMenu();
-    }
-
-    private void initWithUser() {
-        // Get the connected user:
-        final User user = AppDatabase.getConnectedUser();
-
-        // Get the image bitmap:
-        final Result<Bitmap, FileNotFoundException> imageResult = Util.getImage(
-                this,
-                user.getPictureFileName()
-        );
-
-        // Set it as the user's photo if it was loaded successfully:
-        if (imageResult.isOk())
-            Util.setCircularImage(this, this.imgUser, imageResult.getValue());
-        else
-            Log.e("MainActivity - initWithUser", "Could not load photo: " + imageResult.getError());
-
-        // Change the greeting:
-        this.tvUserGreeting.setText(
-                String.format(
-                        Locale.getDefault(),
-                        "Hello, %s!",
-                        user.getName()
-                )
-        );
-
-        // Show the admin crown if it is an admin:
-        this.imgAdminCrown.setVisibility(user.isAdmin() ? View.VISIBLE : View.GONE);
-
-        // Show the 'Edit Account' and 'Delete Account' buttons:
-        this.btnEditAccount.setVisibility(View.VISIBLE);
-        this.btnDeleteAccount.setVisibility(View.VISIBLE);
-        this.tvEditAccountDesc.setVisibility(View.VISIBLE);
-        this.tvDeleteAccountDesc.setVisibility(View.VISIBLE);
-    }
-
     @Override
     public void onClick(View view) {
         // Getting the ID:
         final int ID = view.getId();
 
         if (ID == R.id.actMainImgBtnEdit) {
-            Intent intent = new Intent(this, InputActivity.class);
+            // Open the input activity but send the connected user in the intent:
+            Intent intent = new Intent(MainActivity.this, InputActivity.class);
+            intent.putExtra("user", this.connectedUser);
             startActivity(intent);
             finish();
         }
@@ -247,56 +261,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void changeButtonsVisibility(int visibility) {
+        this.btnEditAccount.setVisibility(visibility);
+        this.btnDeleteAccount.setVisibility(visibility);
+        this.tvEditAccountDesc.setVisibility(visibility);
+        this.tvDeleteAccountDesc.setVisibility(visibility);
+    }
+
     private void activateDeleteDialog() {
-        // Define the onClickListener for the dialog:
-        final DialogInterface.OnClickListener onClickListener =
-                (dialogInterface, buttonClicked) -> {
-                    if (buttonClicked == DialogInterface.BUTTON_POSITIVE) {
-                        // Disconnect the user:
-                        final User connectedUser = AppDatabase.getConnectedUser();
-                        AppDatabase.disconnect();
-
-                        // Delete them from the database:
-                        final Result<Void, String> delResult = connectedUser.deleteUser(this);
-                        if (delResult.isErr())
-                            Log.e("Main delete user", delResult.getError());
-
-                        // Delete them from the shared preferences:
-                        this.spHandler.remove("id");
-
-                        // Refresh the activity:
-                        userConnectivityChanged();
-                    }
-                };
-
-        // Build the dialog:
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Delete Account")
+        // Create the delete dialog:
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Delete account")
                 .setMessage("Are you sure you want to delete your account?")
-                .setPositiveButton("Confirm", onClickListener)
-                .setNegativeButton("Cancel", onClickListener)
-                .setCancelable(false);
+                .setPositiveButton("Delete", (dialogInterface, i) -> {
+                    // Make the buttons disappear and show the progress bar:
+                    changeButtonsVisibility(View.GONE);
+                    pbActivityLoading.setVisibility(View.VISIBLE);
+
+                    // Delete the account:
+                    this.db.deleteCurrentUser(this.connectedUser, unused -> {
+                        initWithoutUser();
+                        Toast.makeText(MainActivity.this, "Your account was deleted", Toast.LENGTH_SHORT).show();
+                    }, exception -> {
+                        changeButtonsVisibility(View.VISIBLE);
+                        pbActivityLoading.setVisibility(View.GONE);
+                        Log.e(TAG, "Failed to delete current user", exception);
+                        Toast.makeText(this, "Failed to delete your account", Toast.LENGTH_SHORT).show();
+                    });
+                })
+                .setNegativeButton("Cancel", null);
 
         // Show the dialog:
         builder.create().show();
     }
 
-    private void loadCities() {
-        // Load cities only if they haven't been loaded already:
-        final AppDatabase db = AppDatabase.getInstance(this);
-        if (db.cityDao().getCitiesCount() == 0) {
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-            // Load the cities on a separate thread:
-            final Thread thread = new Thread(() -> {
-                for (String cityName : Constants.CITIES) {
-                    // Create the city and add it:
-                    final City city = new City(cityName);
-
-                    db.cityDao().insert(city);
+        // Before exiting the activity, check if the input activity sent a new email for the user:
+        final Intent intent = getIntent();
+        if (this.connectedUser != null) {
+            if (intent.hasExtra("new email")) {
+                final String newEmail = intent.getStringExtra("new email");
+                if (newEmail != null) {
+                    this.db.logUserIn(
+                            newEmail,
+                            this.connectedUser.getPassword(),
+                            user -> connectedUser = user,
+                            e -> Log.e(TAG, "Failed to log in with new email", e)
+                    );
                 }
-            });
-
-            thread.start();
+            }
+            // If there is no new email, refresh the user:
+            else {
+                this.db.refreshUser(
+                        this.connectedUser.getPassword(),
+                        user -> connectedUser = user,
+                        e -> Log.e(TAG, "Failed to refresh user", e)
+                );
+            }
         }
     }
 }

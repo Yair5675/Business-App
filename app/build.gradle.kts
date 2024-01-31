@@ -33,6 +33,7 @@ android {
             )
 
             buildConfigField("String", "MAPS_API_KEY", "\"${apiKeysProperties["MAPS_API_KEY"]}\"")
+            buildConfigField("String", "ADMIN_PHONE_NUMBER", "\"${apiKeysProperties["ADMIN_PHONE_NUMBER"]}\"")
         }
     }
     compileOptions {
@@ -50,6 +51,7 @@ dependencies {
     // Gifs and Glide:
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.22")
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     // Country code picker:
     implementation("com.hbb20:ccp:2.5.0")
@@ -65,6 +67,15 @@ dependencies {
 
     // Firestore library:
     implementation("com.google.firebase:firebase-firestore")
+
+    // Firebase UI for cloud firestore:
+    implementation("com.firebaseui:firebase-ui-firestore:8.0.2")
+
+    // Firebase storage:
+    implementation("com.google.firebase:firebase-storage")
+
+    // Firebase storage UI (to work with Glide):
+    implementation("com.firebaseui:firebase-ui-storage:7.2.0")
 
     // Google maps services:
     implementation("org.slf4j:slf4j-simple:1.7.25")

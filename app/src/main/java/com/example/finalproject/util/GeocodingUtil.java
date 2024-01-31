@@ -11,6 +11,8 @@ import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
 
 public class GeocodingUtil {
+    public static final String NO_RESULTS_ERROR = "No location was found";
+
     public static void logResult(GeocodingResult result, String tag) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Log.i(tag, gson.toJson(result));

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,22 +24,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.entities.User;
-import com.example.finalproject.util.Constants;
+import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Permissions;
-import com.example.finalproject.util.Result;
 import com.example.finalproject.util.Util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 
 public class InputFragment3 extends Fragment implements View.OnClickListener {
+    public static final String TAG = "InputFragment3";
+    // A reference to the database:
+    private final OnlineDatabase db;
+
+    // A reference to the user whose details are being changed:
+    private final User user;
 
     // The imageView which displays the image of the user:
     private ImageView imgUser;
@@ -49,14 +47,8 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
     private Uri uriPhoto;
     private Bitmap bitmapPhoto;
 
-    // The file-name of the user's image:
-    private String imgFileName;
-
     // The method through which the photo was taken (camera or gallery):
     private PhotoTakenFrom photoTakenFrom;
-
-    // The phone number of the user, will be involved in creating a unique file name:
-    private final String userPhoneNumber;
 
     private enum PhotoTakenFrom {
         CAMERA,
@@ -65,28 +57,25 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
 
     private ActivityResultLauncher<Intent> imageReceiver;
 
-    public InputFragment3(String userPhoneNumber) {
-        this.userPhoneNumber = userPhoneNumber;
+    public InputFragment3(@Nullable User connectedUser) {
+        this.user = connectedUser;
+        this.db = OnlineDatabase.getInstance();
     }
 
     public void loadInputsFromUser(User user) {
-        // Check that there is not image loaded:
-        if (this.imgFileName == null) {
-            // Load the image bitmap from the user:
-            final Result<Bitmap, FileNotFoundException> result = Util.getImage(
-                    requireContext(),
-                    user.getPictureFileName()
-            );
-            if (result.isOk()) {
-                this.bitmapPhoto = result.getValue();
-                Util.setCircularImage(this.requireContext(), this.imgUser, this.bitmapPhoto);
-                this.imgFileName = user.getPictureFileName();
+        // Make sure no other bitmap was saved:
+        if (this.bitmapPhoto == null)
+            // Get the bitmap from the database and set it:
+            this.db.getUserImage(user, userImage -> {
+                // Save the user's image:
+                bitmapPhoto = userImage;
 
-            } else {
-                Log.e("InputFragment3 load user", result.getError().toString());
-                Toast.makeText(requireActivity(), "Couldn't load image", Toast.LENGTH_SHORT).show();
-            }
-        }
+                // Set the photo:
+                Util.setCircularImage(requireContext(), imgUser, userImage);
+            }, e -> {
+                Log.e(TAG, "Failed to download image", e);
+                Toast.makeText(requireContext(), "Couldn't load image", Toast.LENGTH_SHORT).show();
+            });
     }
 
     @Nullable
@@ -96,7 +85,7 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
         final View parent = inflater.inflate(R.layout.fragment_input_3, container, false);
 
         // Initialize the image receiver:
-         this.imageReceiver = registerForActivityResult(
+        this.imageReceiver = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK)
@@ -116,9 +105,9 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
         parent.findViewById(R.id.fragInput3BtnUploadCamera).setOnClickListener(this);
         parent.findViewById(R.id.fragInput3BtnUploadGallery).setOnClickListener(this);
 
-        // If a user is connected, load the inputs from them:
-        if (AppDatabase.isUserLoggedIn())
-            this.loadInputsFromUser(AppDatabase.getConnectedUser());
+        // Check if a connected user was given:
+        if (this.user != null)
+            this.loadInputsFromUser(this.user);
 
         return parent;
     }
@@ -203,12 +192,8 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
 
         // Load bitmap from the URI:
         if (this.loadBitmapFromUri()) {
-            // Try to save the bitmap:
-            if (this.saveUserImage())
-                // Set it as the image of the user if it was saved properly:
-                Util.setCircularImage(this.requireContext(), this.imgUser, this.bitmapPhoto);
-            else
-                Toast.makeText(requireContext(), "Could not load the picture", Toast.LENGTH_SHORT).show();
+            // Set it as the image of the user if it was loaded properly:
+            Util.setCircularImage(this.requireContext(), this.imgUser, this.bitmapPhoto);
         }
         else
             Toast.makeText(requireContext(), "Could not load the picture", Toast.LENGTH_SHORT).show();
@@ -218,85 +203,29 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
     private void handleCameraPhoto() {
         // Load bitmap right away because the URI is already set:
         if (this.loadBitmapFromUri()) {
-            // Try to save the bitmap:
-            if (this.saveUserImage())
-                // Set it as the image of the user if it was saved properly:
-                Util.setCircularImage(this.requireContext(), this.imgUser, this.bitmapPhoto);
-            else
-                Toast.makeText(requireContext(), "Could not load the picture", Toast.LENGTH_SHORT).show();
+            // Set it as the image of the user if it was loaded properly:
+            Util.setCircularImage(this.requireContext(), this.imgUser, this.bitmapPhoto);
         }
         else
             Toast.makeText(requireContext(), "Could not load the picture", Toast.LENGTH_SHORT).show();
     }
 
     /**
-     * Saves the user's chosen picture in the images directory for later use.
-     * @return True if the image was saved successfully, false otherwise.
-     */
-    private boolean saveUserImage() {
-        // If another image was saved beforehand, delete it:
-        if (this.imgFileName != null)
-            Util.deleteImage(requireContext(), this.imgFileName);
-
-        // Define a unique filename according to the format specified by the Constants class:
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS");
-        this.imgFileName = Constants.IMAGE_FILE_NAME_FORMAT
-                .replace(Constants.IMAGE_FILE_NAME_PHONE_TAG, userPhoneNumber)
-                .replace(Constants.IMAGE_FILE_NAME_TIME_TAG, LocalDateTime.now().format(formatter));
-
-        // Create a directory for the photos:
-        final File externalStorage = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        final File dir = new File(externalStorage, Constants.IMAGES_FOLDER_NAME);
-
-        // Create it only if it doesn't exist already:
-        if (!dir.exists()) {
-            final boolean createdDir = dir.mkdirs();
-            Log.i("Created directory", Boolean.toString(createdDir));
-        }
-
-        Log.i("path to directory", dir.getAbsolutePath());
-
-        // Save the image in the directory:
-        final File dest = new File(dir, this.imgFileName);
-        try {
-            // Prepare the image and the output stream to save the file:
-            final FileOutputStream outputStream = new FileOutputStream(dest);
-            this.bitmapPhoto.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
-
-            // Save the file and close the output stream:
-            outputStream.close();
-
-            return true;
-        } catch (IOException e) {
-            Log.e("InputFragment3 - saveUserImage", e.toString());
-
-            return false;
-        }
-    }
-
-    /**
-     * Checks all inputs and their validity. If some inputs are invalid, the function will present
-     * an error to the user (if one wasn't presented already).
+     * Checks that the user actually picked an image and shows a toast message in case they did not
      * @param context The context of the activity that holds the fragment. Will be used for toast
      *                messages.
-     *           img0585570004-2023-12-06-15-45-06-618.png
-     * @return True if all inputs are valid, False otherwise.
+     * @return True if the user picked an image, False otherwise.
      */
     public boolean areInputsValid(Context context) {
-        // Check that the file name is loaded, and create a toast message if not:
-        final boolean isImageLoaded = this.imgFileName != null;
+        // Check that the bitmap file is saved:
+        final boolean isImageLoaded = this.bitmapPhoto != null;
         if (!isImageLoaded)
             Toast.makeText(context, "Please choose a picture", Toast.LENGTH_SHORT).show();
 
         return isImageLoaded;
     }
 
-    /**
-     * Returns the name of the file that the user chose as their profile picture.
-     * Pay attention this getter should only be called after calling the 'areInputsValid' function.
-     * @return The name of the file that the user chose as their profile picture.
-     */
-    public String getImgFileName() {
-        return this.imgFileName;
+    public Bitmap getBitmapPhoto() {
+        return this.bitmapPhoto;
     }
 }

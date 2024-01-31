@@ -6,22 +6,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputFragment1;
 import com.example.finalproject.fragments.input.InputFragment2;
 import com.example.finalproject.fragments.input.InputFragment3;
-import com.example.finalproject.database.AppDatabase;
-import com.example.finalproject.database.entities.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
+import java.io.Serializable;
 
 public class InputActivity extends AppCompatActivity implements View.OnClickListener {
     // A pointer to the database:
-    private AppDatabase db;
+    private OnlineDatabase db;
+
+    // The user whose info is being edited (if a new user is registered this field will be null):
+    private User user;
 
     // Whether the input activity is registering a new user or updating the details of an existing
     // user:
@@ -29,9 +40,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
     // The current page displayed:
     private int currentPage;
-
-    // The user created in the activity:
-    private User user;
 
     // The three pages of the input form:
     private InputFragment1 firstPage;
@@ -41,10 +49,13 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     // The inputs from the three pages:
     private InputFragment1.PackagedInfo firstPageInfo;
     private InputFragment2.PackagedInfo secondPageInfo;
-    private String userImgFileName;
+    private Bitmap userImg;
 
     // The buttons that go forwards or backwards in the pages:
     private Button btnNext, btnPrev;
+
+    // The progress bar that will be shown while the user's details are saved in the database:
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,18 +63,20 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_input);
 
         // Initialize the database:
-        this.db = AppDatabase.getInstance(this);
+        this.db = OnlineDatabase.getInstance();
 
-        // If a user was already connected, the activity will update their details. If not, it will
-        // register a new user:
-        this.isRegisterActivity = !AppDatabase.isUserLoggedIn();
+        // Try to load the user from the intent and check if this is a register activity:
+        this.loadUserFromIntent();
+        this.isRegisterActivity = this.user == null;
+
+        // Set the title accordingly:
         final TextView title = findViewById(R.id.actInputTitle);
-
-        this.user = isRegisterActivity ? new User() : AppDatabase.getConnectedUser();
         title.setText(isRegisterActivity ? R.string.act_input_title_register : R.string.act_input_title_update);
 
-        // Initializing the pages (third one will be initialized later):
-        this.firstPage = new InputFragment1();
+        // Initializing the pages and giving the user to them (it's ok if we are giving null):
+        this.firstPage = new InputFragment1(this.user);
+        this.secondPage = new InputFragment2(this.user);
+        this.thirdPage = new InputFragment3(this.user);
 
         // Initialize the next and previous buttons:
         this.btnNext = findViewById(R.id.actInputBtnNextOrRegister);
@@ -71,12 +84,29 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.btnNext.setOnClickListener(this);
         this.btnPrev.setOnClickListener(this);
 
+        // Initialize the progress bar and make it disappear:
+        this.progressBar = findViewById(R.id.actInputProgressBar);
+        this.progressBar.setVisibility(View.GONE);
+
         // Loading the first page:
         this.currentPage = 1;
         this.loadFirstPage(-1, -1);
 
         // Implement custom back navigation when the user presses the back button:
         this.loadBackButtonCallback();
+    }
+
+    private void loadUserFromIntent() {
+        // Get the intent:
+        final Intent intent = getIntent();
+
+        // Check if a user was given:
+        if (intent.hasExtra("user")) {
+            // Perform type checking (just in case):
+            Serializable user = intent.getSerializableExtra("user");
+            if (user instanceof User)
+                this.user = (User) user;
+        }
     }
 
     private void loadBackButtonCallback() {
@@ -131,7 +161,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
                     // Load the next page:
                     this.currentPage++;
-                    this.loadThirdPage(this.secondPageInfo.PHONE);
+                    this.loadThirdPage();
                 }
                 break;
             }
@@ -139,7 +169,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 // Validate the input:
                 if (this.thirdPage.areInputsValid(this)) {
                     // Get the info:
-                    this.userImgFileName = this.thirdPage.getImgFileName();
+                    this.userImg = this.thirdPage.getBitmapPhoto();
 
                     // Confirm the details and create a new user/update an existing one:
                     this.finishInputs();
@@ -173,10 +203,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loadSecondPage(@AnimRes int enter, @AnimRes int exit) {
-        // Creating the second page if it hadn't been created already:
-        if (this.secondPage == null)
-            this.secondPage = new InputFragment2();
-
         // Get a fragment transaction object:
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -199,11 +225,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.btnNext.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_forward, 0);
     }
 
-    private void loadThirdPage(String userPhoneNumber) {
-        // Creating the third page if it hadn't been created already:
-        if (this.thirdPage == null)
-            this.thirdPage = new InputFragment3(userPhoneNumber);
-
+    private void loadThirdPage() {
         // Get a fragment transaction object:
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -240,29 +262,149 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void finishInputs() {
-        // Enter the inputs to the user:
-        // TODO: Change details after all fragments are updated
-        this.user.setName(this.firstPageInfo.NAME);
-        this.user.setSurname(this.firstPageInfo.SURNAME);
-        this.user.setBirthdate(this.firstPageInfo.BIRTHDATE);
-        this.user.setPhoneNumber(this.secondPageInfo.PHONE);
-        this.user.setEmail(this.firstPageInfo.EMAIL);
-        this.user.setPassword(this.firstPageInfo.PASSWORD);
-
-        this.user.setPictureFileName(this.userImgFileName);
-
-        // If the user is new, add them to the database. If not, update them:
+        // Register or update the user:
         if (this.isRegisterActivity)
-            this.db.userDao().insert(this.user);
+            this.registerNewUser();
         else
-            this.db.userDao().update(this.user);
+            this.updateUser();
+    }
 
-        // Signal the user they registered successfully:
-        Toast.makeText(this, "Registered Successfully!", Toast.LENGTH_SHORT).show();
+    private void updateUser() {
+        // Save the old password:
+        final String oldPassword = this.user.getPassword();
 
-        // Return to the main activity:
-        final Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        // Set the new information in the user's object (except for the new email):
+        this.user
+                .setName(firstPageInfo.NAME)
+                .setSurname(firstPageInfo.SURNAME)
+                .setBirthdate(firstPageInfo.BIRTHDATE)
+                .setPassword(firstPageInfo.PASSWORD)
+                .setPhoneNumber(secondPageInfo.PHONE)
+                .setCountry(secondPageInfo.COUNTRY)
+                .setCity(secondPageInfo.CITY)
+                .setAddress(secondPageInfo.ADDRESS)
+        ;
+
+        // Initialize callbacks:
+        OnSuccessListener<Void> successListener = unused -> {
+            // Signal the user their info was updated successfully:
+            Toast.makeText(this, "Updated Successfully!", Toast.LENGTH_SHORT).show();
+
+            // Make the progress bar disappear and the buttons re-appear:
+            this.progressBar.setVisibility(View.GONE);
+            this.btnNext.setVisibility(View.VISIBLE);
+            this.btnPrev.setVisibility(View.VISIBLE);
+
+            // Go to the main activity and send the new email to them:
+            final Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("new email", firstPageInfo.EMAIL);
+            startActivity(intent);
+            finish();
+        };
+        OnFailureListener failureListener = exception -> {
+            // Log the error and signal the user something went wrong:
+            Log.e("InputActivity", "Failed to update user", exception);
+
+            // Check if the email is used by another user:
+            if (exception instanceof FirebaseAuthUserCollisionException)
+                Toast.makeText(
+                        this,
+                        "The email you entered is already used by another user",
+                        Toast.LENGTH_SHORT
+                ).show();
+            else if (exception.getMessage() != null && exception.getMessage().equals("Existing phone number"))
+                Toast.makeText(
+                        this,
+                        "The phone number you entered is already used by another user",
+                        Toast.LENGTH_SHORT
+                ).show();
+            else {
+                Log.e("InputActivity", "User update failed", exception);
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+
+            // Make the progress bar disappear and the buttons re-appear:
+            this.progressBar.setVisibility(View.GONE);
+            this.btnNext.setVisibility(View.VISIBLE);
+            this.btnPrev.setVisibility(View.VISIBLE);
+        };
+
+        // Show the progress bar and hide the buttons:
+        this.progressBar.setVisibility(View.VISIBLE);
+        this.btnNext.setVisibility(View.GONE);
+        this.btnPrev.setVisibility(View.GONE);
+
+        // Update the email if it is different:
+        if (!user.getEmail().equals(firstPageInfo.EMAIL))
+            this.db.updateUserEmail(
+                    user.getEmail(), firstPageInfo.EMAIL, oldPassword,
+                    unused -> Log.d("InputActivity", "Sent verification email"),
+                    e -> Log.e("InputActivity", "Failed to change email", e)
+            );
+
+        // Update the user in the database
+        this.db.updateUser(user, user.getEmail(), oldPassword, this.userImg, successListener, failureListener);
+    }
+
+    private void registerNewUser() {
+        // Create the user object:
+        final User user = new User();
+        user
+                .setName(firstPageInfo.NAME)
+                .setSurname(firstPageInfo.SURNAME)
+                .setEmail(firstPageInfo.EMAIL)
+                .setBirthdate(firstPageInfo.BIRTHDATE)
+                .setPassword(firstPageInfo.PASSWORD)
+                .setCountry(secondPageInfo.COUNTRY)
+                .setCity(secondPageInfo.CITY)
+                .setAddress(secondPageInfo.ADDRESS)
+                .setPhoneNumber(secondPageInfo.PHONE)
+        ;
+
+        // Initialize callbacks:
+        OnSuccessListener<Void> successListener = unused -> {
+            // Signal the user they registered successfully:
+            Toast.makeText(this, "Registered Successfully!", Toast.LENGTH_SHORT).show();
+
+            // Make the progress bar disappear and the buttons re-appear:
+            this.progressBar.setVisibility(View.GONE);
+            this.btnNext.setVisibility(View.VISIBLE);
+            this.btnPrev.setVisibility(View.VISIBLE);
+
+            // Send a verification email:
+            this.db.sendVerificationEmail();
+
+            // Go to the main activity:
+            final Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        };
+        OnFailureListener failureListener = exception -> {
+            // Log the error and signal the user something went wrong:
+            Log.e("InputActivity", "Failed to register user", exception);
+
+            // Check if the email already exists:
+            if (exception instanceof FirebaseAuthUserCollisionException)
+                Toast.makeText(this, "Email is already registered", Toast.LENGTH_SHORT).show();
+            else if (exception.getMessage() != null && exception.getMessage().equals("Existing phone number"))
+                Toast.makeText(this, "Phone is already registered", Toast.LENGTH_SHORT).show();
+            else {
+                Log.e("InputActivity", "Failed to register user", exception);
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+
+            // Make the progress bar disappear and the buttons re-appear:
+            this.progressBar.setVisibility(View.GONE);
+            this.btnNext.setVisibility(View.VISIBLE);
+            this.btnPrev.setVisibility(View.VISIBLE);
+        };
+
+        // Show the progress bar and hide the buttons:
+        this.progressBar.setVisibility(View.VISIBLE);
+        this.btnNext.setVisibility(View.GONE);
+        this.btnPrev.setVisibility(View.GONE);
+
+        // Save them in the database:
+        this.db.addNewUser(user, this.userImg, successListener, failureListener);
     }
 }
