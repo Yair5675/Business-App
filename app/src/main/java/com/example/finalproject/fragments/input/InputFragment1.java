@@ -58,6 +58,9 @@ public class InputFragment1 extends Fragment {
     private TextInputLayout tilPassword;
     private TextInputEditText etPassword;
 
+    // The initial email of the user prior to the update:
+    private final String initialEmail;
+
     // A hashmap connecting input fields to their validation functions:
     private HashMap<EditText, Function<String, Result<Void, String>>> validationFunctions;
 
@@ -91,6 +94,7 @@ public class InputFragment1 extends Fragment {
 
     public InputFragment1(@Nullable User connectedUser) {
         this.user = connectedUser;
+        initialEmail = user == null ? null : user.getEmail();
     }
 
     private boolean areInputsEmpty() {
@@ -241,7 +245,7 @@ public class InputFragment1 extends Fragment {
         this.validationFunctions.put(this.etEmail, email -> {
             // If the user has not validated their email address, don't let them change it at
             // all:
-            if (user != null && !db.isConnectedUserEmailVerified())
+            if (initialEmail != null && !initialEmail.equals(email) && !db.isConnectedUserEmailVerified())
                 return Result.failure("Cannot change unverified email");
 
             // Resume normal syntax validation:
