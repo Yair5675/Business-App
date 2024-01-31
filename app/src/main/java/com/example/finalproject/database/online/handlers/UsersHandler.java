@@ -124,10 +124,12 @@ public class UsersHandler {
                         else
                             onFailureListener.onFailure(new Exception("Existing phone number"));
                     }
-                    else if (task.getException() != null) {
+                    else {
                         // Delete the saved firebase user:
                         connectedUser.delete();
-                        onFailureListener.onFailure(task.getException());
+                        if (task.getException() != null) {
+                            onFailureListener.onFailure(task.getException());
+                        }
                     }
                 });
     }
@@ -175,8 +177,8 @@ public class UsersHandler {
             OnSuccessListener<Bitmap> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-        // Download the file (limit to 1.5 megabytes):
-        final long MAX_DOWNLOAD_SIZE = (long) (1.5 * 1024 * 1024);
+        // Download the file (limit to 15 megabytes):
+        final long MAX_DOWNLOAD_SIZE = (long) (15 * 1024 * 1024);
 
         // Download the bytes:
         storage.child(user.getImagePath()).getBytes(MAX_DOWNLOAD_SIZE)

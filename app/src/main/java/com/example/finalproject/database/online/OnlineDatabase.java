@@ -327,6 +327,8 @@ public class OnlineDatabase {
         // Check that the phone number isn't already saved:
         this.db.collection("users")
                         .whereEqualTo("phoneNumber", user.getPhoneNumber())
+                        .whereNotEqualTo("uid", user.getUid())
+                        .limit(1) // If there's at least one user with the user's new phone
                         .get()
                 .addOnCompleteListener(task -> {
                     // If the task was a success:
