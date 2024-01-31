@@ -1,6 +1,7 @@
 package com.example.finalproject.activities;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.OnlineUsersAdapter;
@@ -17,12 +19,11 @@ import com.example.finalproject.util.Util;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 
+import java.io.Serializable;
+
 public class UsersActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     // A reference to the online database:
     private OnlineDatabase db;
-
-    // The search view, allows searching for a specific user:
-    private SearchView svUsers;
 
     // The recycler view of the users:
     private RecyclerView rvUsers;
@@ -36,8 +37,8 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
         setContentView(R.layout.activity_users);
 
         // Load the activity's views:
-        this.svUsers = findViewById(R.id.actUsersSearchUsers);
-        this.svUsers.setOnQueryTextListener(this);
+        SearchView svUsers = findViewById(R.id.actUsersSearchUsers);
+        svUsers.setOnQueryTextListener(this);
         this.rvUsers = findViewById(R.id.actUsersRvUsers);
 
         // Initialize layout manager:
@@ -49,8 +50,36 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
         // Initialize the back press callback:
         this.initOnBackPressedCallback();
 
+        // Get the current user:
+        final User currentUser = this.loadUserFromIntent();
+
+        // If the user is null, go back to the main activity:
+        if (currentUser == null) {
+            final Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        // If he isn't an admin, hide the search view:
+        svUsers.setVisibility(currentUser.isAdmin() ? View.VISIBLE : View.GONE);
+
         // Initialize the online adapter:
-        this.initAdapter();
+        this.initAdapter(currentUser);
+    }
+
+    private @Nullable User loadUserFromIntent() {
+        // Get the intent:
+        final Intent intent = this.getIntent();
+
+        // Check if a user was given:
+        if (intent.hasExtra("user")) {
+            // Perform type checking (just in case):
+            Serializable user = intent.getSerializableExtra("user");
+            if (user instanceof User)
+                return (User) user;
+        }
+        return null;
     }
 
     private void initOnBackPressedCallback() {
@@ -68,16 +97,25 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
         getOnBackPressedDispatcher().addCallback(callback);
     }
 
-    private void initAdapter() {
-        // Use a simple query to get the first 50 users:
-        final Query query = this.db.getFirestoreReference()
-                .collection("users")
-                .orderBy("birthdate", Query.Direction.DESCENDING)
-                .limit(50);
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setLifecycleOwner(this)
-                .setQuery(query, User.class)
-                .build();
+    private void initAdapter(User currentUser) {
+        // If the user is an admin:
+        FirestoreRecyclerOptions.Builder<User> builder = new FirestoreRecyclerOptions.Builder<User>()
+                .setLifecycleOwner(this);
+        Query query;
+        if (currentUser.isAdmin())
+            // Use a simple query to get the first 50 users:
+            query = this.db.getFirestoreReference()
+                    .collection("users")
+                    .orderBy("birthdate", Query.Direction.DESCENDING)
+                    .limit(50);
+        else
+            // Only get the current user:
+            query = this.db.getFirestoreReference()
+                    .collection("users")
+                    .whereEqualTo("uid", currentUser.getUid())
+                    .limit(1);
+
+        FirestoreRecyclerOptions<User> options = builder.setQuery(query, User.class).build();
         this.onlineAdapter = new OnlineUsersAdapter(this, options);
         this.rvUsers.setAdapter(this.onlineAdapter);
     }

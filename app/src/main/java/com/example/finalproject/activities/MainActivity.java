@@ -214,7 +214,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // If they want to see the users:
         else if (ID == R.id.menuUsersItemShowUsers) {
+            // Send the activity the current user:
             final Intent intent = new Intent(this, UsersActivity.class);
+            intent.putExtra("user", connectedUser);
             startActivity(intent);
             finish();
         }
