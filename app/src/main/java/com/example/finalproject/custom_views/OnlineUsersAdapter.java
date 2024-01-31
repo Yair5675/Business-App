@@ -104,12 +104,6 @@ public class OnlineUsersAdapter extends FirestoreRecyclerAdapter<User, OnlineUse
                 final int currentVisibility = this.clMoreInfo.getVisibility();
                 this.clMoreInfo.setVisibility(currentVisibility == View.GONE ? View.VISIBLE : View.GONE);
             });
-
-            // If the row is clicked for a long time, raise a dialog to delete the user:
-            itemView.setOnLongClickListener(view -> {
-                // TODO: Delete user
-                return true;
-            });
         }
     }
 }
