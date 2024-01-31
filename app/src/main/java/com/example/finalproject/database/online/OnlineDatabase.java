@@ -266,6 +266,40 @@ public class OnlineDatabase {
         }
     }
 
+    public void deleteCurrentUser(
+            User connectedUser,
+            OnSuccessListener<Void> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        // Get the current user:
+        FirebaseUser firebaseUser;
+        if ((firebaseUser = this.auth.getCurrentUser()) != null) {
+            if (!firebaseUser.getUid().equals(connectedUser.getUid()))
+                onFailureListener.onFailure(new Exception("Given user is not connected user"));
+            else
+                // Delete the authentication account:
+                firebaseUser.delete()
+                        .addOnSuccessListener(unused -> {
+                            // Delete from the database:
+                            this.db.collection("users")
+                                    .document(connectedUser.getUid())
+                                    .delete()
+                                    .addOnSuccessListener(unused1 -> {
+                                        // Delete the image from storage:
+                                        this.storageRef.child(connectedUser.getImagePath())
+                                                .delete()
+                                                .addOnSuccessListener(onSuccessListener)
+                                                .addOnFailureListener(onFailureListener);
+                                    })
+                                    .addOnFailureListener(onFailureListener);
+                        })
+                        .addOnFailureListener(onFailureListener);
+
+        } else
+            onFailureListener.onFailure(new Exception("No user is connected"));
+    }
+
+
     /**
      * Updates a user in the database.
      * @param user A user object with the updated info. The ID in this user will be used to find the
