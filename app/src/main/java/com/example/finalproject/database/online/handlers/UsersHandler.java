@@ -288,7 +288,7 @@ public class UsersHandler {
         );
     }
 
-    private static void reauthenticateUser(
+    public static void reauthenticateUser(
             FirebaseUser user,
             String email,
             String password,

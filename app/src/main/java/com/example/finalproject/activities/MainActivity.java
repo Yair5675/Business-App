@@ -3,6 +3,7 @@ package com.example.finalproject.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -266,7 +267,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void activateDeleteDialog() {
-        // TODO: Complete the deletion dialog
+        // Create the delete dialog:
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Delete account")
+                .setMessage("Are you sure you want to delete your account?")
+                .setPositiveButton("Delete", (dialogInterface, i) -> {
+                    // Make the buttons disappear and show the progress bar:
+                    changeButtonsVisibility(View.GONE);
+                    pbActivityLoading.setVisibility(View.VISIBLE);
+
+                    // Delete the account:
+                    this.db.deleteCurrentUser(this.connectedUser, unused -> {
+                        initWithoutUser();
+                        Toast.makeText(MainActivity.this, "Your account was deleted", Toast.LENGTH_SHORT).show();
+                    }, exception -> {
+                        changeButtonsVisibility(View.VISIBLE);
+                        pbActivityLoading.setVisibility(View.GONE);
+                        Log.e(TAG, "Failed to delete current user", exception);
+                        Toast.makeText(this, "Failed to delete your account", Toast.LENGTH_SHORT).show();
+                    });
+                })
+                .setNegativeButton("Cancel", null);
+
+        // Show the dialog:
+        builder.create().show();
     }
 
     @Override

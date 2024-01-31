@@ -277,9 +277,12 @@ public class OnlineDatabase {
             if (!firebaseUser.getUid().equals(connectedUser.getUid()))
                 onFailureListener.onFailure(new Exception("Given user is not connected user"));
             else
-                // Delete the authentication account:
-                firebaseUser.delete()
-                        .addOnSuccessListener(unused -> {
+                // Reauthenticate the current user:
+                UsersHandler.reauthenticateUser(
+                        firebaseUser,
+                        connectedUser.getEmail(),
+                        connectedUser.getPassword(),
+                        _unused ->
                             // Delete from the database:
                             this.db.collection("users")
                                     .document(connectedUser.getUid())
@@ -288,12 +291,16 @@ public class OnlineDatabase {
                                         // Delete the image from storage:
                                         this.storageRef.child(connectedUser.getImagePath())
                                                 .delete()
-                                                .addOnSuccessListener(onSuccessListener)
+                                                .addOnSuccessListener(unused -> {
+                                                    // Delete from the authentication:
+                                                    firebaseUser.delete()
+                                                            .addOnSuccessListener(onSuccessListener)
+                                                            .addOnFailureListener(onFailureListener);
+                                                })
                                                 .addOnFailureListener(onFailureListener);
                                     })
-                                    .addOnFailureListener(onFailureListener);
-                        })
-                        .addOnFailureListener(onFailureListener);
+                                    .addOnFailureListener(onFailureListener),
+                        onFailureListener);
 
         } else
             onFailureListener.onFailure(new Exception("No user is connected"));
