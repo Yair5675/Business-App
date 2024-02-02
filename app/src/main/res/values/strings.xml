@@ -93,4 +93,12 @@
     <string name="frag_branches_workplaces_title"><b>Workplaces:</b></string>
     <string name="frag_branches_my_city_checkbox_txt">My city</string>
     <string name="frag_branches_add_business_txt">Add your business</string>
+
+    <!-- Strings belonging to the business input activity: -->
+    <string name="act_business_input_title"><b>Your Business Details:</b></string>
+    <string name="act_business_input_company_name_hint">Company Name</string>
+    <string name="act_business_input_password_hint">Branch Password</string>
+    <string name="act_business_input_opening_time_hint">Opening Time</string>
+    <string name="act_business_input_closing_time_hint">Closing Time</string>
+    <string name="act_business_input_shifts_subtitle"><b>The shifts in the week:</b></string>
 </resources>
