@@ -1,6 +1,7 @@
 package com.example.finalproject.fragments.main;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,9 @@ import java.util.Locale;
 import pl.droidsonroids.gif.GifImageButton;
 
 public class PersonalFragment extends Fragment implements View.OnClickListener {
+    // The context of the fragment:
+    private final Context context;
+
     // A reference to the online database:
     private OnlineDatabase db;
 
@@ -59,7 +63,8 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     // Tag for debugging purposes:
     private static final String TAG = "PersonalFragment";
 
-    public PersonalFragment(@Nullable User connectedUser, Runnable onUserDeleted) {
+    public PersonalFragment(@NonNull Context context, @Nullable User connectedUser, Runnable onUserDeleted) {
+        this.context = context;
         this.connectedUser = connectedUser;
         this.onUserDeleted = onUserDeleted;
     }
@@ -99,7 +104,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         return parent;
     }
 
-    private void initWithUser(@NonNull User user) {
+    public void initWithUser(@NonNull User user) {
         // Save the user:
         this.connectedUser = user;
 
@@ -116,7 +121,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         );
 
         // Show the user's image:
-        this.db.loadUserImgFromStorage(requireContext(), user, this.imgUser, R.drawable.guest);
+        this.db.loadUserImgFromStorage(this.context, user, this.imgUser, R.drawable.guest);
 
         // Show the crown image if the user is the admin:
         this.imgAdminCrown.setVisibility(user.isAdmin() ? View.VISIBLE : View.GONE);
@@ -128,12 +133,12 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         this.pbActivityLoading.setVisibility(View.GONE);
     }
 
-    private void initWithoutUser() {
+    public void initWithoutUser() {
         // Set the user to null:
         this.connectedUser = null;
 
         // Setting the default picture for guests:
-        Util.setCircularImage(requireContext(), this.imgUser, R.drawable.guest);
+        Util.setCircularImage(this.context, this.imgUser, R.drawable.guest);
 
         // Setting the default greeting:
         this.tvUserGreeting.setText(R.string.act_main_user_greeting_default_txt);
@@ -153,14 +158,14 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         // Getting the ID:
         final int ID = view.getId();
 
-        if (ID == R.id.actMainImgBtnEdit) {
+        if (ID == R.id.fragPersonalImgBtnEdit) {
             // Open the input activity but send the connected user in the intent:
-            Intent intent = new Intent(requireContext(), InputActivity.class);
+            Intent intent = new Intent(this.context, InputActivity.class);
             intent.putExtra("user", this.connectedUser);
             startActivity(intent);
             requireActivity().finish();
         }
-        else if (ID == R.id.actMainImgBtnDelete) {
+        else if (ID == R.id.fragPersonalImgBtnDelete) {
             // Open the dialog to delete a user:
             this.activateDeleteDialog();
         }
@@ -175,7 +180,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
 
     private void activateDeleteDialog() {
         // Create the delete dialog:
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context)
                 .setCancelable(false)
                 .setTitle("Delete account")
                 .setMessage("Are you sure you want to delete your account?")
@@ -188,7 +193,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                     this.db.deleteCurrentUser(this.connectedUser, unused -> {
                         // Initialize the fragment without the user:
                         initWithoutUser();
-                        Toast.makeText(requireContext(), "Your account was deleted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this.context, "Your account was deleted", Toast.LENGTH_SHORT).show();
 
                         // Activate the callback:
                         this.onUserDeleted.run();
@@ -196,7 +201,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                         changeButtonsVisibility(View.VISIBLE);
                         pbActivityLoading.setVisibility(View.GONE);
                         Log.e(TAG, "Failed to delete current user", exception);
-                        Toast.makeText(requireContext(), "Failed to delete your account", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this.context, "Failed to delete your account", Toast.LENGTH_SHORT).show();
                     });
                 })
                 .setNegativeButton("Cancel", null);

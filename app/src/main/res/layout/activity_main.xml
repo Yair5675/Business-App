@@ -1,158 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
     tools:context=".activities.MainActivity">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
-
-    <ImageView
-        android:id="@+id/actMainImgUser"
-        android:layout_width="215dp"
-        android:layout_height="215dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideline2"
-
-        app:srcCompat="@drawable/guest"
-        android:contentDescription="@string/act_main_content_description_user_img" />
-
-    <ImageView
-        android:id="@+id/actMainImgAdminCrown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/actMainImgUser"
-        app:layout_constraintStart_toStartOf="@id/actMainImgUser"
-        app:layout_constraintEnd_toEndOf="@id/actMainImgUser"
-
-
-        android:visibility="gone"
-        android:src="@drawable/crown_icon"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/actMainFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         />
 
     <TextView
-        android:id="@+id/actMainTvUserGreeting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:text="@string/act_main_user_greeting_default_txt"
-        android:textSize="20sp"
-
-        app:layout_constraintEnd_toEndOf="@id/actMainImgAdminCrown"
-        app:layout_constraintStart_toStartOf="@id/actMainImgAdminCrown"
-        app:layout_constraintTop_toBottomOf="@id/actMainImgAdminCrown" />
-
-    <ProgressBar
-        android:id="@+id/actMainPbActivityLoading"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintBottom_toBottomOf="@id/guideline4"
-        app:layout_constraintTop_toBottomOf="@id/actMainTvUserGreeting"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7" />
-
-    <pl.droidsonroids.gif.GifImageButton
-        android:id="@+id/actMainImgBtnEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:background="@drawable/transparent_background"
-        android:src="@drawable/edit_icon"
-
-        android:visibility="gone"
-
-        app:layout_constraintBottom_toTopOf="@id/guideline5"
-        app:layout_constraintEnd_toStartOf="@+id/actMainImgBtnDelete"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline4" />
-
-    <TextView
-        android:id="@+id/actMainTvEditBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toBottomOf="@id/actMainImgBtnEdit"
-        app:layout_constraintStart_toStartOf="@id/actMainImgBtnEdit"
-        app:layout_constraintEnd_toEndOf="@id/actMainImgBtnEdit"
-
-        android:visibility="gone"
-
-        android:text="@string/act_main_edit_account_btn_txt"
-        android:lines="2"
-        android:gravity="center"
-        />
-
-    <pl.droidsonroids.gif.GifImageButton
-        android:id="@+id/actMainImgBtnDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:background="@drawable/transparent_background"
-        android:src="@drawable/trash_can_icon"
-        app:layout_constraintBottom_toTopOf="@id/guideline5"
-
-        android:visibility="gone"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/actMainImgBtnEdit"
-        app:layout_constraintTop_toBottomOf="@id/guideline4" />
-
-    <TextView
-        android:id="@+id/actMainTvDeleteBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toBottomOf="@id/actMainImgBtnDelete"
-        app:layout_constraintStart_toStartOf="@id/actMainImgBtnDelete"
-        app:layout_constraintEnd_toEndOf="@id/actMainImgBtnDelete"
-
-        android:visibility="gone"
-
-        android:text="@string/act_main_delete_account_btn_txt"
-        android:lines="2"
-        android:gravity="center"
-        />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
-
-    <TextView
-        android:id="@+id/tvCredit"
+        android:id="@+id/actMainTvCredit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:text="@string/act_main_credits_txt"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
