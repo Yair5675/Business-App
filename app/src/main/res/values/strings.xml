@@ -16,6 +16,7 @@
     <string name="users_menu_item_about_title">About Us</string>
     <string name="users_menu_item_sign_up_title">Sign Up</string>
     <string name="users_menu_item_sign_in_title">Sign In</string>
+    <string name="users_menu_item_verify_email_title">Verify Email</string>
     <string name="users_menu_item_disconnect_title">Disconnect</string>
     <string name="users_menu_item_show_users_title">Show Users</string>
 
