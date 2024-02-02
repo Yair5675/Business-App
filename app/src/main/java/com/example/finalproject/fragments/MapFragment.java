@@ -205,7 +205,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private void initSearchView(View parent) {
         // The search view allowing the user to search a location:
-        final SearchView svMap = parent.findViewById(R.id.fragInput2MapSearch);
+        final SearchView svMap = parent.findViewById(R.id.fragMapMapSearch);
 
         svMap.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -224,7 +224,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         });
     }
 
-    private void loadFromLocation(String location) {
+    public void loadFromLocation(String location) {
         if (!isMapsApiAvailable) {
             Toast.makeText(requireContext(), "Google Maps is not available", Toast.LENGTH_SHORT).show();
             return;
@@ -575,8 +575,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         super.onStart();
         Log.d(TAG, "onStart called");
 
-        if (this.isMapsApiAvailable)
+        if (this.isMapsApiAvailable) {
             this.mapView.onStart();
+
+            // Load the last saved result if one exists:
+            if (this.map != null && this.lastGeoResult != null)
+                this.loadFromResult(this.lastGeoResult);
+        }
     }
 
     @Override
@@ -643,5 +648,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     public String getSelectedAddress() {
         return selectedAddress;
+    }
+
+    public String getFullNumberWithPlus() {
+        return this.countryCodePicker.getFullNumberWithPlus();
+    }
+
+    // Setter for the phone number:
+    public void setPhoneNumber(String phoneNumber) {
+        this.countryCodePicker.setFullNumber(phoneNumber);
+    }
+
+    public boolean isPhoneValid() {
+        return this.countryCodePicker.isValidFullNumber();
     }
 }
