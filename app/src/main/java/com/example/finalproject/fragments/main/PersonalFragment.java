@@ -65,7 +65,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
 
     public PersonalFragment(@NonNull Context context, @Nullable User connectedUser, Runnable onUserDeleted) {
         this.context = context;
-        this.connectedUser = connectedUser;
+        this.setConnectedUser(connectedUser);
         this.onUserDeleted = onUserDeleted;
     }
 
@@ -91,7 +91,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         // Show the progress bar until the fragment is fully initialized:
         this.pbActivityLoading.setVisibility(View.VISIBLE);
 
-        // Initialize with or without a user (depends on the given User object):
+        // Initialize the fragment with the given connected user:
         if (this.connectedUser != null)
             initWithUser(this.connectedUser);
         else
@@ -104,10 +104,33 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         return parent;
     }
 
-    public void initWithUser(@NonNull User user) {
-        // Save the user:
-        this.connectedUser = user;
+    public void setConnectedUser(@Nullable User connectedUser) {
+        // Check that the users are different (for efficiency reasons):
+        if (this.connectedUser != connectedUser) {
+            this.connectedUser = connectedUser;
+            if (isInitialized()) {
+                if (connectedUser == null)
+                    initWithoutUser();
+                else
+                    initWithUser(connectedUser);
+            }
+        }
+    }
 
+    private boolean isInitialized() {
+        final View[] fragmentViews = {
+                this.imgUser, this.imgAdminCrown, this.pbActivityLoading, this.tvUserGreeting,
+                this.btnEditAccount, this.btnDeleteAccount, this.tvEditAccountDesc,
+                this.tvDeleteAccountDesc
+        };
+        boolean isInitialized = true;
+        for (int i = 0; i < fragmentViews.length && isInitialized; i++)
+            isInitialized = fragmentViews[i] != null;
+
+        return isInitialized;
+    }
+
+    private void initWithUser(@NonNull User user) {
         // Fix the user's email:
         this.db.fixUserEmail(this.connectedUser);
 
@@ -133,10 +156,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         this.pbActivityLoading.setVisibility(View.GONE);
     }
 
-    public void initWithoutUser() {
-        // Set the user to null:
-        this.connectedUser = null;
-
+    private void initWithoutUser() {
         // Setting the default picture for guests:
         Util.setCircularImage(this.context, this.imgUser, R.drawable.guest);
 
@@ -192,7 +212,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                     // Delete the account:
                     this.db.deleteCurrentUser(this.connectedUser, unused -> {
                         // Initialize the fragment without the user:
-                        initWithoutUser();
+                        this.setConnectedUser(null);
                         Toast.makeText(this.context, "Your account was deleted", Toast.LENGTH_SHORT).show();
 
                         // Activate the callback:

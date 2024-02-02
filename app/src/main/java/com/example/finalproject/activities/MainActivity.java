@@ -2,8 +2,10 @@ package com.example.finalproject.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -18,14 +20,21 @@ import com.example.finalproject.R;
 import com.example.finalproject.custom_views.LoginDialog;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.fragments.main.BranchesFragment;
 import com.example.finalproject.fragments.main.PersonalFragment;
 
 public class MainActivity extends AppCompatActivity {
     // A reference to the online database:
     private OnlineDatabase db;
 
+    // The view pager that allows the user to swipe between fragments:
+    private ViewPager2 pager;
+
     // A reference to the personal fragment:
     private PersonalFragment personalFragment;
+
+    // A reference to the branches fragment:
+    private BranchesFragment branchesFragment;
 
     // The connected user:
     private User connectedUser;
@@ -43,36 +52,81 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize the personal fragment without a user:
         this.personalFragment = new PersonalFragment(
-                this, null, this::supportInvalidateOptionsMenu
+                this, null, this::disconnectUser
         );
 
-        // Set the personal fragment inside the container view:
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.actMainFragmentContainer, this.personalFragment);
-        transaction.commit();
+        // Initialize the branches fragment:
+        this.branchesFragment = new BranchesFragment();
 
-        // Get the current user only after the fragment was set:
-        transaction.runOnCommit(() ->
-                    // Get the current user:
-                    this.db.getCurrentUser(
-                            user -> {
-                                this.connectedUser = user;
-                                personalFragment.initWithUser(user);
-                                supportInvalidateOptionsMenu();
-                            }, e -> personalFragment.initWithoutUser()
-                    )
+        // Initialize the view pager:
+        this.pager = findViewById(R.id.actMainPager);
+        this.initPagerAdapter();
+
+        // Get the current user:
+        this.db.getCurrentUser(
+                this::connectUser, e -> {
+                    this.connectedUser = null;
+                    supportInvalidateOptionsMenu();
+                }
         );
 
         // Initialize the login dialog:
         this.loginDialog = new LoginDialog(
                 this, getResources(),
-                user -> {
-                    this.connectedUser = user;
-                    personalFragment.initWithUser(user);
-                    supportInvalidateOptionsMenu();
-                }
+                this::connectUser
         );
+    }
+
+    private void connectUser(User user) {
+        // Set the user:
+        this.connectedUser = user;
+        this.personalFragment.setConnectedUser(user);
+
+        // Update the menu:
+        supportInvalidateOptionsMenu();
+
+        // Allow the user to swipe:
+        this.pager.setUserInputEnabled(true);
+    }
+
+    private void disconnectUser() {
+        // Disconnect the user:
+        this.connectedUser = null;
+        this.db.disconnectUser();
+
+        // Update the personal fragment:
+        this.personalFragment.setConnectedUser(null);
+
+        // Update the pager:
+        this.pager.setUserInputEnabled(false);
+        this.pager.setCurrentItem(getPersonalFragmentIndex());
+
+        // Update the menu:
+        supportInvalidateOptionsMenu();
+    }
+
+    private void initPagerAdapter() {
+        // Initialize the adapter and prevent the user from swiping at first:
+        ScreenSlideAdapter adapter = new ScreenSlideAdapter(this);
+        this.pager.setAdapter(adapter);
+        this.pager.setUserInputEnabled(false);
+        this.pager.setCurrentItem(getPersonalFragmentIndex());
+    }
+
+    private Fragment[] getFragments() {
+        return new Fragment[] { this.personalFragment, this.branchesFragment };
+    }
+
+    private int getPersonalFragmentIndex() {
+        final Fragment[] fragments = getFragments();
+        int index;
+        for (index = 0; index < fragments.length; index++) {
+            if (fragments[index] == personalFragment)
+                return index;
+        }
+
+        // The code should never reach this point:
+        return index;
     }
 
     @Override
@@ -110,12 +164,8 @@ public class MainActivity extends AppCompatActivity {
             this.loginDialog.show();
 
         // If they want to log out:
-        else if (ID == R.id.menuUsersItemDisconnect) {
-            // Disconnect the user:
-            this.db.disconnectUser();
-            this.personalFragment.initWithoutUser();
-            supportInvalidateOptionsMenu();
-        }
+        else if (ID == R.id.menuUsersItemDisconnect)
+            this.disconnectUser();
 
         // If they want to verify the email:
         else if (ID == R.id.menuUsersItemVerification) {
@@ -161,5 +211,26 @@ public class MainActivity extends AppCompatActivity {
 
         // Show the dialog:
         dialog.show();
+    }
+
+    private class ScreenSlideAdapter extends FragmentStateAdapter {
+        // The fragments inside the main activity:
+        private final Fragment[] fragments;
+
+        public ScreenSlideAdapter(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
+            this.fragments = getFragments();
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            return this.fragments[position];
+        }
+
+        @Override
+        public int getItemCount() {
+            return this.fragments.length;
+        }
     }
 }
