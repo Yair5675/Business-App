@@ -3,7 +3,6 @@ package com.example.finalproject.fragments.user_input;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -21,18 +20,18 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.fragments.input.InputFragment;
 import com.example.finalproject.util.Permissions;
 import com.example.finalproject.util.Util;
 
 import java.io.IOException;
 
 
-public class UserInputFragment3 extends Fragment implements View.OnClickListener {
+public class UserInputFragment3 extends InputFragment implements View.OnClickListener {
     // A reference to the database:
     private final OnlineDatabase db;
 
@@ -213,19 +212,22 @@ public class UserInputFragment3 extends Fragment implements View.OnClickListener
             Toast.makeText(requireContext(), "Could not load the picture", Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * Checks that the user actually picked an image and shows a toast message in case they did not
-     * @param context The context of the activity that holds the fragment. Will be used for toast
-     *                messages.
-     * @return True if the user picked an image, False otherwise.
-     */
-    public boolean areInputsValid(Context context) {
+    @Override
+    public boolean validateAndSetError() {
         // Check that the bitmap file is saved:
         final boolean isImageLoaded = this.bitmapPhoto != null;
         if (!isImageLoaded)
-            Toast.makeText(context, "Please choose a picture", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Please choose a picture", Toast.LENGTH_SHORT).show();
 
         return isImageLoaded;
+    }
+
+    @Override
+    public Bundle getInputs() {
+        // Return the bitmap photo in a bundle:
+        final Bundle bundle = new Bundle();
+        bundle.putByteArray("photo", Util.toByteArray(this.bitmapPhoto));
+        return bundle;
     }
 
     public Bitmap getBitmapPhoto() {

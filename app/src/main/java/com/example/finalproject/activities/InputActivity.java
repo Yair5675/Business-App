@@ -167,7 +167,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
             case 3: {
                 // Validate the input:
-                if (this.thirdPage.areInputsValid(this)) {
+                if (this.thirdPage.validateAndSetError()) {
                     // Get the info:
                     this.userImg = this.thirdPage.getBitmapPhoto();
 
