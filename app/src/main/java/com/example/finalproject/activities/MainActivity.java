@@ -22,6 +22,7 @@ import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.main.BranchesFragment;
 import com.example.finalproject.fragments.main.PersonalFragment;
+import com.example.finalproject.fragments.user_input.UserRegistrationForm;
 
 public class MainActivity extends AppCompatActivity {
     // A reference to the online database:
@@ -155,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
 
         // If they want to register a new user:
         if (ID == R.id.menuUsersItemSignUp) {
+            // Create the registration form and set it for the input activity:
+            final UserRegistrationForm registrationForm = new UserRegistrationForm(getResources());
+            InputActivity.CurrentInput.setCurrentInputForm(registrationForm);
+
+            // Launch the input activity:
             final Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
             finish();

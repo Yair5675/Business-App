@@ -21,6 +21,7 @@ import com.example.finalproject.R;
 import com.example.finalproject.activities.InputActivity;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.fragments.user_input.UserUpdateForm;
 import com.example.finalproject.util.Util;
 
 import java.util.Locale;
@@ -179,11 +180,16 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         final int ID = view.getId();
 
         if (ID == R.id.fragPersonalImgBtnEdit) {
-            // Open the input activity but send the connected user in the intent:
-            Intent intent = new Intent(this.context, InputActivity.class);
-            intent.putExtra("user", this.connectedUser);
-            startActivity(intent);
-            requireActivity().finish();
+            if (this.connectedUser != null) {
+                // Create the update form and set the user form in it:
+                final UserUpdateForm updateForm = new UserUpdateForm(this.connectedUser, getResources());
+                InputActivity.CurrentInput.setCurrentInputForm(updateForm);
+
+                // Open the input activity:
+                Intent intent = new Intent(this.context, InputActivity.class);
+                startActivity(intent);
+                requireActivity().finish();
+            }
         }
         else if (ID == R.id.fragPersonalImgBtnDelete) {
             // Open the dialog to delete a user:

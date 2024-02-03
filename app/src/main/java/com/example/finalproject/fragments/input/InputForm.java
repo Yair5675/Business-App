@@ -23,6 +23,10 @@ public abstract class InputForm {
         this.currentPageIdx = 0;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public boolean isFirstPage() {
         return this.currentPageIdx == 0;
     }
