@@ -8,21 +8,21 @@
     android:background="@drawable/transparent_background">
 
     <TextView
-        android:id="@+id/fragInput2TvTitle"
+        android:id="@+id/fragUserInput2TvTitle"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/fragInput2GlTopMapBoundary"
+        app:layout_constraintBottom_toTopOf="@id/fragUserInput2GlTopMapBoundary"
         android:layout_marginBottom="16dp"
 
         android:text="@string/frag_input_2_title"
         android:textSize="28sp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/fragInput2GlTopMapBoundary"
+        android:id="@+id/fragUserInput2GlTopMapBoundary"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,21 +32,21 @@
         />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragInput2MapFragContainer"
+        android:id="@+id/fragUserInput2MapFragContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="@id/fragInput2GlTopMapBoundary"
-        app:layout_constraintBottom_toTopOf="@id/fragInput2PhoneLayout"
+        app:layout_constraintTop_toTopOf="@id/fragUserInput2GlTopMapBoundary"
+        app:layout_constraintBottom_toTopOf="@id/fragUserInput2PhoneLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
     <LinearLayout
-        android:id="@+id/fragInput2PhoneLayout"
+        android:id="@+id/fragUserInput2PhoneLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/fragInput2MapFragContainer"
+        app:layout_constraintTop_toBottomOf="@id/fragUserInput2MapFragContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,14 +54,14 @@
         >
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragInput2TilCountryCode"
+            android:id="@+id/fragUserInput2TilCountryCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:visibility="gone"
             >
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragInput2EtCountryCode"
+                android:id="@+id/fragUserInput2EtCountryCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
@@ -73,14 +73,14 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragInput2TilPhoneNumber"
+            android:id="@+id/fragUserInput2TilPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/frag_input2_phone_hint"
             android:visibility="gone"
             >
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragInput2EtPhoneNumber"
+                android:id="@+id/fragUserInput2EtPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 

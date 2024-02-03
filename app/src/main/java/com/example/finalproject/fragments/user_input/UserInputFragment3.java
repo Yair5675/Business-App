@@ -1,4 +1,4 @@
-package com.example.finalproject.fragments.input;
+package com.example.finalproject.fragments.user_input;
 
 import android.Manifest;
 import android.app.Activity;
@@ -32,8 +32,7 @@ import com.example.finalproject.util.Util;
 import java.io.IOException;
 
 
-public class InputFragment3 extends Fragment implements View.OnClickListener {
-    public static final String TAG = "InputFragment3";
+public class UserInputFragment3 extends Fragment implements View.OnClickListener {
     // A reference to the database:
     private final OnlineDatabase db;
 
@@ -50,6 +49,10 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
     // The method through which the photo was taken (camera or gallery):
     private PhotoTakenFrom photoTakenFrom;
 
+    // Tag for debugging purposes:
+    private static final String TAG = "UserInputFragment3";
+
+
     private enum PhotoTakenFrom {
         CAMERA,
         GALLERY
@@ -57,7 +60,7 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
 
     private ActivityResultLauncher<Intent> imageReceiver;
 
-    public InputFragment3(@Nullable User connectedUser) {
+    public UserInputFragment3(@Nullable User connectedUser) {
         this.user = connectedUser;
         this.db = OnlineDatabase.getInstance();
     }
@@ -82,7 +85,7 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the XML file of the third input fragment:
-        final View parent = inflater.inflate(R.layout.fragment_input_3, container, false);
+        final View parent = inflater.inflate(R.layout.fragment_user_input_3, container, false);
 
         // Initialize the image receiver:
         this.imageReceiver = registerForActivityResult(
@@ -97,13 +100,13 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
         );
 
         // Load the user's imageView:
-        this.imgUser = parent.findViewById(R.id.fragInput3ImgUser);
+        this.imgUser = parent.findViewById(R.id.fragUserInput3ImgUser);
         if (this.bitmapPhoto != null)
             Util.setCircularImage(this.requireContext(), this.imgUser, this.bitmapPhoto);
 
         // Set the two upload buttons' OnClickListener:
-        parent.findViewById(R.id.fragInput3BtnUploadCamera).setOnClickListener(this);
-        parent.findViewById(R.id.fragInput3BtnUploadGallery).setOnClickListener(this);
+        parent.findViewById(R.id.fragUserInput3BtnUploadCamera).setOnClickListener(this);
+        parent.findViewById(R.id.fragUserInput3BtnUploadGallery).setOnClickListener(this);
 
         // Check if a connected user was given:
         if (this.user != null)
@@ -118,7 +121,7 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
         // Identify the view:
         final int ID = view.getId();
 
-        if (ID == R.id.fragInput3BtnUploadCamera) {
+        if (ID == R.id.fragUserInput3BtnUploadCamera) {
             // Check for permission to use the camera:
             if (Permissions.checkPermissions(requireContext(), Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 // If the permission is granted, take a picture from the camera:
@@ -129,7 +132,7 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
 
 
         }
-        else if (ID == R.id.fragInput3BtnUploadGallery) {
+        else if (ID == R.id.fragUserInput3BtnUploadGallery) {
             // Check for permission to open the gallery:
             if (Permissions.checkPermissions(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 // If the permission is granted, take a picture from the gallery:
@@ -176,7 +179,7 @@ public class InputFragment3 extends Fragment implements View.OnClickListener {
             this.bitmapPhoto = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), this.uriPhoto);
             return true;
         } catch (IOException e) {
-            Log.e("InputFragment3 - loadBitmapFromUri", e.toString());
+            Log.e("UserInputFragment3 - loadBitmapFromUri", e.toString());
             return false;
         }
     }

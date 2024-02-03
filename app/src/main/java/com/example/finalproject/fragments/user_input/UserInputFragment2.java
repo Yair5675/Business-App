@@ -1,4 +1,4 @@
-package com.example.finalproject.fragments.input;
+package com.example.finalproject.fragments.user_input;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,7 +19,7 @@ import com.example.finalproject.fragments.MapFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class InputFragment2 extends Fragment {
+public class UserInputFragment2 extends Fragment {
     // A reference to the user whose details are being changed:
     private final User user;
 
@@ -38,7 +38,7 @@ public class InputFragment2 extends Fragment {
      * After validation occurred, the info given by the user needs to be given to the activity which
      * needs it. This class provides a convenient way for the info to pass anywhere.
      * Pay attention that although any class can READ the data that is saved, no class can create an
-     * InputFragment2.PackagedInfo object, except the InputFragment2 class.
+     * UserInputFragment2.PackagedInfo object, except the UserInputFragment2 class.
      */
     public static class PackagedInfo {
         public final String PHONE;
@@ -54,7 +54,7 @@ public class InputFragment2 extends Fragment {
         }
     }
 
-    public InputFragment2(@Nullable User connectedUser) {
+    public UserInputFragment2(@Nullable User connectedUser) {
         this.user = connectedUser;
     }
 
@@ -81,13 +81,13 @@ public class InputFragment2 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the second input fragment:
-        final View parent = inflater.inflate(R.layout.fragment_input_2, container, false);
+        final View parent = inflater.inflate(R.layout.fragment_user_input_2, container, false);
 
         // Load the phone input views:
-        this.tilPhone = parent.findViewById(R.id.fragInput2TilPhoneNumber);
-        this.etPhone = parent.findViewById(R.id.fragInput2EtPhoneNumber);
-        this.tilCountryCode = parent.findViewById(R.id.fragInput2TilCountryCode);
-        this.etCountryCode = parent.findViewById(R.id.fragInput2EtCountryCode);
+        this.tilPhone = parent.findViewById(R.id.fragUserInput2TilPhoneNumber);
+        this.etPhone = parent.findViewById(R.id.fragUserInput2EtPhoneNumber);
+        this.tilCountryCode = parent.findViewById(R.id.fragUserInput2TilCountryCode);
+        this.etCountryCode = parent.findViewById(R.id.fragUserInput2EtCountryCode);
 
         // Create a map fragment:
         if (this.mapFragment == null)
@@ -96,7 +96,7 @@ public class InputFragment2 extends Fragment {
         // Put the map fragment in the container:
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragInput2MapFragContainer, this.mapFragment);
+        transaction.replace(R.id.fragUserInput2MapFragContainer, this.mapFragment);
         transaction.commit();
 
         // Once the map fragment is created run the following code:
@@ -138,10 +138,10 @@ public class InputFragment2 extends Fragment {
      * Collects the info given by the user in this fragment and packages it for convenient use.
      * Pay attention this function should be called after calling the 'areInputsValid' function,
      * and making sure it returns true.
-     * @return An InputFragment2.PackagedInfo object for convenient use of the info given by the
+     * @return An UserInputFragment2.PackagedInfo object for convenient use of the info given by the
      *         user in this fragment.
      */
-    public InputFragment2.PackagedInfo getPackagedInfo() {
+    public UserInputFragment2.PackagedInfo getPackagedInfo() {
         return new PackagedInfo(
                 this.mapFragment.getFullNumberWithPlus(),
                 this.mapFragment.getSelectedCountry(),

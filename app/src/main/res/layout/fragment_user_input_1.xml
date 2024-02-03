@@ -17,23 +17,23 @@
         >
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragInput1TilFirstName"
+            android:id="@+id/fragUserInput1TilFirstName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/fragInput1TilLastName"
+            app:layout_constraintEnd_toStartOf="@id/fragUserInput1TilLastName"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:hint="@string/frag_input1_first_name_input_hint" >
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragInput1EtFirstName"
+                android:id="@+id/fragUserInput1EtFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/fragInput1EtLastName"
+                android:nextFocusForward="@+id/fragUserInput1EtLastName"
 
                 android:maxLength="10"
                 android:maxLines="1"
@@ -43,22 +43,22 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragInput1TilLastName"
+            android:id="@+id/fragUserInput1TilLastName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/fragInput1TilFirstName"
+            app:layout_constraintStart_toEndOf="@id/fragUserInput1TilFirstName"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/fragInput1TilFirstName"
+            app:layout_constraintTop_toTopOf="@id/fragUserInput1TilFirstName"
             android:hint="@string/frag_input1_last_name_input_hint"
             >
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragInput1EtLastName"
+                android:id="@+id/fragUserInput1EtLastName"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@id/fragInput1EtBirthdate"
+                android:nextFocusForward="@id/fragUserInput1EtBirthdate"
 
                 android:inputType="textPersonName"
                 android:maxLength="10"
@@ -70,7 +70,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragInput1TilBirthdate"
+        android:id="@+id/fragUserInput1TilBirthdate"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
         android:focusable="false">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragInput1EtBirthdate"
+            android:id="@+id/fragUserInput1EtBirthdate"
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragInput1TilEmail"
+        android:id="@+id/fragUserInput1TilEmail"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -109,12 +109,10 @@
 
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragInput2TilPhone"
-        app:layout_constraintBottom_toTopOf="@+id/fragInput2TilPassword"
         >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragInput1EtEmail"
+            android:id="@+id/fragUserInput1EtEmail"
 
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -125,14 +123,14 @@
             android:drawablePadding="8dp"
 
             android:imeOptions="actionNext"
-            android:nextFocusForward="@id/fragInput1EtPassword"
+            android:nextFocusForward="@id/fragUserInput1EtPassword"
 
             android:inputType="textEmailAddress"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragInput1TilPassword"
+        android:id="@+id/fragUserInput1TilPassword"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -143,7 +141,7 @@
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragInput1EtPassword"
+            android:id="@+id/fragUserInput1EtPassword"
 
             android:layout_width="match_parent"
             android:layout_height="match_parent"

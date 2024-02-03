@@ -1,4 +1,4 @@
-package com.example.finalproject.fragments.input;
+package com.example.finalproject.fragments.user_input;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -32,7 +32,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.function.Function;
 
-public class InputFragment1 extends Fragment {
+public class UserInputFragment1 extends Fragment {
     // A reference to the database:
     private OnlineDatabase db;
 
@@ -68,7 +68,7 @@ public class InputFragment1 extends Fragment {
      * After validation occurred, the info given by the user needs to be given to the activity which
      * is handling input. This class provides a convenient way for the info to pass anywhere.
      * Pay attention that although any class can READ the data that is saved, no class can create an
-     * InputFragment1.PackagedInfo object, except the InputFragment1 class.
+     * UserInputFragment1.PackagedInfo object, except the UserInputFragment1 class.
      */
     public static class PackagedInfo {
         public final String NAME;
@@ -92,7 +92,7 @@ public class InputFragment1 extends Fragment {
         }
     }
 
-    public InputFragment1(@Nullable User connectedUser) {
+    public UserInputFragment1(@Nullable User connectedUser) {
         this.user = connectedUser;
         initialEmail = user == null ? null : user.getEmail();
     }
@@ -145,7 +145,7 @@ public class InputFragment1 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the first registration fragment:
-        final View parent = inflater.inflate(R.layout.fragment_input_1, container, false);
+        final View parent = inflater.inflate(R.layout.fragment_user_input_1, container, false);
 
         // Initialize the database:
         this.db = OnlineDatabase.getInstance();
@@ -197,26 +197,26 @@ public class InputFragment1 extends Fragment {
 
     private void initEditTexts(View parent) {
         // Load every input field and the country list spinner:
-        this.etName = parent.findViewById(R.id.fragInput1EtFirstName);
-        this.etSurname = parent.findViewById(R.id.fragInput1EtLastName);
+        this.etName = parent.findViewById(R.id.fragUserInput1EtFirstName);
+        this.etSurname = parent.findViewById(R.id.fragUserInput1EtLastName);
 
-        this.etBirthdate = parent.findViewById(R.id.fragInput1EtBirthdate);
+        this.etBirthdate = parent.findViewById(R.id.fragUserInput1EtBirthdate);
 
-        this.etEmail = parent.findViewById(R.id.fragInput1EtEmail);
+        this.etEmail = parent.findViewById(R.id.fragUserInput1EtEmail);
 
-        this.etPassword = parent.findViewById(R.id.fragInput1EtPassword);
+        this.etPassword = parent.findViewById(R.id.fragUserInput1EtPassword);
     }
 
     private void initInputLayouts(View parent) {
         // Load the input layouts of every input field:
-        this.tilName = parent.findViewById(R.id.fragInput1TilFirstName);
-        this.tilSurname = parent.findViewById(R.id.fragInput1TilLastName);
+        this.tilName = parent.findViewById(R.id.fragUserInput1TilFirstName);
+        this.tilSurname = parent.findViewById(R.id.fragUserInput1TilLastName);
 
-        this.tilBirthdate = parent.findViewById(R.id.fragInput1TilBirthdate);
+        this.tilBirthdate = parent.findViewById(R.id.fragUserInput1TilBirthdate);
 
-        this.tilEmail = parent.findViewById(R.id.fragInput1TilEmail);
+        this.tilEmail = parent.findViewById(R.id.fragUserInput1TilEmail);
 
-        this.tilPassword = parent.findViewById(R.id.fragInput1TilPassword);
+        this.tilPassword = parent.findViewById(R.id.fragUserInput1TilPassword);
     }
 
     private void clearFocus() {
@@ -350,7 +350,7 @@ public class InputFragment1 extends Fragment {
      * @return A 'Register1Fragment.PackagedInfo' object containing all the information received
      *         from the user.
      */
-    public InputFragment1.PackagedInfo getPackagedInfo() {
+    public UserInputFragment1.PackagedInfo getPackagedInfo() {
         return new PackagedInfo(
                 Util.fixNamingCapitalization(Util.getTextFromEt(this.etName)),
                 Util.fixNamingCapitalization(Util.getTextFromEt(this.etSurname)),

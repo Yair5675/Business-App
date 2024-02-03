@@ -7,13 +7,13 @@
     android:background="@drawable/transparent_background">
 
     <TextView
-        android:id="@+id/fragInput3TvTitle"
+        android:id="@+id/fragUserInput3TvTitle"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
 
-        app:layout_constraintBottom_toBottomOf="@id/fragInput3TopEdge"
+        app:layout_constraintBottom_toBottomOf="@id/fragUserInput3TopEdge"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
@@ -22,9 +22,9 @@
         />
 
     <ImageView
-        android:id="@+id/fragInput3ImgUser"
+        android:id="@+id/fragUserInput3ImgUser"
 
-        app:layout_constraintTop_toTopOf="@id/fragInput3TopEdge"
+        app:layout_constraintTop_toTopOf="@id/fragUserInput3TopEdge"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
@@ -36,14 +36,14 @@
         />
 
     <pl.droidsonroids.gif.GifImageButton
-        android:id="@+id/fragInput3BtnUploadCamera"
+        android:id="@+id/fragUserInput3BtnUploadCamera"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toBottomOf="@id/fragInput3ImgUser"
+        app:layout_constraintTop_toBottomOf="@id/fragUserInput3ImgUser"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/fragInput3BtnUploadGallery"
+        app:layout_constraintEnd_toStartOf="@id/fragUserInput3BtnUploadGallery"
 
         android:layout_marginTop="32dp"
 
@@ -52,50 +52,50 @@
         />
 
     <pl.droidsonroids.gif.GifImageButton
-        android:id="@+id/fragInput3BtnUploadGallery"
+        android:id="@+id/fragUserInput3BtnUploadGallery"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toTopOf="@id/fragInput3BtnUploadCamera"
-        app:layout_constraintBottom_toBottomOf="@id/fragInput3BtnUploadCamera"
+        app:layout_constraintTop_toTopOf="@id/fragUserInput3BtnUploadCamera"
+        app:layout_constraintBottom_toBottomOf="@id/fragUserInput3BtnUploadCamera"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/fragInput3BtnUploadCamera"
+        app:layout_constraintStart_toEndOf="@id/fragUserInput3BtnUploadCamera"
 
         android:src="@drawable/gallery_icon"
         android:background="@drawable/transparent_background"
         />
 
     <TextView
-        android:id="@+id/fragInput3TvCamera"
+        android:id="@+id/fragUserInput3TvCamera"
 
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
-        app:layout_constraintStart_toStartOf="@id/fragInput3BtnUploadCamera"
-        app:layout_constraintEnd_toEndOf="@id/fragInput3BtnUploadCamera"
-        app:layout_constraintTop_toBottomOf="@id/fragInput3BtnUploadCamera"
+        app:layout_constraintStart_toStartOf="@id/fragUserInput3BtnUploadCamera"
+        app:layout_constraintEnd_toEndOf="@id/fragUserInput3BtnUploadCamera"
+        app:layout_constraintTop_toBottomOf="@id/fragUserInput3BtnUploadCamera"
 
         android:text="@string/frag_input_3_camera_btn_txt"
         android:gravity="center"
         />
 
     <TextView
-        android:id="@+id/fragInput3TvGallery"
+        android:id="@+id/fragUserInput3TvGallery"
 
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
-        app:layout_constraintStart_toStartOf="@id/fragInput3BtnUploadGallery"
-        app:layout_constraintEnd_toEndOf="@id/fragInput3BtnUploadGallery"
-        app:layout_constraintTop_toBottomOf="@id/fragInput3BtnUploadGallery"
+        app:layout_constraintStart_toStartOf="@id/fragUserInput3BtnUploadGallery"
+        app:layout_constraintEnd_toEndOf="@id/fragUserInput3BtnUploadGallery"
+        app:layout_constraintTop_toBottomOf="@id/fragUserInput3BtnUploadGallery"
 
         android:text="@string/frag_input_3_gallery_btn_txt"
         android:gravity="center"
         />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/fragInput3TopEdge"
+        android:id="@+id/fragUserInput3TopEdge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

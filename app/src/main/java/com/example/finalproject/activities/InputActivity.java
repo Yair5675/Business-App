@@ -18,9 +18,9 @@ import android.widget.Toast;
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
-import com.example.finalproject.fragments.input.InputFragment1;
-import com.example.finalproject.fragments.input.InputFragment2;
-import com.example.finalproject.fragments.input.InputFragment3;
+import com.example.finalproject.fragments.user_input.UserInputFragment1;
+import com.example.finalproject.fragments.user_input.UserInputFragment2;
+import com.example.finalproject.fragments.user_input.UserInputFragment3;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -42,13 +42,13 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     private int currentPage;
 
     // The three pages of the input form:
-    private InputFragment1 firstPage;
-    private InputFragment2 secondPage;
-    private InputFragment3 thirdPage;
+    private UserInputFragment1 firstPage;
+    private UserInputFragment2 secondPage;
+    private UserInputFragment3 thirdPage;
 
     // The inputs from the three pages:
-    private InputFragment1.PackagedInfo firstPageInfo;
-    private InputFragment2.PackagedInfo secondPageInfo;
+    private UserInputFragment1.PackagedInfo firstPageInfo;
+    private UserInputFragment2.PackagedInfo secondPageInfo;
     private Bitmap userImg;
 
     // The buttons that go forwards or backwards in the pages:
@@ -74,9 +74,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         title.setText(isRegisterActivity ? R.string.act_input_title_register : R.string.act_input_title_update);
 
         // Initializing the pages and giving the user to them (it's ok if we are giving null):
-        this.firstPage = new InputFragment1(this.user);
-        this.secondPage = new InputFragment2(this.user);
-        this.thirdPage = new InputFragment3(this.user);
+        this.firstPage = new UserInputFragment1(this.user);
+        this.secondPage = new UserInputFragment2(this.user);
+        this.thirdPage = new UserInputFragment3(this.user);
 
         // Initialize the next and previous buttons:
         this.btnNext = findViewById(R.id.actInputBtnNextOrRegister);
