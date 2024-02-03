@@ -155,7 +155,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
             case 2: {
                 // Validate the inputs:
-                if (this.secondPage.areInputsValid()) {
+                if (this.secondPage.validateAndSetError()) {
                     // Get the info from the page:
                     this.secondPageInfo = this.secondPage.getPackagedInfo();
 

@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -16,10 +15,11 @@ import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.MapFragment;
 
+import com.example.finalproject.fragments.input.InputFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class UserInputFragment2 extends Fragment {
+public class UserInputFragment2 extends InputFragment {
     // A reference to the user whose details are being changed:
     private final User user;
 
@@ -33,6 +33,12 @@ public class UserInputFragment2 extends Fragment {
     // The edit text that displays the country code digits selected:
     private TextInputLayout tilCountryCode;
     private TextInputEditText etCountryCode;
+
+    // Keys for the input bundle:
+    public static final String PHONE_KEY = "phone";
+    public static final String COUNTRY_KEY = "country";
+    public static final String CITY_KEY = "city";
+    public static final String ADDRESS_KEY = "address";
 
     /**
      * After validation occurred, the info given by the user needs to be given to the activity which
@@ -114,8 +120,8 @@ public class UserInputFragment2 extends Fragment {
         return parent;
     }
 
-
-    public boolean areInputsValid() {
+    @Override
+    public boolean validateAndSetError() {
         // Get the location:
         final String selectedCountry = this.mapFragment.getSelectedCountry(),
                 selectedCity = this.mapFragment.getSelectedCity(),
@@ -133,6 +139,20 @@ public class UserInputFragment2 extends Fragment {
         return this.mapFragment.isPhoneValid();
     }
 
+    @Override
+    public Bundle getInputs() {
+        // Create an empty bundle:
+        final Bundle inputBundle = new Bundle();
+
+        // Load the inputs:
+        inputBundle.putString(PHONE_KEY, this.mapFragment.getFullNumberWithPlus());
+        inputBundle.putString(COUNTRY_KEY, this.mapFragment.getSelectedCountry());
+        inputBundle.putString(CITY_KEY, this.mapFragment.getSelectedCity());
+        inputBundle.putString(ADDRESS_KEY, this.mapFragment.getSelectedAddress());
+
+        // Return the bundle:
+        return inputBundle;
+    }
 
     /**
      * Collects the info given by the user in this fragment and packages it for convenient use.
