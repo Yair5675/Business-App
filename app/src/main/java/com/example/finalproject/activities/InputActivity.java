@@ -277,7 +277,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         this.user
                 .setName(firstPageInfo.NAME)
                 .setSurname(firstPageInfo.SURNAME)
-                .setBirthdate(firstPageInfo.BIRTHDATE)
+                .setBirthdate(firstPageInfo.BIRTHDATE.toDate())
                 .setPassword(firstPageInfo.PASSWORD)
                 .setPhoneNumber(secondPageInfo.PHONE)
                 .setCountry(secondPageInfo.COUNTRY)
@@ -353,7 +353,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 .setName(firstPageInfo.NAME)
                 .setSurname(firstPageInfo.SURNAME)
                 .setEmail(firstPageInfo.EMAIL)
-                .setBirthdate(firstPageInfo.BIRTHDATE)
+                .setBirthdate(firstPageInfo.BIRTHDATE.toDate())
                 .setPassword(firstPageInfo.PASSWORD)
                 .setCountry(secondPageInfo.COUNTRY)
                 .setCity(secondPageInfo.CITY)

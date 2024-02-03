@@ -1,7 +1,6 @@
 package com.example.finalproject.database.online.collections;
 
 import com.example.finalproject.BuildConfig;
-import com.google.firebase.Timestamp;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -115,8 +114,8 @@ public class User implements Serializable {
         return this.birthdate;
     }
 
-    public User setBirthdate(Timestamp birthdate) {
-        this.birthdate = birthdate.toDate();
+    public User setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
         return this;
     }
 

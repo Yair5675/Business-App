@@ -51,6 +51,8 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
     // Tag for debugging purposes:
     private static final String TAG = "UserInputFragment3";
 
+    // A key for the getInputs method:
+    public static final String PHOTO_KEY = "photo";
 
     private enum PhotoTakenFrom {
         CAMERA,
@@ -226,7 +228,7 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
     public Bundle getInputs() {
         // Return the bitmap photo in a bundle:
         final Bundle bundle = new Bundle();
-        bundle.putByteArray("photo", Util.toByteArray(this.bitmapPhoto));
+        bundle.putByteArray(PHOTO_KEY, Util.toByteArray(this.bitmapPhoto));
         return bundle;
     }
 
