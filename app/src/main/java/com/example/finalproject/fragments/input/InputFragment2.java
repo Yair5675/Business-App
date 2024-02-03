@@ -90,7 +90,8 @@ public class InputFragment2 extends Fragment {
         this.etCountryCode = parent.findViewById(R.id.fragInput2EtCountryCode);
 
         // Create a map fragment:
-        this.mapFragment = new MapFragment();
+        if (this.mapFragment == null)
+            this.mapFragment = new MapFragment();
 
         // Put the map fragment in the container:
         FragmentManager fragmentManager = getChildFragmentManager();
