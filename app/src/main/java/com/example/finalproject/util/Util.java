@@ -171,13 +171,13 @@ public class Util {
     }
 
     /**
-     * Creates a timestamp from a date.
+     * Creates a Date object from three integers: year, month and day of the month.
      * @param year The year.
      * @param month The month INDEX (meaning, January is 0).
      * @param day The day of the month.
      * @return A Timestamp object of this date.
      */
-    public static Timestamp getTimestampFromDate(int year, int month, int day) {
+    public static Date getDateFromInts(int year, int month, int day) {
         // Create a calendar and set it to the given date (at the start of the day):
         final Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
@@ -188,8 +188,8 @@ public class Util {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        // Create the timestamp and return it:
-        return new Timestamp(Date.from(calendar.toInstant()));
+        // Create the date and return it:
+        return Date.from(calendar.toInstant());
     }
 
 

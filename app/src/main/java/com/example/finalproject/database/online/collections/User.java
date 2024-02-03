@@ -111,8 +111,8 @@ public class User implements Serializable {
         return this;
     }
 
-    public Timestamp getBirthdate() {
-        return new Timestamp(this.birthdate);
+    public Date getBirthdate() {
+        return this.birthdate;
     }
 
     public User setBirthdate(Timestamp birthdate) {

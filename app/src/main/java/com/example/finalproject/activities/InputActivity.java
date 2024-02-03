@@ -143,7 +143,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         switch (this.currentPage) {
             case 1: {
                 // Validate the inputs:
-                if (this.firstPage.areInputsValid()) {
+                if (this.firstPage.validateAndSetError()) {
                     // Get the info from the page:
                     this.firstPageInfo = this.firstPage.getPackagedInfo();
 

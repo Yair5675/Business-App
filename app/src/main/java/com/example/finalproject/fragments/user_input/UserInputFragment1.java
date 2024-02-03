@@ -11,11 +11,11 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.fragments.input.InputFragment;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.ImprovedTextWatcher;
 import com.example.finalproject.util.InputValidation;
@@ -29,10 +29,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
 
-public class UserInputFragment1 extends Fragment {
+public class UserInputFragment1 extends InputFragment {
     // A reference to the database:
     private OnlineDatabase db;
 
@@ -48,7 +49,7 @@ public class UserInputFragment1 extends Fragment {
     private TextInputEditText etBirthdate;
 
     // The actual birthdate given by the user:
-    private Timestamp birthdate;
+    private Date birthdate;
 
     // Input field responsible for receiving the user's email:
     private TextInputLayout tilEmail;
@@ -63,6 +64,13 @@ public class UserInputFragment1 extends Fragment {
 
     // A hashmap connecting input fields to their validation functions:
     private HashMap<EditText, Function<String, Result<Void, String>>> validationFunctions;
+
+    // The keys for the input bundle:
+    public static final String NAME_KEY = "name";
+    public static final String SURNAME_KEY = "surname";
+    public static final String BIRTHDATE_KEY = "birthdate";
+    public static final String EMAIL_KEY = "email";
+    public static final String PASSWORD_KEY = "password";
 
     /**
      * After validation occurred, the info given by the user needs to be given to the activity which
@@ -291,7 +299,7 @@ public class UserInputFragment1 extends Fragment {
             YEAR = calendar.get(Calendar.YEAR);
         }
         else {
-            final ZonedDateTime dateTime = birthdate.toDate().toInstant().atZone(ZoneId.systemDefault());
+            final ZonedDateTime dateTime = birthdate.toInstant().atZone(ZoneId.systemDefault());
             DAY = dateTime.getDayOfMonth();
             MONTH = dateTime.getMonthValue() - 1; // 1 - 12 so subtract 1
             YEAR = dateTime.getYear();
@@ -314,12 +322,8 @@ public class UserInputFragment1 extends Fragment {
         dateDialog.show();
     }
 
-    /**
-     * Checks all inputs and their validity. If some inputs are invalid, the function will present
-     * an error to the user (if one wasn't presented already).
-     * @return True if all inputs are valid, False otherwise.
-     */
-    public boolean areInputsValid() {
+    @Override
+    public boolean validateAndSetError() {
         // Check all the normal input fields:
         final EditText[] fields = this.getEditTexts();
         final TextInputLayout[] layouts = this.getInputLayouts();
@@ -344,6 +348,22 @@ public class UserInputFragment1 extends Fragment {
         return areInputsValid;
     }
 
+    @Override
+    public Bundle getInputs() {
+        // Create a new bundle:
+        final Bundle inputBundle = new Bundle();
+
+        // Put the inputs inside of it:
+        inputBundle.putString(NAME_KEY, Util.fixNamingCapitalization(Util.getTextFromEt(this.etName)));
+        inputBundle.putString(SURNAME_KEY, Util.fixNamingCapitalization(Util.getTextFromEt(this.etSurname)));
+        inputBundle.putSerializable(BIRTHDATE_KEY, this.birthdate);
+        inputBundle.putString(EMAIL_KEY, Util.getTextFromEt(this.etEmail));
+        inputBundle.putString(PASSWORD_KEY, Util.getTextFromEt(this.etPassword));
+
+        // Return the bundle:
+        return inputBundle;
+    }
+
     /**
      * Packs all the information given by the user into a 'Register1Fragment.PackagedInfo' object,
      * through which any activity can use the information easily and conveniently.
@@ -354,7 +374,7 @@ public class UserInputFragment1 extends Fragment {
         return new PackagedInfo(
                 Util.fixNamingCapitalization(Util.getTextFromEt(this.etName)),
                 Util.fixNamingCapitalization(Util.getTextFromEt(this.etSurname)),
-                this.birthdate,
+                new Timestamp(this.birthdate),
                 Util.getTextFromEt(this.etEmail),
                 Util.getTextFromEt(this.etPassword)
         );
@@ -364,7 +384,7 @@ public class UserInputFragment1 extends Fragment {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             // Create a timestamp from the date (the month is 0-based already):
-            birthdate = Util.getTimestampFromDate(year, month, day);
+            birthdate = Util.getDateFromInts(year, month, day);
 
             // Set the text of the birthdate input and remove its error (if there was one):
             setBirthdateEtFromDate(birthdate);
@@ -374,9 +394,9 @@ public class UserInputFragment1 extends Fragment {
         }
     }
 
-    private void setBirthdateEtFromDate(Timestamp date) {
+    private void setBirthdateEtFromDate(Date date) {
         // Set the text of the birthdate input and remove its error (if there was one):
-        final String formattedDate = Constants.DATE_FORMAT.format(date.toDate());
+        final String formattedDate = Constants.DATE_FORMAT.format(date);
         etBirthdate.setText(formattedDate);
         tilBirthdate.setError(null);
     }

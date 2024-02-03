@@ -42,7 +42,7 @@ public class OnlineUsersAdapter extends FirestoreRecyclerAdapter<User, OnlineUse
         holder.tvName.setText(user.getFullName());
 
         // Convert the birthdate to local date:
-        final LocalDate localBirthdate = convertDateToLocalDate(user.getBirthdate().toDate());
+        final LocalDate localBirthdate = convertDateToLocalDate(user.getBirthdate());
         final int monthsDiff = (int) ChronoUnit.MONTHS.between(localBirthdate, LocalDate.now());
         final int yearsOld = monthsDiff / 12;
         final int monthsOld = monthsDiff % 12;
