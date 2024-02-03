@@ -21,7 +21,7 @@ import com.example.finalproject.R;
 import com.example.finalproject.activities.InputActivity;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
-import com.example.finalproject.fragments.user_input.UserUpdateForm;
+import com.example.finalproject.fragments.input.user.UserUpdateForm;
 import com.example.finalproject.util.Util;
 
 import java.util.Locale;

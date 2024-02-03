@@ -22,7 +22,7 @@ import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.main.BranchesFragment;
 import com.example.finalproject.fragments.main.PersonalFragment;
-import com.example.finalproject.fragments.user_input.UserRegistrationForm;
+import com.example.finalproject.fragments.input.user.UserRegistrationForm;
 
 public class MainActivity extends AppCompatActivity {
     // A reference to the online database:

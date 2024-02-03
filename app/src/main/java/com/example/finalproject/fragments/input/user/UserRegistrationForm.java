@@ -1,4 +1,4 @@
-package com.example.finalproject.fragments.user_input;
+package com.example.finalproject.fragments.input.user;
 
 import android.content.Context;
 import android.content.res.Resources;
