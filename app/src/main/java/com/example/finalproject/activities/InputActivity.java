@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.fragments.user_input.UserInputFragment1;
 import com.example.finalproject.fragments.user_input.UserInputFragment2;
 import com.example.finalproject.fragments.user_input.UserInputFragment3;
@@ -406,5 +407,18 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
 
         // Save them in the database:
         this.db.addNewUser(user, this.userImg, successListener, failureListener);
+    }
+
+    public static class CurrentInput {
+        // The current input form:
+        private static InputForm currentInputForm;
+
+        public static InputForm getCurrentInputForm() {
+            return currentInputForm;
+        }
+
+        public static void setCurrentInputForm(InputForm currentInputForm) {
+            CurrentInput.currentInputForm = currentInputForm;
+        }
     }
 }
