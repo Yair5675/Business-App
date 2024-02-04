@@ -101,4 +101,5 @@
     <string name="frag_business_input_1_opening_time_hint">Opening Time</string>
     <string name="frag_business_input_1_closing_time_hint">Closing Time</string>
     <string name="act_business_input_shifts_subtitle"><b>The shifts in the week:</b></string>
+    <string name="day_shifts_num_picker_sample_day">Day of the week</string>
 </resources>
