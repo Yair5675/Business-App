@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragBusinessInput1TilCompanyName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/frag_business_input_1_company_name_hint"
+        android:layout_marginBottom="16dp"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragBusinessInput1EtCompanyName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragBusinessInput1TilBranchPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true"
+        android:hint="@string/frag_business_input_1_password_hint"
+        android:layout_marginBottom="16dp"
+
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragBusinessInput1EtBranchPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="top"
+        android:layout_marginBottom="16dp"
+        android:baselineAligned="false"
+        >
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fragBusinessInput1TilOpeningTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:hint="@string/frag_business_input_1_opening_time_hint"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragBusinessInput1EtOpeningTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fragBusinessInput1TilClosingTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:hint="@string/frag_business_input_1_closing_time_hint"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragBusinessInput1EtClosingTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <!-- TODO: Add a custom view that saves the amount of shifts for the week -->
+</LinearLayout>

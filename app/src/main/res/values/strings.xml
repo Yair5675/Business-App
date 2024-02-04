@@ -96,9 +96,9 @@
 
     <!-- Strings belonging to the business input activity: -->
     <string name="act_business_input_title"><b>Your Business Details:</b></string>
-    <string name="act_business_input_company_name_hint">Company Name</string>
-    <string name="act_business_input_password_hint">Branch Password</string>
-    <string name="act_business_input_opening_time_hint">Opening Time</string>
-    <string name="act_business_input_closing_time_hint">Closing Time</string>
+    <string name="frag_business_input_1_company_name_hint">Company Name</string>
+    <string name="frag_business_input_1_password_hint">Branch Password</string>
+    <string name="frag_business_input_1_opening_time_hint">Opening Time</string>
+    <string name="frag_business_input_1_closing_time_hint">Closing Time</string>
     <string name="act_business_input_shifts_subtitle"><b>The shifts in the week:</b></string>
 </resources>
