@@ -52,6 +52,13 @@ public class BusinessInputFragment1 extends InputFragment {
     // A hashmap connecting input fields to their validation functions:
     private HashMap<EditText, Function<String, Result<Void, String>>> validationFunctions;
 
+    // The keys for the input bundle:
+    public static final String COMPANY_NAME_KEY = "companyName";
+    public static final String BRANCH_PASSWORD_KEY = "branchPassword";
+    public static final String OPENING_TIME_MINUTES_KEY = "openingTimeMinutes";
+    public static final String CLOSING_TIME_MINUTES_KEY = "closingTimeMinutes";
+    public static final String WEEKLY_SHIFTS_NUM_KEY = "weeklyShiftsNum";
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -229,6 +236,17 @@ public class BusinessInputFragment1 extends InputFragment {
 
     @Override
     public Bundle getInputs() {
-        return null;
+        // Create an empty bundle:
+        final Bundle bundle = new Bundle();
+
+        // Save the fields:
+        bundle.putString(COMPANY_NAME_KEY, Util.fixNamingCapitalization(Util.getTextFromEt(this.etCompanyName)));
+        bundle.putString(BRANCH_PASSWORD_KEY, Util.getTextFromEt(this.etBranchPassword));
+        bundle.putInt(OPENING_TIME_MINUTES_KEY, this.openingTimeMinutes);
+        bundle.putInt(CLOSING_TIME_MINUTES_KEY, this.closingTimeMinutes);
+        bundle.putIntArray(WEEKLY_SHIFTS_NUM_KEY, this.shiftsPicker.getShiftsNum());
+
+        // Return the bundle:
+        return bundle;
     }
 }
