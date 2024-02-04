@@ -33,7 +33,8 @@ public class BusinessInputFragment2 extends InputFragment {
         if (this.mapFragment == null)
             this.mapFragment = new MapFragment();
 
-        // TODO: Restrict the map borders based on the country
+        // Restrict the map borders based on the country
+        this.mapFragment.restrictToCountry(this.country);
 
         return parent;
     }
