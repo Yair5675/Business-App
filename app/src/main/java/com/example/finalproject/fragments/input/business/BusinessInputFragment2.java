@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,7 +42,26 @@ public class BusinessInputFragment2 extends InputFragment {
 
     @Override
     public boolean validateAndSetError() {
-        return false;
+        // Get the location:
+        final String selectedCountry = this.mapFragment.getSelectedCountry(),
+                selectedCity = this.mapFragment.getSelectedCity(),
+                selectedAddress = this.mapFragment.getSelectedAddress();
+
+        // Check the location:
+        final boolean fullLocation = selectedCountry != null && selectedCity != null && selectedAddress != null;
+
+        if (!fullLocation) {
+            Toast.makeText(requireContext(), "Please choose your address", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Check that the selected country is the received country:
+        if (!selectedCountry.equals(this.country)) {
+            Toast.makeText(requireContext(), "Country must be " + this.country, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     @Override
