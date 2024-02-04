@@ -40,26 +40,6 @@ public class UserInputFragment2 extends InputFragment {
     public static final String CITY_KEY = "city";
     public static final String ADDRESS_KEY = "address";
 
-    /**
-     * After validation occurred, the info given by the user needs to be given to the activity which
-     * needs it. This class provides a convenient way for the info to pass anywhere.
-     * Pay attention that although any class can READ the data that is saved, no class can create an
-     * UserInputFragment2.PackagedInfo object, except the UserInputFragment2 class.
-     */
-    public static class PackagedInfo {
-        public final String PHONE;
-        public final String COUNTRY;
-        public final String CITY;
-        public final String ADDRESS;
-
-        private PackagedInfo(String phone, String country, String city, String address) {
-            PHONE = phone;
-            COUNTRY = country;
-            CITY = city;
-            ADDRESS = address;
-        }
-    }
-
     public UserInputFragment2(@Nullable User connectedUser) {
         this.user = connectedUser;
     }
@@ -154,19 +134,4 @@ public class UserInputFragment2 extends InputFragment {
         return inputBundle;
     }
 
-    /**
-     * Collects the info given by the user in this fragment and packages it for convenient use.
-     * Pay attention this function should be called after calling the 'areInputsValid' function,
-     * and making sure it returns true.
-     * @return An UserInputFragment2.PackagedInfo object for convenient use of the info given by the
-     *         user in this fragment.
-     */
-    public UserInputFragment2.PackagedInfo getPackagedInfo() {
-        return new PackagedInfo(
-                this.mapFragment.getFullNumberWithPlus(),
-                this.mapFragment.getSelectedCountry(),
-                this.mapFragment.getSelectedCity(),
-                this.mapFragment.getSelectedAddress()
-        );
-    }
 }

@@ -72,34 +72,6 @@ public class UserInputFragment1 extends InputFragment {
     public static final String EMAIL_KEY = "email";
     public static final String PASSWORD_KEY = "password";
 
-    /**
-     * After validation occurred, the info given by the user needs to be given to the activity which
-     * is handling input. This class provides a convenient way for the info to pass anywhere.
-     * Pay attention that although any class can READ the data that is saved, no class can create an
-     * UserInputFragment1.PackagedInfo object, except the UserInputFragment1 class.
-     */
-    public static class PackagedInfo {
-        public final String NAME;
-        public final String SURNAME;
-        public final Timestamp BIRTHDATE;
-        public final String EMAIL;
-        public final String PASSWORD;
-
-        private PackagedInfo(
-                String NAME,
-                String SURNAME,
-                Timestamp BIRTHDATE,
-                String EMAIL,
-                String PASSWORD
-        ) {
-            this.NAME = NAME;
-            this.SURNAME = SURNAME;
-            this.BIRTHDATE = BIRTHDATE;
-            this.EMAIL = EMAIL;
-            this.PASSWORD = PASSWORD;
-        }
-    }
-
     public UserInputFragment1(@Nullable User connectedUser) {
         this.user = connectedUser;
         initialEmail = user == null ? null : user.getEmail();
@@ -362,22 +334,6 @@ public class UserInputFragment1 extends InputFragment {
 
         // Return the bundle:
         return inputBundle;
-    }
-
-    /**
-     * Packs all the information given by the user into a 'Register1Fragment.PackagedInfo' object,
-     * through which any activity can use the information easily and conveniently.
-     * @return A 'Register1Fragment.PackagedInfo' object containing all the information received
-     *         from the user.
-     */
-    public UserInputFragment1.PackagedInfo getPackagedInfo() {
-        return new PackagedInfo(
-                Util.fixNamingCapitalization(Util.getTextFromEt(this.etName)),
-                Util.fixNamingCapitalization(Util.getTextFromEt(this.etSurname)),
-                new Timestamp(this.birthdate),
-                Util.getTextFromEt(this.etEmail),
-                Util.getTextFromEt(this.etPassword)
-        );
     }
 
     private class BirthdateDialogManager implements DatePickerDialog.OnDateSetListener {

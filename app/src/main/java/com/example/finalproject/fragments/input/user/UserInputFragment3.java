@@ -232,7 +232,4 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
         return bundle;
     }
 
-    public Bitmap getBitmapPhoto() {
-        return this.bitmapPhoto;
-    }
 }
