@@ -75,7 +75,11 @@ public class DayShiftsNumPicker extends LinearLayout {
         }
     }
 
-    public int getShiftsNum() {
+    public int getShiftNum() {
         return this.npShiftsNum.getValue();
+    }
+
+    public void setShiftNum(int shiftNum) {
+        this.npShiftsNum.setValue(shiftNum);
     }
 }
