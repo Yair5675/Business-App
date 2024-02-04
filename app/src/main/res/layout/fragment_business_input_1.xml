@@ -81,5 +81,9 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
-    <!-- TODO: Add a custom view that saves the amount of shifts for the week -->
+    <com.example.finalproject.custom_views.WeekShiftsNumPicker
+        android:id="@+id/fragBusinessInput1ShiftsPicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 </LinearLayout>

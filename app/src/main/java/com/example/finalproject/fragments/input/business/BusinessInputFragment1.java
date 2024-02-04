@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.finalproject.R;
+import com.example.finalproject.custom_views.WeekShiftsNumPicker;
 import com.example.finalproject.fragments.input.InputFragment;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.ImprovedTextWatcher;
@@ -44,6 +46,9 @@ public class BusinessInputFragment1 extends InputFragment {
     // The opening and closing time in minutes:
     private int openingTimeMinutes = -1, closingTimeMinutes = -1;
 
+    // The view that allows the user to choose the amount of shifts for every day of the week:
+    private WeekShiftsNumPicker shiftsPicker;
+
     // A hashmap connecting input fields to their validation functions:
     private HashMap<EditText, Function<String, Result<Void, String>>> validationFunctions;
 
@@ -65,6 +70,9 @@ public class BusinessInputFragment1 extends InputFragment {
 
         // Initialize time picker dialogs:
         this.initTimePickers();
+
+        // Initialize the week shifts num picker:
+        this.shiftsPicker = parent.findViewById(R.id.fragBusinessInput1ShiftsPicker);
 
         // Initialize the text watchers:
         this.initTextWatchers();
@@ -200,7 +208,23 @@ public class BusinessInputFragment1 extends InputFragment {
             areInputsValid &= layouts[i].getError() == null;
         }
 
-        return areInputsValid;
+        // Validate the shifts picker:
+        final boolean areShiftsValid = isShiftPickerValid();
+        if (!areShiftsValid)
+            Toast.makeText(requireContext(), "Pick at least one shift", Toast.LENGTH_SHORT).show();
+
+        return areInputsValid && areShiftsValid;
+    }
+
+    private boolean isShiftPickerValid() {
+        // Get the number of shifts:
+        final int[] shifts = this.shiftsPicker.getShiftsNum();
+
+        // Check that there is at least one day with a shift:
+        boolean isValid = false;
+        for (int i = 0; i < shifts.length && !isValid; i++)
+            isValid = shifts[i] > 0;
+        return isValid;
     }
 
     @Override
