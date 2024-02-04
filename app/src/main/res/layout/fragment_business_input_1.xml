@@ -81,6 +81,16 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/frag_business_input_1_shifts_subtitle"
+        android:layout_gravity="start"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="4dp"
+        />
+
     <com.example.finalproject.custom_views.WeekShiftsNumPicker
         android:id="@+id/fragBusinessInput1ShiftsPicker"
         android:layout_width="match_parent"

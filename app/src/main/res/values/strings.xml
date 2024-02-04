@@ -94,12 +94,17 @@
     <string name="frag_branches_my_city_checkbox_txt">My city</string>
     <string name="frag_branches_add_business_txt">Add your business</string>
 
-    <!-- Strings belonging to the business input activity: -->
+    <!-- Strings belonging to the first business input fragment: -->
     <string name="act_business_input_title"><b>Your Business Details:</b></string>
     <string name="frag_business_input_1_company_name_hint">Company Name</string>
     <string name="frag_business_input_1_password_hint">Branch Password</string>
     <string name="frag_business_input_1_opening_time_hint">Opening Time</string>
     <string name="frag_business_input_1_closing_time_hint">Closing Time</string>
-    <string name="act_business_input_shifts_subtitle"><b>The shifts in the week:</b></string>
+    <string name="frag_business_input_1_shifts_subtitle"><b>The shifts in the week:</b></string>
+
+    <!-- Strings belonging to the second business input fragment: -->
+    <string name="frag_business_input_2_title"><b>Your business address:</b></string>
+
+    <!-- Strings belonging to the day shifts num picker custom view: -->
     <string name="day_shifts_num_picker_sample_day">Day of the week</string>
 </resources>
