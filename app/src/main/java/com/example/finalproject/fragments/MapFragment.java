@@ -83,6 +83,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     // A variable to handle if the google API is available:
     private boolean isMapsApiAvailable;
 
+    // The country that the map must return:
+    private String restrictedCountry;
+
     // The duration of the zoom animation in milliseconds:
     private static final int ZOOM_DURATION = 1000;
 
@@ -231,7 +234,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
 
         // Check if the location is empty:
-        if (location == null || location.length() == 0) {
+        if (location == null || location.isEmpty()) {
             Toast.makeText(
                     requireContext(),
                     "Please enter a location",
@@ -418,6 +421,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (countryCode.equals("PS"))
             countryCode = "IL";
 
+        final String prevCountryCode = this.countryCodePicker.getSelectedCountryCode();
+        this.countryCodePicker.setCountryForNameCode(countryCode);
+        final String countryName = this.countryCodePicker.getSelectedCountryName();
+        if (this.restrictedCountry != null && !countryName.equals(this.restrictedCountry)) {
+            Toast.makeText(requireContext(), "Country must be " + countryName, Toast.LENGTH_SHORT).show();
+            this.countryCodePicker.setCountryForNameCode(prevCountryCode);
+            return;
+        }
+
         // Show the views and set the appropriate texts:
         this.countryCodePicker.setVisibility(View.VISIBLE);
 
@@ -427,7 +439,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             this.etCountryCode.setText(this.countryCodePicker.getSelectedCountryCodeWithPlus());
         }
 
-        this.countryCodePicker.setCountryForNameCode(countryCode);
         this.selectedCountry = this.countryCodePicker.getSelectedCountryName();
     }
 
@@ -547,6 +558,72 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private void moveToLocation(@NonNull LatLngBounds bounds) {
         final CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10);
         this.map.animateCamera(cameraUpdate, ZOOM_DURATION, null);
+    }
+
+    /** @noinspection SameReturnValue*/
+    private boolean handleBoundsResult(@NonNull Message message) {
+        // Check that the thread returned a Result<Address, String>:
+        if (!(message.obj instanceof Result)) {
+            Log.e(
+                    TAG,
+                    "Unexpected type returned from geocoding thread (expected Result): "
+                            + message.obj.getClass().getName()
+            );
+            return false;
+        }
+
+        // Check if the result was a success:
+        Result<?, ?> result = (Result<?, ?>) message.obj;
+        if (result.isOk()) {
+            // Ensure type checking again and get the address:
+            if (!(result.getValue() instanceof GeocodingResult)) {
+                Log.e(
+                        TAG,
+                        "Unexpected type for successful type returned from geocoding thread " +
+                                "(expected GeocodingResult): " + result.getValue().getClass().getName()
+                );
+                return false;
+            }
+
+            // Load the bounds:
+            final Result<LatLngBounds, String> boundsResult = GeocodingUtil.getBounds((GeocodingResult) result.getValue());
+            if (boundsResult.isOk())
+                this.map.setLatLngBoundsForCameraTarget(boundsResult.getValue());
+            else
+                Log.e(TAG, "Couldn't get bounds from geocoding result: " + boundsResult.getError());
+
+        } else {
+            // Remove the progress bar and alert the user:
+            Log.e(TAG, result.getError().toString());
+            this.pbLocationLoader.setVisibility(View.GONE);
+
+            Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+        }
+
+        return false;
+    }
+    public void restrictToCountry(String country) {
+        if (isMapsApiAvailable && country != null && !country.isEmpty()) {
+            // Create a handler:
+            final Handler geoHandler = new Handler(
+                    Looper.getMainLooper(),
+                    this::handleBoundsResult
+            );
+
+            // Create the thread and start it:
+            final GeocodingThread geoThread = GeocodingThread.getGeocoderThread(
+                    geoHandler,
+                    country
+            );
+
+            geoThread.start();
+
+            // Hide the location details layout and show the progress bar:
+            hideLocationInfo();
+
+            // Save the restricted country:
+            this.restrictedCountry = country;
+        }
     }
 
     private boolean checkGooglePlayServices() {
