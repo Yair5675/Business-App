@@ -66,6 +66,15 @@ public class BusinessInputFragment2 extends InputFragment {
 
     @Override
     public Bundle getInputs() {
-        return null;
+        // Create an empty bundle:
+        final Bundle bundle = new Bundle();
+
+        // Save the address there:
+        bundle.putString("selectedCountry", this.country);
+        bundle.putString("selectedCity", this.mapFragment.getSelectedCity());
+        bundle.putString("selectedAddress", this.mapFragment.getSelectedAddress());
+
+        // Return the bundle:
+        return bundle;
     }
 }
