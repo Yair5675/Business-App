@@ -1,6 +1,8 @@
 package com.example.finalproject.custom_views;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
@@ -11,6 +13,8 @@ import com.example.finalproject.R;
 import java.util.Arrays;
 
 public class WeekShiftsNumPicker extends LinearLayout {
+    public static final String SHIFTS_NUM_KEY = "shiftsNum";
+    public static final String SUPER_STATE_KEY = "superState";
     // An array of seven day shifts num picker:
     private final DayShiftsNumPicker[] dayShiftsNumPickers = new DayShiftsNumPicker[7];
 
@@ -53,6 +57,34 @@ public class WeekShiftsNumPicker extends LinearLayout {
         if (shiftsNum.length == this.dayShiftsNumPickers.length) {
             for (int i = 0; i < this.dayShiftsNumPickers.length; i++)
                 this.dayShiftsNumPickers[i].setShiftNum(shiftsNum[i]);
+        }
+    }
+
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        // Put the shifts in a bundle:
+        final Bundle bundle = new Bundle();
+        bundle.putIntArray(SHIFTS_NUM_KEY, this.getShiftsNum());
+
+        // Save the super state and return the bundle:
+        bundle.putParcelable(SUPER_STATE_KEY, super.onSaveInstanceState());
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        // Verify the saved state (also implicit null check):
+        if (state instanceof Bundle) {
+            final Bundle stateBundle = (Bundle) state;
+
+            // Set the shifts:
+            int[] shiftsNum;
+            if ((shiftsNum = stateBundle.getIntArray(SHIFTS_NUM_KEY)) != null)
+                this.setShiftsNum(shiftsNum);
+
+            // Load super state:
+            super.onRestoreInstanceState(stateBundle.getParcelable(SUPER_STATE_KEY));
         }
     }
 }
