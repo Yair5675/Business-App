@@ -421,7 +421,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (countryCode.equals("PS"))
             countryCode = "IL";
 
-        final String prevCountryCode = this.countryCodePicker.getSelectedCountryCode();
+        final String prevCountryCode = this.countryCodePicker.getSelectedCountryNameCode();
         this.countryCodePicker.setCountryForNameCode(countryCode);
         final String countryName = this.countryCodePicker.getSelectedCountryName();
         if (this.restrictedCountry != null && !countryName.equals(this.restrictedCountry)) {
@@ -587,10 +587,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
             // Load the bounds:
             final Result<LatLngBounds, String> boundsResult = GeocodingUtil.getBounds((GeocodingResult) result.getValue());
-            if (boundsResult.isOk())
+            if (boundsResult.isOk()) {
+                // Set the bounds:
                 this.map.setLatLngBoundsForCameraTarget(boundsResult.getValue());
+                // Zoom in to the bounds:
+                this.moveToLocation(boundsResult.getValue());
+                // Set the country:
+                final Result<String, String> countryCodeResult = GeocodingUtil.getCountryCode((GeocodingResult) result.getValue());
+                this.setCountry(countryCodeResult.isOk() ? countryCodeResult.getValue() : null);
+            }
             else
                 Log.e(TAG, "Couldn't get bounds from geocoding result: " + boundsResult.getError());
+
+            // Remove the progress bar:
+            this.pbLocationLoader.setVisibility(View.GONE);
 
         } else {
             // Remove the progress bar and alert the user:
@@ -604,6 +614,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
     public void restrictToCountry(String country) {
         if (isMapsApiAvailable && country != null && !country.isEmpty()) {
+            // Hide the location details layout and show the progress bar:
+            hideLocationInfo();
+
             // Create a handler:
             final Handler geoHandler = new Handler(
                     Looper.getMainLooper(),
@@ -617,9 +630,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             );
 
             geoThread.start();
-
-            // Hide the location details layout and show the progress bar:
-            hideLocationInfo();
 
             // Save the restricted country:
             this.restrictedCountry = country;
