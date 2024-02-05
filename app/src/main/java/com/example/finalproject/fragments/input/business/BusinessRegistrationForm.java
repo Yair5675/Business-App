@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.util.Result;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -16,6 +17,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.function.Consumer;
 
 public class BusinessRegistrationForm extends InputForm {
+    // A reference to firestore:
+    private final FirebaseFirestore dbRef;
+
     // The branch's company name:
     private String companyName;
 
@@ -46,6 +50,9 @@ public class BusinessRegistrationForm extends InputForm {
                 new BusinessInputFragment1(),
                 new BusinessInputFragment2(userCountry)
         );
+
+        // Initialize the database:
+        this.dbRef = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -54,26 +61,67 @@ public class BusinessRegistrationForm extends InputForm {
         this.loadFragmentsInfo();
 
         // Check that a similar company doesn't already have a branch at that location:
+        final OnFailureListener onFailureListener = getOnFailureListener(context);
         this.validateSimilarBranch(unused -> {
-            // TODO: Add the new branch:
-        }, exception-> {
-            // Log the error and toast it:
-            Log.e(TAG, "Failed to validate branch", exception);
+            // Add the new branch:
+            this.addNewBranch(unused1 -> {
+                // TODO: Add the connected user to the list of employees as a manager
+            }, onFailureListener);
+        }, onFailureListener);
+    }
 
+    private OnFailureListener getOnFailureListener(Context context) {
+        return exception -> {
+            // Log the error and toast it:
+            Log.e(TAG, "Ending form failed", exception);
+
+            // Check for similar branch error:
             if (exception.getMessage() != null && exception.getMessage().equals(SIMILAR_BRANCH_FOUND_ERROR))
                 Toast.makeText(context, SIMILAR_BRANCH_FOUND_ERROR, Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-        });
+        };
+    }
+
+    private void addNewBranch(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        // Create the new branch object:
+        final Branch branch = this.getBranchObject();
+
+        // Set the branch in the adapter:
+        this.dbRef.collection("branches")
+                .add(branch)
+                .addOnSuccessListener(documentReference -> {
+                    // Set the branch's ID:
+                    branch.setBranchId(documentReference.getId());
+                    this.dbRef.collection("branches")
+                            .document(branch.getBranchId())
+                            .update("branchId", branch.getBranchId())
+                            .addOnSuccessListener(onSuccessListener)
+                            .addOnFailureListener(onFailureListener);
+                })
+                .addOnFailureListener(onFailureListener);
+
+    }
+
+    private Branch getBranchObject() {
+        final Branch branch = new Branch();
+        branch.setCompanyName(this.companyName);
+        branch.setPassword(this.branchPassword);
+        branch.setCountry(this.country);
+        branch.setCity(this.city);
+        branch.setAddress(this.address);
+        branch.setFullAddress(String.format("%s %s %s", this.country, this.city, this.address));
+        branch.setOpeningTime(this.openingTimeMinutes);
+        branch.setClosingTime(this.closingTimeMinutes);
+        branch.setDailyShiftsNum(this.weeklyShiftsNum);
+
+        return branch;
     }
 
     private void validateSimilarBranch(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
-        // Get a reference to firestore:
-        final FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
-
         // Check for similar branches:
         final String fullAddress = String.format("%s %s %s", this.country, this.city, this.address);
-        dbRef.collection("branches")
+        this.dbRef.collection("branches")
                 .whereEqualTo("companyName", this.companyName)
                 .whereEqualTo("fullAddress", fullAddress)
                 .get()
