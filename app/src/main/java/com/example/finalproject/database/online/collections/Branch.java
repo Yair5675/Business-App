@@ -13,6 +13,9 @@ public class Branch {
     // The address, city and country of the branch:
     private String address, city, country;
 
+    // The combined address (for debugging purposes):
+    private String fullAddress;
+
     // The opening and closing time:
     private int openingTime, closingTime;
 
@@ -73,6 +76,14 @@ public class Branch {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getFullAddress() {
+        return fullAddress;
+    }
+
+    public void setFullAddress(String fullAddress) {
+        this.fullAddress = fullAddress;
     }
 
     public int getOpeningTime() {
