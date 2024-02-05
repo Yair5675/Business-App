@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.example.finalproject.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class WeekShiftsNumPicker extends LinearLayout {
@@ -47,16 +48,17 @@ public class WeekShiftsNumPicker extends LinearLayout {
         this.dayShiftsNumPickers[6] = findViewById(R.id.weekShiftsNumPickerSaturday);
     }
 
-    public int[] getShiftsNum() {
+    public ArrayList<Integer> getShiftsNum() {
+
         return Arrays.stream(this.dayShiftsNumPickers)
                 .mapToInt(DayShiftsNumPicker::getShiftNum)
-                .toArray();
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public void setShiftsNum(int[] shiftsNum) {
-        if (shiftsNum.length == this.dayShiftsNumPickers.length) {
+    public void setShiftsNum(ArrayList<Integer> shiftsNum) {
+        if (shiftsNum.size() == this.dayShiftsNumPickers.length) {
             for (int i = 0; i < this.dayShiftsNumPickers.length; i++)
-                this.dayShiftsNumPickers[i].setShiftNum(shiftsNum[i]);
+                this.dayShiftsNumPickers[i].setShiftNum(shiftsNum.get(i));
         }
     }
 
@@ -65,7 +67,7 @@ public class WeekShiftsNumPicker extends LinearLayout {
     protected Parcelable onSaveInstanceState() {
         // Put the shifts in a bundle:
         final Bundle bundle = new Bundle();
-        bundle.putIntArray(SHIFTS_NUM_KEY, this.getShiftsNum());
+        bundle.putIntegerArrayList(SHIFTS_NUM_KEY, this.getShiftsNum());
 
         // Save the super state and return the bundle:
         bundle.putParcelable(SUPER_STATE_KEY, super.onSaveInstanceState());
@@ -79,8 +81,8 @@ public class WeekShiftsNumPicker extends LinearLayout {
             final Bundle stateBundle = (Bundle) state;
 
             // Set the shifts:
-            int[] shiftsNum;
-            if ((shiftsNum = stateBundle.getIntArray(SHIFTS_NUM_KEY)) != null)
+            ArrayList<Integer> shiftsNum;
+            if ((shiftsNum = stateBundle.getIntegerArrayList(SHIFTS_NUM_KEY)) != null)
                 this.setShiftsNum(shiftsNum);
 
             // Load super state:

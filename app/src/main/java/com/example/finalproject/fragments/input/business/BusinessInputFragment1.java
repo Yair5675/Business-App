@@ -23,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -225,12 +226,12 @@ public class BusinessInputFragment1 extends InputFragment {
 
     private boolean isShiftPickerValid() {
         // Get the number of shifts:
-        final int[] shifts = this.shiftsPicker.getShiftsNum();
+        final List<Integer> shifts = this.shiftsPicker.getShiftsNum();
 
         // Check that there is at least one day with a shift:
         boolean isValid = false;
-        for (int i = 0; i < shifts.length && !isValid; i++)
-            isValid = shifts[i] > 0;
+        for (int i = 0; i < shifts.size() && !isValid; i++)
+            isValid = shifts.get(i) > 0;
         return isValid;
     }
 
@@ -244,7 +245,7 @@ public class BusinessInputFragment1 extends InputFragment {
         bundle.putString(BRANCH_PASSWORD_KEY, Util.getTextFromEt(this.etBranchPassword));
         bundle.putInt(OPENING_TIME_MINUTES_KEY, this.openingTimeMinutes);
         bundle.putInt(CLOSING_TIME_MINUTES_KEY, this.closingTimeMinutes);
-        bundle.putIntArray(WEEKLY_SHIFTS_NUM_KEY, this.shiftsPicker.getShiftsNum());
+        bundle.putIntegerArrayList(WEEKLY_SHIFTS_NUM_KEY, this.shiftsPicker.getShiftsNum());
 
         // Return the bundle:
         return bundle;

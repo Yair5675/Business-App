@@ -1,5 +1,7 @@
 package com.example.finalproject.database.online.collections;
 
+import java.util.List;
+
 public class Branch {
     // The branch ID:
     private String branchId;
@@ -20,7 +22,7 @@ public class Branch {
     private int openingTime, closingTime;
 
     // The number of shifts every day (starting at Sunday as the first index):
-    private int[] dailyShiftsNum;
+    private List<Integer> dailyShiftsNum;
 
     // Empty constructor. Requirement of firebase:
     public Branch() {
@@ -102,11 +104,11 @@ public class Branch {
         this.closingTime = closingTime;
     }
 
-    public int[] getDailyShiftsNum() {
-        return dailyShiftsNum;
+    public List<Integer> getDailyShiftsNum() {
+        return this.dailyShiftsNum;
     }
 
-    public void setDailyShiftsNum(int[] dailyShiftsNum) {
+    public void setDailyShiftsNum(List<Integer> dailyShiftsNum) {
         this.dailyShiftsNum = dailyShiftsNum;
     }
 }

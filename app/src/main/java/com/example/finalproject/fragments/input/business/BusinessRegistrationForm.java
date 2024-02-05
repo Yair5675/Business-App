@@ -17,6 +17,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class BusinessRegistrationForm extends InputForm {
@@ -39,7 +40,7 @@ public class BusinessRegistrationForm extends InputForm {
     private int openingTimeMinutes, closingTimeMinutes;
 
     // The number of shifts every day for the branch:
-    private int[] weeklyShiftsNum;
+    private List<Integer> weeklyShiftsNum;
 
     // The location of the branch:
     private String country, city, address;
@@ -225,7 +226,7 @@ public class BusinessRegistrationForm extends InputForm {
         this.branchPassword = bundle1.getString(BusinessInputFragment1.BRANCH_PASSWORD_KEY);
         this.openingTimeMinutes = bundle1.getInt(BusinessInputFragment1.OPENING_TIME_MINUTES_KEY);
         this.closingTimeMinutes = bundle1.getInt(BusinessInputFragment1.CLOSING_TIME_MINUTES_KEY);
-        this.weeklyShiftsNum = bundle1.getIntArray(BusinessInputFragment1.WEEKLY_SHIFTS_NUM_KEY);
+        this.weeklyShiftsNum = bundle1.getIntegerArrayList(BusinessInputFragment1.WEEKLY_SHIFTS_NUM_KEY);
 
         // Load every field from the second fragment:
         final Bundle bundle2 = this.inputFragments[1].getInputs();
