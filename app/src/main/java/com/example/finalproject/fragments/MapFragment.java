@@ -425,7 +425,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         this.countryCodePicker.setCountryForNameCode(countryCode);
         final String countryName = this.countryCodePicker.getSelectedCountryName();
         if (this.restrictedCountry != null && !countryName.equals(this.restrictedCountry)) {
-            Toast.makeText(requireContext(), "Country must be " + countryName, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Country must be " + this.restrictedCountry, Toast.LENGTH_SHORT).show();
             this.countryCodePicker.setCountryForNameCode(prevCountryCode);
             return;
         }
