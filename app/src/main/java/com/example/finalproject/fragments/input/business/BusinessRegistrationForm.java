@@ -8,16 +8,16 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Branch;
+import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.Workplace;
 import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.util.Result;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -82,7 +82,7 @@ public class BusinessRegistrationForm extends InputForm {
                 // Add the connected user to the list of employees as a manager:
                 this.addUserToListAsManager(unused2 -> {
                     // Add the branch to the list of workplaces of the user:
-                    this.addBranchToWorkplacesList(documentReference -> {
+                    this.addBranchToWorkplacesList(unused3 -> {
                         // Everything was done, activate the onComplete listener:
                         onCompleteListener.accept(Result.success(null));
                     }, onFailureListener);
@@ -93,16 +93,17 @@ public class BusinessRegistrationForm extends InputForm {
     }
 
     private void addBranchToWorkplacesList(
-            OnSuccessListener<DocumentReference> onSuccessListener, OnFailureListener onFailureListener
+            OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener
     ) {
         // Create the Workplace object:
         final Workplace workplace = Workplace.fromBranch(this.branch, true);
 
-        // Set the branch:
+        // Set the workplace:
         this.dbRef.collection("users")
                 .document(this.connectedUser.getUid())
                 .collection("workplaces")
-                .add(workplace)
+                .document(this.branch.getBranchId())
+                .set(workplace, SetOptions.merge())
                 .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(exception -> {
                     // Delete the user info from the employees' list:
@@ -126,23 +127,26 @@ public class BusinessRegistrationForm extends InputForm {
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-        // Load some of the user's info:
-        final HashMap<String, Object> userInfo = new HashMap<>();
-        userInfo.put("uid", this.connectedUser.getUid());
-        userInfo.put("isManager", true);
-        userInfo.put("name", this.connectedUser.getName());
-        userInfo.put("surname", this.connectedUser.getSurname());
-        userInfo.put("imagePath", this.connectedUser.getImagePath());
+        // Create the employee object:
+        final Employee employee = Employee.fromUser(this.connectedUser, true);
 
+        // Load the employee:
         this.dbRef.collection("branches")
                 .document(this.branch.getBranchId())
                 .collection("employees")
                 .document(this.connectedUser.getUid())
-                .set(userInfo)
+                .set(employee)
                 .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(exception -> {
                     // Delete the created branch:
                     this.dbRef.collection("branches").document(this.branch.getBranchId()).delete();
+
+                    // Delete the workplace from the user:
+                    this.dbRef.collection("users")
+                            .document(this.connectedUser.getUid())
+                            .collection("workplaces")
+                            .document(this.branch.getBranchId())
+                            .delete();
 
                     // Activate the onFailureListener:
                     onFailureListener.onFailure(exception);
