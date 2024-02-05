@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Branch;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.util.Result;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,6 +20,9 @@ import java.util.function.Consumer;
 public class BusinessRegistrationForm extends InputForm {
     // A reference to firestore:
     private final FirebaseFirestore dbRef;
+
+    // The connected user:
+    private final User connectedUser;
 
     // The branch's company name:
     private String companyName;
@@ -41,15 +45,18 @@ public class BusinessRegistrationForm extends InputForm {
     // Error message in case a similar branch was found:
     private static final String SIMILAR_BRANCH_FOUND_ERROR = "Similar branch found";
 
-    public BusinessRegistrationForm(Resources res, String userCountry) {
+    public BusinessRegistrationForm(Resources res, User connectedUser) {
         super(
                 // Set the title:
                 res.getString(R.string.act_business_input_title),
 
                 // Set the input fragments:
                 new BusinessInputFragment1(),
-                new BusinessInputFragment2(userCountry)
+                new BusinessInputFragment2(connectedUser.getCountry())
         );
+
+        // Save the connected user:
+        this.connectedUser = connectedUser;
 
         // Initialize the database:
         this.dbRef = FirebaseFirestore.getInstance();
