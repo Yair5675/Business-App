@@ -3,6 +3,7 @@ package com.example.finalproject.custom_views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -32,11 +33,6 @@ public class DayShiftsNumPicker extends LinearLayout {
         init(context, attrs);
     }
 
-    public DayShiftsNumPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs);
-    }
-
     private void init(Context context, @Nullable AttributeSet attr) {
         // Inflate the XML file:
         inflate(context, R.layout.day_shifts_num_picker, this);
@@ -45,30 +41,31 @@ public class DayShiftsNumPicker extends LinearLayout {
         this.npShiftsNum = findViewById(R.id.dayShiftsNumPickerNpShifts);
         this.npShiftsNum.setMinValue(0);
         this.npShiftsNum.setMaxValue(MAX_DAILY_SHIFTS);
+        Log.d("DayShiftsNumPicker", "init called");
+
+        // The text view:
+        final TextView tvDayOfWeek = findViewById(R.id.dayShiftsNumPickerTvDayOfWeek);
 
         // Get the attributes:
-        final TypedArray typedArray = context.obtainStyledAttributes(attr, R.styleable.DayShiftsNumPicker);
+        final TypedArray typedArray = context.getTheme().obtainStyledAttributes(
+                attr, R.styleable.DayShiftsNumPicker, 0 ,0
+        );
         try {
             // Get the text size:
             final float textSize = typedArray.getDimension(R.styleable.DayShiftsNumPicker_android_textSize, -1);
+            if (textSize != -1)
+                tvDayOfWeek.setTextSize(textSize);
 
             // Get the number of shifts:
             final int shiftsNum = typedArray.getInt(R.styleable.DayShiftsNumPicker_shiftsNum, -1);
+            if (shiftsNum != -1)
+                this.npShiftsNum.setValue(shiftsNum);
 
             // Get the day:
             int dayIdx = typedArray.getInt(R.styleable.DayShiftsNumPicker_dayOfWeek, -1);
+            if (dayIdx != -1)
+                tvDayOfWeek.setText(DayOfWeek.of(dayIdx).getDisplayName(TextStyle.SHORT, Locale.US));
 
-            // Set them on the text view and number picker:
-            if (textSize != -1 && shiftsNum != -1 && dayIdx != -1) {
-                final TextView tvDayOfWeek = findViewById(R.id.dayShiftsNumPickerTvDayOfWeek);
-
-                tvDayOfWeek.setTextSize(textSize);
-                this.npShiftsNum.setValue(shiftsNum);
-                tvDayOfWeek.setText(
-                        DayOfWeek.of(dayIdx + 1)
-                                .getDisplayName(TextStyle.SHORT, Locale.getDefault())
-                );
-            }
         } finally {
             // Release resources:
             typedArray.recycle();
