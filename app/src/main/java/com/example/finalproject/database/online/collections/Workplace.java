@@ -67,4 +67,25 @@ public class Workplace {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    /**
+     * A utility method that makes it easier to create a workplace object from an existing branch.
+     * @param branch A branch whom the new workplace object represent.
+     * @param isManager Whether or not the user that owns the workplace object is a manager in the
+     *                  branch or not.
+     * @return A new workplace object consisting ot the given branch and the given isManager param.
+     */
+    public static Workplace fromBranch(Branch branch, boolean isManager) {
+        // Create the workplace object:
+        final Workplace workplace = new Workplace();
+        workplace.setBranchId(branch.getBranchId());
+        workplace.setManager(isManager);
+        workplace.setCompanyName(branch.getCompanyName());
+        workplace.setCountry(branch.getCountry());
+        workplace.setCity(branch.getCity());
+        workplace.setAddress(branch.getAddress());
+
+        // Return the workplace object:
+        return workplace;
+    }
 }
