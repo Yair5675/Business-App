@@ -13,13 +13,18 @@ import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.util.Result;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class BusinessRegistrationForm extends InputForm {
     // A reference to firestore:
     private final FirebaseFirestore dbRef;
+
+    // The created branch:
+    private Branch branch;
 
     // The connected user:
     private final User connectedUser;
@@ -72,9 +77,39 @@ public class BusinessRegistrationForm extends InputForm {
         this.validateSimilarBranch(unused -> {
             // Add the new branch:
             this.addNewBranch(unused1 -> {
-                // TODO: Add the connected user to the list of employees as a manager
+                // Add the connected user to the list of employees as a manager:
+                this.addUserToListAsManager(documentReference -> {
+                    // TODO: Add the branch to the list of workplaces of the user:
+
+                }, onFailureListener);
             }, onFailureListener);
         }, onFailureListener);
+    }
+
+    private void addUserToListAsManager(
+            OnSuccessListener<DocumentReference> onSuccessListener,
+                                        OnFailureListener onFailureListener
+    ) {
+        // Load some of the user's info:
+        final HashMap<String, Object> userInfo = new HashMap<>();
+        userInfo.put("uid", this.connectedUser.getUid());
+        userInfo.put("isManager", true);
+        userInfo.put("name", this.connectedUser.getName());
+        userInfo.put("surname", this.connectedUser.getSurname());
+        userInfo.put("imagePath", this.connectedUser.getImagePath());
+
+        this.dbRef.collection("branches")
+                .document(this.branch.getBranchId())
+                .collection("employees")
+                .add(userInfo)
+                .addOnSuccessListener(onSuccessListener)
+                .addOnFailureListener(exception -> {
+                    // Delete the created branch:
+                    this.dbRef.collection("branches").document(this.branch.getBranchId()).delete();
+
+                    // Activate the onFailureListener:
+                    onFailureListener.onFailure(exception);
+                });
     }
 
     private OnFailureListener getOnFailureListener(Context context) {
@@ -91,18 +126,18 @@ public class BusinessRegistrationForm extends InputForm {
     }
 
     private void addNewBranch(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
-        // Create the new branch object:
-        final Branch branch = this.getBranchObject();
+        // Load the new branch object:
+        this.loadBranchObject();
 
         // Set the branch in the adapter:
         this.dbRef.collection("branches")
-                .add(branch)
+                .add(this.branch)
                 .addOnSuccessListener(documentReference -> {
                     // Set the branch's ID:
-                    branch.setBranchId(documentReference.getId());
+                    this.branch.setBranchId(documentReference.getId());
                     this.dbRef.collection("branches")
-                            .document(branch.getBranchId())
-                            .update("branchId", branch.getBranchId())
+                            .document(this.branch.getBranchId())
+                            .update("branchId", this.branch.getBranchId())
                             .addOnSuccessListener(onSuccessListener)
                             .addOnFailureListener(onFailureListener);
                 })
@@ -110,8 +145,8 @@ public class BusinessRegistrationForm extends InputForm {
 
     }
 
-    private Branch getBranchObject() {
-        final Branch branch = new Branch();
+    private void loadBranchObject() {
+        this.branch = new Branch();
         branch.setCompanyName(this.companyName);
         branch.setPassword(this.branchPassword);
         branch.setCountry(this.country);
@@ -121,8 +156,6 @@ public class BusinessRegistrationForm extends InputForm {
         branch.setOpeningTime(this.openingTimeMinutes);
         branch.setClosingTime(this.closingTimeMinutes);
         branch.setDailyShiftsNum(this.weeklyShiftsNum);
-
-        return branch;
     }
 
     private void validateSimilarBranch(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
