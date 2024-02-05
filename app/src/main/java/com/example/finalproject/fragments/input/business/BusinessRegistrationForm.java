@@ -73,22 +73,61 @@ public class BusinessRegistrationForm extends InputForm {
         this.loadFragmentsInfo();
 
         // Check that a similar company doesn't already have a branch at that location:
-        final OnFailureListener onFailureListener = getOnFailureListener(context);
+        final OnFailureListener onFailureListener = getOnFailureListener(context, onCompleteListener);
         this.validateSimilarBranch(unused -> {
             // Add the new branch:
             this.addNewBranch(unused1 -> {
                 // Add the connected user to the list of employees as a manager:
-                this.addUserToListAsManager(documentReference -> {
-                    // TODO: Add the branch to the list of workplaces of the user:
+                this.addUserToListAsManager(unused2 -> {
+                    // Add the branch to the list of workplaces of the user:
+                    this.addBranchToWorkplacesList(documentReference -> {
+                        // Everything was done, activate the onComplete listener:
+                        onCompleteListener.accept(Result.success(null));
+                    }, onFailureListener);
 
                 }, onFailureListener);
             }, onFailureListener);
         }, onFailureListener);
     }
 
+    private void addBranchToWorkplacesList(
+            OnSuccessListener<DocumentReference> onSuccessListener, OnFailureListener onFailureListener
+    ) {
+        // Load some of the branch's info:
+        final HashMap<String, Object> branchInfo = new HashMap<>();
+        branchInfo.put("branchId", this.branch.getBranchId());
+        branchInfo.put("isManager", true);
+        branchInfo.put("companyName", this.branch.getCompanyName());
+        branchInfo.put("address", this.branch.getAddress());
+        branchInfo.put("city", this.branch.getCity());
+        branchInfo.put("country", this.branch.getCountry());
+
+        this.dbRef.collection("users")
+                .document(this.connectedUser.getUid())
+                .collection("workplaces")
+                .add(branchInfo)
+                .addOnSuccessListener(onSuccessListener)
+                .addOnFailureListener(exception -> {
+                    // Delete the user info from the employees' list:
+                    this.dbRef.collection("branches")
+                            .document(this.branch.getBranchId())
+                            .collection("employees")
+                            .document(this.connectedUser.getUid())
+                            .delete()
+                            .addOnSuccessListener(unused -> {
+                                // Delete the branch from the database:
+                                this.dbRef.collection("branches")
+                                        .document(this.branch.getBranchId())
+                                        .delete();
+                            });
+                    // Activate the onFailureListener:
+                    onFailureListener.onFailure(exception);
+                });
+    }
+
     private void addUserToListAsManager(
-            OnSuccessListener<DocumentReference> onSuccessListener,
-                                        OnFailureListener onFailureListener
+            OnSuccessListener<Void> onSuccessListener,
+            OnFailureListener onFailureListener
     ) {
         // Load some of the user's info:
         final HashMap<String, Object> userInfo = new HashMap<>();
@@ -101,7 +140,8 @@ public class BusinessRegistrationForm extends InputForm {
         this.dbRef.collection("branches")
                 .document(this.branch.getBranchId())
                 .collection("employees")
-                .add(userInfo)
+                .document(this.connectedUser.getUid())
+                .set(userInfo)
                 .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(exception -> {
                     // Delete the created branch:
@@ -112,7 +152,7 @@ public class BusinessRegistrationForm extends InputForm {
                 });
     }
 
-    private OnFailureListener getOnFailureListener(Context context) {
+    private OnFailureListener getOnFailureListener(Context context, Consumer<Result<Void, Exception>> callback) {
         return exception -> {
             // Log the error and toast it:
             Log.e(TAG, "Ending form failed", exception);
@@ -122,6 +162,9 @@ public class BusinessRegistrationForm extends InputForm {
                 Toast.makeText(context, SIMILAR_BRANCH_FOUND_ERROR, Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+
+            // Activate the callback:
+            callback.accept(Result.failure(exception));
         };
     }
 
