@@ -126,17 +126,15 @@ public class InputActivity extends AppCompatActivity {
     }
 
     private void moveForward() {
-        // If it's the last activity:
-        if (this.currentForm.isLastPage()) {
-            // Validate the current page:
-            final boolean isValid = this.currentForm.getCurrentPage().validateAndSetError();
-            if (isValid)
+        // Validate the current page:
+        if (this.currentForm.getCurrentPage().validateAndSetError()) {
+            // If it's the last activity:
+            if (this.currentForm.isLastPage())
                 endForm();
-        }
-        // If not, just go to the next page:
-        else {
-            this.currentForm.nextPage();
-            this.loadCurrentPage(R.anim.slide_in_to_left, R.anim.slide_out_to_left);
+            else {
+                this.currentForm.nextPage();
+                this.loadCurrentPage(R.anim.slide_in_to_left, R.anim.slide_out_to_left);
+            }
         }
     }
 
