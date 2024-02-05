@@ -20,6 +20,11 @@ public class BusinessInputFragment2 extends InputFragment {
     // The map fragment allowing the user to choose their branch's address:
     private MapFragment mapFragment;
 
+    // Keys for the input bundle:
+    public static final String SELECTED_COUNTRY_KEY = "selectedCountry";
+    public static final String SELECTED_CITY_KEY = "selectedCity";
+    public static final String SELECTED_ADDRESS_KEY = "selectedAddress";
+
     public BusinessInputFragment2(String country) {
         this.country = country;
     }
@@ -70,9 +75,9 @@ public class BusinessInputFragment2 extends InputFragment {
         final Bundle bundle = new Bundle();
 
         // Save the address there:
-        bundle.putString("selectedCountry", this.country);
-        bundle.putString("selectedCity", this.mapFragment.getSelectedCity());
-        bundle.putString("selectedAddress", this.mapFragment.getSelectedAddress());
+        bundle.putString(SELECTED_COUNTRY_KEY, this.country);
+        bundle.putString(SELECTED_CITY_KEY, this.mapFragment.getSelectedCity());
+        bundle.putString(SELECTED_ADDRESS_KEY, this.mapFragment.getSelectedAddress());
 
         // Return the bundle:
         return bundle;
