@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.database.online.collections.Workplace;
 import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.util.Result;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -94,19 +95,14 @@ public class BusinessRegistrationForm extends InputForm {
     private void addBranchToWorkplacesList(
             OnSuccessListener<DocumentReference> onSuccessListener, OnFailureListener onFailureListener
     ) {
-        // Load some of the branch's info:
-        final HashMap<String, Object> branchInfo = new HashMap<>();
-        branchInfo.put("branchId", this.branch.getBranchId());
-        branchInfo.put("isManager", true);
-        branchInfo.put("companyName", this.branch.getCompanyName());
-        branchInfo.put("address", this.branch.getAddress());
-        branchInfo.put("city", this.branch.getCity());
-        branchInfo.put("country", this.branch.getCountry());
+        // Create the Workplace object:
+        final Workplace workplace = Workplace.fromBranch(this.branch, true);
 
+        // Set the branch:
         this.dbRef.collection("users")
                 .document(this.connectedUser.getUid())
                 .collection("workplaces")
-                .add(branchInfo)
+                .add(workplace)
                 .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(exception -> {
                     // Delete the user info from the employees' list:
