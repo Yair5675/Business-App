@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finalproject.R;
 import com.example.finalproject.fragments.MapFragment;
@@ -39,8 +41,15 @@ public class BusinessInputFragment2 extends InputFragment {
         if (this.mapFragment == null)
             this.mapFragment = new MapFragment();
 
-        // Restrict the map borders based on the country
-        this.mapFragment.restrictToCountry(this.country);
+        // Set the map inside the fragment container:
+        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragBusinessInput2MapFragContainer, this.mapFragment);
+        transaction.commit();
+        transaction.runOnCommit(() -> {
+            // Restrict the map borders based on the country of the connected user:
+            this.mapFragment.restrictToCountry(this.country);
+        });
 
         return parent;
     }

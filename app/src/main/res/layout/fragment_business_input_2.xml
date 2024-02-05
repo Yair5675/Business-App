@@ -29,7 +29,7 @@
         />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragUserInput2MapFragContainer"
+        android:id="@+id/fragBusinessInput2MapFragContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="@id/fragBusinessInput2GlTopMapBoundary"
