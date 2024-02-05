@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         // Set the user:
         this.connectedUser = user;
         this.personalFragment.setConnectedUser(user);
+        this.branchesFragment.setUser(user);
 
         // Update the menu:
         supportInvalidateOptionsMenu();

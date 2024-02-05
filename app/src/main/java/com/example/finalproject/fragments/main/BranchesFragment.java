@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.activities.InputActivity;
+import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.fragments.input.business.BusinessRegistrationForm;
 
 public class BranchesFragment extends Fragment implements View.OnClickListener {
+    // The connected user:
+    private User connectedUser;
+
     // The recycler view that holds all the branches:
     private RecyclerView rvBranches;
 
@@ -47,12 +54,23 @@ public class BranchesFragment extends Fragment implements View.OnClickListener {
         return parent;
     }
 
+    public void setUser(User connectedUser) {
+        this.connectedUser = connectedUser;
+    }
+
     @Override
     public void onClick(View view) {
         final int ID = view.getId();
 
         if (ID == R.id.fragBranchesImgAddBusiness) {
-            // TODO: Go to the add businesses activity
+            // Create the registration form and set it:
+            final BusinessRegistrationForm form = new BusinessRegistrationForm(getResources(), this.connectedUser);
+            InputActivity.CurrentInput.setCurrentInputForm(form);
+
+            // Go to the input activity:
+            Intent intent = new Intent(requireContext(), InputActivity.class);
+            startActivity(intent);
+            requireActivity().finish();
         }
     }
 }
