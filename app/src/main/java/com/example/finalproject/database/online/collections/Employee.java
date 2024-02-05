@@ -79,4 +79,24 @@ public class Employee {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
+    /**
+     * A utility method that makes it easier to create an employee object from an existing user.
+     * @param user A user whom the new employee object represent.
+     * @param isManager Whether or not the user is a manager in the branch that owns the employee
+     *                  object.
+     * @return A new employee object consisting ot the given branch and the given isManager param.
+     */
+    public static Employee fromUser(User user, boolean isManager) {
+        // Create the new employee object:
+        final Employee employee = new Employee();
+        employee.setUid(user.getUid());
+        employee.setName(user.getName());
+        employee.setSurname(user.getSurname());
+        employee.setManager(isManager);
+        employee.setImagePath(user.getImagePath());
+
+        // Return it:
+        return employee;
+    }
 }
