@@ -107,8 +107,10 @@ public class BusinessRegistrationForm extends InputForm {
 
             // Commit the batch:
             batch.commit().addOnCompleteListener(task -> {
-                if (task.isSuccessful())
+                if (task.isSuccessful()) {
+                    Toast.makeText(context, "Business added successfully!", Toast.LENGTH_SHORT).show();
                     onCompleteListener.accept(Result.success(null));
+                }
                 else if (task.getException() != null)
                     onCompleteListener.accept(Result.failure(task.getException()));
                 else
