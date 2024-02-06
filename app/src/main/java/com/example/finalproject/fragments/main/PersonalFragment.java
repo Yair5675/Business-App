@@ -74,7 +74,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the personal fragment XML:
-        final View parent = inflater.inflate(R.layout.fragment_personal, container, false);
+        final View parent = inflater.inflate(R.layout.fragment_main_personal, container, false);
 
         // Loading the various views of the fragment:
         this.imgUser = parent.findViewById(R.id.fragPersonalImgUser);

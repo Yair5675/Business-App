@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 
@@ -39,7 +38,7 @@ public class BranchesFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View parent = inflater.inflate(R.layout.fragment_branches, container, false);
+        final View parent = inflater.inflate(R.layout.fragment_main_branches, container, false);
 
         // Load the views:
         this.rvBranches = parent.findViewById(R.id.fragBranchesRvBranches);
