@@ -15,8 +15,10 @@ import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.util.Result;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -74,84 +76,47 @@ public class BusinessRegistrationForm extends InputForm {
         // Load info from the fragments:
         this.loadFragmentsInfo();
 
+        // Create the branch object:
+        this.loadBranchObject();
+
         // Check that a similar company doesn't already have a branch at that location:
         final OnFailureListener onFailureListener = getOnFailureListener(context, onCompleteListener);
         this.validateSimilarBranch(unused -> {
-            // Add the new branch:
-            this.addNewBranch(unused1 -> {
-                // Add the connected user to the list of employees as a manager:
-                this.addUserToListAsManager(unused2 -> {
-                    // Add the branch to the list of workplaces of the user:
-                    this.addBranchToWorkplacesList(unused3 -> {
-                        // Everything was done, activate the onComplete listener:
-                        onCompleteListener.accept(Result.success(null));
-                    }, onFailureListener);
+            // Create a new batch write:
+            FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
+            WriteBatch batch = dbRef.batch();
 
-                }, onFailureListener);
-            }, onFailureListener);
+            // Add the new branch and set the ID to the object:
+            final DocumentReference branchRef = dbRef.collection("branches").document();
+            this.branch.setBranchId(branchRef.getId());
+            batch.set(branchRef, this.branch, SetOptions.merge());
+
+            // Add the connected user to the list of employees as a manager:
+            final Employee employee = Employee.fromUser(this.connectedUser, true);
+            final DocumentReference employeeRef = branchRef.collection("employees")
+                    .document(employee.getUid());
+            batch.set(employeeRef, employee, SetOptions.merge());
+
+            // Add the new branch to the list of workplaces in the connected user's document:
+            final Workplace workplace = Workplace.fromBranch(this.branch, true);
+            final DocumentReference workplaceRef = dbRef.collection("users")
+                    .document(this.connectedUser.getUid())
+                    .collection("workplaces")
+                    .document(workplace.getBranchId());
+            batch.set(workplaceRef, workplace, SetOptions.merge());
+
+            // Commit the batch:
+            batch.commit().addOnCompleteListener(task -> {
+                if (task.isSuccessful())
+                    onCompleteListener.accept(Result.success(null));
+                else if (task.getException() != null)
+                    onCompleteListener.accept(Result.failure(task.getException()));
+                else
+                    onCompleteListener.accept(Result.failure(new Exception("Something went wrong")));
+            });
         }, onFailureListener);
     }
 
-    private void addBranchToWorkplacesList(
-            OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener
-    ) {
-        // Create the Workplace object:
-        final Workplace workplace = Workplace.fromBranch(this.branch, true);
-
-        // Set the workplace:
-        this.dbRef.collection("users")
-                .document(this.connectedUser.getUid())
-                .collection("workplaces")
-                .document(this.branch.getBranchId())
-                .set(workplace, SetOptions.merge())
-                .addOnSuccessListener(onSuccessListener)
-                .addOnFailureListener(exception -> {
-                    // Delete the user info from the employees' list:
-                    this.dbRef.collection("branches")
-                            .document(this.branch.getBranchId())
-                            .collection("employees")
-                            .document(this.connectedUser.getUid())
-                            .delete()
-                            .addOnSuccessListener(unused -> {
-                                // Delete the branch from the database:
-                                this.dbRef.collection("branches")
-                                        .document(this.branch.getBranchId())
-                                        .delete();
-                            });
-                    // Activate the onFailureListener:
-                    onFailureListener.onFailure(exception);
-                });
-    }
-
-    private void addUserToListAsManager(
-            OnSuccessListener<Void> onSuccessListener,
-            OnFailureListener onFailureListener
-    ) {
-        // Create the employee object:
-        final Employee employee = Employee.fromUser(this.connectedUser, true);
-
-        // Load the employee:
-        this.dbRef.collection("branches")
-                .document(this.branch.getBranchId())
-                .collection("employees")
-                .document(this.connectedUser.getUid())
-                .set(employee)
-                .addOnSuccessListener(onSuccessListener)
-                .addOnFailureListener(exception -> {
-                    // Delete the created branch:
-                    this.dbRef.collection("branches").document(this.branch.getBranchId()).delete();
-
-                    // Delete the workplace from the user:
-                    this.dbRef.collection("users")
-                            .document(this.connectedUser.getUid())
-                            .collection("workplaces")
-                            .document(this.branch.getBranchId())
-                            .delete();
-
-                    // Activate the onFailureListener:
-                    onFailureListener.onFailure(exception);
-                });
-    }
 
     private OnFailureListener getOnFailureListener(Context context, Consumer<Result<Void, Exception>> callback) {
         return exception -> {
@@ -167,26 +132,6 @@ public class BusinessRegistrationForm extends InputForm {
             // Activate the callback:
             callback.accept(Result.failure(exception));
         };
-    }
-
-    private void addNewBranch(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
-        // Load the new branch object:
-        this.loadBranchObject();
-
-        // Set the branch in the adapter:
-        this.dbRef.collection("branches")
-                .add(this.branch)
-                .addOnSuccessListener(documentReference -> {
-                    // Set the branch's ID:
-                    this.branch.setBranchId(documentReference.getId());
-                    this.dbRef.collection("branches")
-                            .document(this.branch.getBranchId())
-                            .update("branchId", this.branch.getBranchId())
-                            .addOnSuccessListener(onSuccessListener)
-                            .addOnFailureListener(onFailureListener);
-                })
-                .addOnFailureListener(onFailureListener);
-
     }
 
     private void loadBranchObject() {
