@@ -2,7 +2,7 @@
     <string name="app_name">Final Project</string>
 
     <!-- Strings belonging to the main activity: -->
-    <string name="act_main_user_greeting_default_txt">Hello guest!</string>
+    <string name="act_main_user_greeting_default_txt"><b>Hello guest!</b></string>
 
     <string name="act_main_edit_account_btn_txt">Edit\nAccount</string>
     <string name="act_main_delete_account_btn_txt">Delete\nAccount</string>

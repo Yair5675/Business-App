@@ -4,17 +4,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
     android:orientation="vertical"
+    android:background="@color/white"
     android:gravity="center_horizontal"
     tools:context=".activities.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25"
+        android:background="@drawable/background"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:gravity="center_vertical"
+            >
+            <TextView
+                android:id="@+id/actMainTvUserGreeting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="@string/act_main_user_greeting_default_txt"
+
+                android:textSize="20sp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Good morning"
+                android:textSize="20sp"
+                />
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/guest"
+            android:layout_weight="1"
+            android:contentDescription="@string/act_main_content_description_user_img"
+            />
+
+    </LinearLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/actMainPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        />
+        >
+
+    </androidx.viewpager2.widget.ViewPager2>
 
     <TextView
         android:id="@+id/actMainTvCredit"
@@ -23,7 +71,7 @@
         android:layout_marginBottom="4dp"
         android:text="@string/act_main_credits_txt"
         android:textSize="15sp"
-        />
-
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </LinearLayout>
