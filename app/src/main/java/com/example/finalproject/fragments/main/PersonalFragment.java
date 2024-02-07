@@ -8,7 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,9 +23,7 @@ import com.example.finalproject.activities.InputActivity;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.user.UserUpdateForm;
-import com.example.finalproject.util.Util;
-
-import java.util.Locale;
+import com.example.finalproject.util.Constants;
 
 import pl.droidsonroids.gif.GifImageButton;
 
@@ -35,11 +34,17 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     // A reference to the online database:
     private OnlineDatabase db;
 
+    // The layout holding all the edit texts:
+    private LinearLayout detailsLayout;
+
+    // The text view that appears when the user is not connected:
+    private TextView tvDisconnectedMessage;
+
+    // The edit texts saving the user's info:
+    private EditText etName, etBirthdate, etPhoneNumber, etAddress, etEmail, etPassword;
+
     // The currently connected user (null if no user is connected):
     private @Nullable User connectedUser;
-
-    // The image-view holding the profile picture of the user:
-    private ImageView imgUser;
 
     // A callback that will be run if the fragment deletes the current user:
     private final Runnable onUserDeleted;
@@ -47,11 +52,8 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     // The progress bar that will appear when the fragment is loading:
     private ProgressBar pbActivityLoading;
 
-    // The textView which greets the user:
-    private TextView tvUserGreeting;
-
-    // The crown image that appears if the user is an admin:
-    private ImageView imgAdminCrown;
+    // The layout holding the two buttons:
+    private LinearLayout buttonsLayout;
 
     // The 'Edit Account' button and its description:
     private GifImageButton btnEditAccount;
@@ -77,10 +79,19 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         final View parent = inflater.inflate(R.layout.fragment_main_personal, container, false);
 
         // Loading the various views of the fragment:
-        this.imgUser = parent.findViewById(R.id.fragPersonalImgUser);
-        this.imgAdminCrown = parent.findViewById(R.id.fragPersonalImgAdminCrown);
+        this.etName = parent.findViewById(R.id.fragMainPersonalEtFullName);
+        this.etBirthdate = parent.findViewById(R.id.fragMainPersonalEtBirthdate);
+        this.etPhoneNumber = parent.findViewById(R.id.fragMainPersonalEtPhoneNumber);
+        this.etAddress = parent.findViewById(R.id.fragMainPersonalEtAddress);
+        this.etEmail = parent.findViewById(R.id.fragMainPersonalEtEmail);
+        this.etPassword = parent.findViewById(R.id.fragMainPersonalEtPassword);
+
+        this.detailsLayout = parent.findViewById(R.id.fragMainPersonalDetailsLayout);
+        this.buttonsLayout = parent.findViewById(R.id.fragMainPersonalButtonsLayout);
+
         this.pbActivityLoading = parent.findViewById(R.id.fragMainPersonalPbLoading);
-        this.tvUserGreeting = parent.findViewById(R.id.fragPersonalTvUserGreeting);
+        this.tvDisconnectedMessage = parent.findViewById(R.id.fragMainPersonalTvNothingToSee);
+
         this.btnEditAccount = parent.findViewById(R.id.fragPersonalImgBtnEdit);
         this.btnDeleteAccount = parent.findViewById(R.id.fragPersonalImgBtnDelete);
         this.tvEditAccountDesc = parent.findViewById(R.id.fragPersonalTvEditBtn);
@@ -120,7 +131,8 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
 
     private boolean isInitialized() {
         final View[] fragmentViews = {
-                this.imgUser, this.imgAdminCrown, this.pbActivityLoading, this.tvUserGreeting,
+                this.etName, this.etBirthdate, this.etPhoneNumber, this.etAddress, this.etEmail,
+                this.etPassword, this.detailsLayout, this.buttonsLayout, this.pbActivityLoading,
                 this.btnEditAccount, this.btnDeleteAccount, this.tvEditAccountDesc,
                 this.tvDeleteAccountDesc
         };
@@ -135,40 +147,32 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         // Fix the user's email:
         this.db.fixUserEmail(this.connectedUser);
 
-        // Change the greeting:
-        this.tvUserGreeting.setText(
-                String.format(
-                        Locale.getDefault(),
-                        "Hello, %s!",
-                        user.getName()
-                )
-        );
+        // Set the info of the user in the edit texts:
+        this.etName.setText(user.getFullName());
+        this.etBirthdate.setText(Constants.DATE_FORMAT.format(user.getBirthdate()));
+        this.etPhoneNumber.setText(user.getPhoneNumber());
+        this.etAddress.setText(user.getAddress());
+        this.etEmail.setText(user.getEmail());
+        this.etPassword.setText(user.getPassword());
 
-        // Show the user's image:
-        this.db.loadUserImgFromStorage(this.context, user, this.imgUser, R.drawable.guest);
+        // Hide the disconnected message:
+        this.tvDisconnectedMessage.setVisibility(View.GONE);
 
-        // Show the crown image if the user is the admin:
-        this.imgAdminCrown.setVisibility(user.isAdmin() ? View.VISIBLE : View.GONE);
-
-        // Show the 'Edit Account' and 'Delete Account' buttons:
-        this.changeButtonsVisibility(View.VISIBLE);
+        // Show the details and buttons layout:
+        this.detailsLayout.setVisibility(View.VISIBLE);
+        this.buttonsLayout.setVisibility(View.VISIBLE);
 
         // Hide the progress bar:
         this.pbActivityLoading.setVisibility(View.GONE);
     }
 
     private void initWithoutUser() {
-        // Setting the default picture for guests:
-        Util.setCircularImage(this.context, this.imgUser, R.drawable.guest);
+        // Hide the details and buttons layouts:
+        this.detailsLayout.setVisibility(View.GONE);
+        this.buttonsLayout.setVisibility(View.GONE);
 
-        // Setting the default greeting:
-        this.tvUserGreeting.setText(R.string.act_main_user_greeting_default_txt);
-
-        // Make the admin crown disappear:
-        this.imgAdminCrown.setVisibility(View.GONE);
-
-        // Make the 'Edit Account' and 'Delete Account' disappear:
-        this.changeButtonsVisibility(View.GONE);
+        // Show the disconnected message:
+        this.tvDisconnectedMessage.setVisibility(View.VISIBLE);
 
         // Hide the progress bar:
         this.pbActivityLoading.setVisibility(View.GONE);
@@ -197,13 +201,6 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void changeButtonsVisibility(int visibility) {
-        this.btnEditAccount.setVisibility(visibility);
-        this.btnDeleteAccount.setVisibility(visibility);
-        this.tvEditAccountDesc.setVisibility(visibility);
-        this.tvDeleteAccountDesc.setVisibility(visibility);
-    }
-
     private void activateDeleteDialog() {
         // Create the delete dialog:
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context)
@@ -211,9 +208,9 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                 .setTitle("Delete account")
                 .setMessage("Are you sure you want to delete your account?")
                 .setPositiveButton("Delete", (dialogInterface, i) -> {
-                    // Make the buttons disappear and show the progress bar:
-                    changeButtonsVisibility(View.GONE);
-                    pbActivityLoading.setVisibility(View.VISIBLE);
+                    // Hide the buttons layout and show the progress bar:
+                    this.buttonsLayout.setVisibility(View.GONE);
+                    this.pbActivityLoading.setVisibility(View.VISIBLE);
 
                     // Delete the account:
                     this.db.deleteCurrentUser(this.connectedUser, unused -> {
@@ -224,8 +221,11 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                         // Activate the callback:
                         this.onUserDeleted.run();
                     }, exception -> {
-                        changeButtonsVisibility(View.VISIBLE);
+                        // Show the buttons layout and hide the progress bar:
+                        this.buttonsLayout.setVisibility(View.VISIBLE);
                         pbActivityLoading.setVisibility(View.GONE);
+
+                        // Log the error and alert the user:
                         Log.e(TAG, "Failed to delete current user", exception);
                         Toast.makeText(this.context, "Failed to delete your account", Toast.LENGTH_SHORT).show();
                     });
