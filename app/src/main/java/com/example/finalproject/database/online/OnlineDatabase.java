@@ -136,31 +136,6 @@ public class OnlineDatabase {
     }
 
     /**
-     * Loads the image of the user into an image view.
-     * @param context The context calling the load, necessary for Glide.
-     * @param user The user whose image will be loaded into the image view.
-     * @param imageView The image view that the user's image will be loaded into.
-     * @param errorImg The ID of a drawable that will be shown if an error occurred while retrieving
-     *                 the user's image.
-     */
-    public void loadUserImgFromStorage(
-            Context context,
-            User user,
-            ImageView imageView,
-            @DrawableRes int errorImg
-    ) {
-        Glide.with(context)
-                .load(this.storageRef.child(user.getImagePath()))
-                .apply(
-                        new RequestOptions()
-                        .error(errorImg)
-                        .circleCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                )
-                .into(imageView);
-    }
-
-    /**
      * Disconnects the currently connected user.
      */
     public void disconnectUser() {

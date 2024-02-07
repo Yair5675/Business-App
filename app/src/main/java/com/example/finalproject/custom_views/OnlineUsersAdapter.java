@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -60,7 +61,7 @@ public class OnlineUsersAdapter extends FirestoreRecyclerAdapter<User, OnlineUse
         holder.tvPhone.setText(user.getPhoneNumber());
 
         // Load the user's image:
-        this.db.loadUserImgFromStorage(this.context, user, holder.imgUser, R.drawable.guest);
+        StorageUtil.loadUserImgFromStorage(this.context, user, holder.imgUser, R.drawable.guest);
     }
 
     private static LocalDate convertDateToLocalDate(@NonNull Date date) {

@@ -13,20 +13,33 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.LoginDialog;
 import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.main.BranchesFragment;
 import com.example.finalproject.fragments.main.PersonalFragment;
 import com.example.finalproject.fragments.input.user.UserRegistrationForm;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
     // A reference to the online database:
     private OnlineDatabase db;
+
+    // The image view holding the user's image:
+    private ImageView imgUser;
+
+    // The text view greeting the user:
+    private TextView tvUserGreeting;
+
+    // TODO: Update the text view that says "Good morning" to "Good evening" or other time greetings
 
     // The view pager that allows the user to swipe between fragments:
     private ViewPager2 pager;
@@ -51,9 +64,13 @@ public class MainActivity extends AppCompatActivity {
         // Initialize the online database reference:
         this.db = OnlineDatabase.getInstance();
 
+        // Load the user's image view and greeting text view:
+        this.imgUser = findViewById(R.id.actMainImgUser);
+        this.tvUserGreeting = findViewById(R.id.actMainTvUserGreeting);
+
         // Initialize the personal fragment without a user:
         this.personalFragment = new PersonalFragment(
-                this, null, this::disconnectUser
+                this, null, this::initWithoutUser
         );
 
         // Initialize the branches fragment:
@@ -65,24 +82,31 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the current user:
         this.db.getCurrentUser(
-                this::connectUser, e -> {
-                    this.connectedUser = null;
-                    supportInvalidateOptionsMenu();
-                }
+                this::initWithUser, _e -> this.initWithoutUser()
         );
 
         // Initialize the login dialog:
         this.loginDialog = new LoginDialog(
                 this, getResources(),
-                this::connectUser
+                this::initWithUser
         );
     }
 
-    private void connectUser(User user) {
+    private void initWithUser(User user) {
         // Set the user:
         this.connectedUser = user;
+
+        // Update the fragments:
         this.personalFragment.setConnectedUser(user);
         this.branchesFragment.setUser(user);
+
+        // Update the user's image:
+        StorageUtil.loadUserImgFromStorage(this, user, this.imgUser, R.drawable.guest);
+
+        // Update the user's greeting:
+        this.tvUserGreeting.setText(String.format(
+                Locale.getDefault(), "Hello %s!", user.getName())
+        );
 
         // Update the menu:
         supportInvalidateOptionsMenu();
@@ -91,13 +115,19 @@ public class MainActivity extends AppCompatActivity {
         this.pager.setUserInputEnabled(true);
     }
 
-    private void disconnectUser() {
+    private void initWithoutUser() {
         // Disconnect the user:
         this.connectedUser = null;
         this.db.disconnectUser();
 
         // Update the personal fragment:
         this.personalFragment.setConnectedUser(null);
+
+        // Set the displayed image to a guest image:
+        this.imgUser.setImageResource(R.drawable.guest);
+
+        // Restore the user's greeting to its default value:
+        this.tvUserGreeting.setText(R.string.act_main_user_greeting_default_txt);
 
         // Update the pager:
         this.pager.setUserInputEnabled(false);
@@ -172,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
         // If they want to log out:
         else if (ID == R.id.menuUsersItemDisconnect)
-            this.disconnectUser();
+            this.initWithoutUser();
 
         // If they want to verify the email:
         else if (ID == R.id.menuUsersItemVerification) {
