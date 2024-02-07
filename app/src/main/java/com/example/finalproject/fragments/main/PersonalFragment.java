@@ -79,7 +79,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         // Loading the various views of the fragment:
         this.imgUser = parent.findViewById(R.id.fragPersonalImgUser);
         this.imgAdminCrown = parent.findViewById(R.id.fragPersonalImgAdminCrown);
-        this.pbActivityLoading = parent.findViewById(R.id.fragPersonalPbActivityLoading);
+        this.pbActivityLoading = parent.findViewById(R.id.fragMainPersonalPbLoading);
         this.tvUserGreeting = parent.findViewById(R.id.fragPersonalTvUserGreeting);
         this.btnEditAccount = parent.findViewById(R.id.fragPersonalImgBtnEdit);
         this.btnDeleteAccount = parent.findViewById(R.id.fragPersonalImgBtnDelete);

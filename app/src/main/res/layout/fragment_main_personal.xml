@@ -1,68 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/transparent_background"
-    >
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@drawable/transparent_background">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/fragPersonalGlTop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
-
-    <ImageView
-        android:id="@+id/fragPersonalImgUser"
-        android:layout_width="215dp"
-        android:layout_height="215dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/fragPersonalGlTop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/fragPersonalGlMiddle"
+        >
+        <LinearLayout
+            android:id="@+id/fragMainPersonalDetailsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="8dp"
 
-        app:srcCompat="@drawable/guest"
-        android:contentDescription="@string/act_main_content_description_user_img" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/fragPersonalGlMiddle"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/frag_main_personal_personal_info_subtitle"
+                android:layout_marginVertical="10dp"
+                android:textSize="32sp"
+                />
 
-    <ImageView
-        android:id="@+id/fragPersonalImgAdminCrown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/frag_main_personal_full_name_hint"
+                android:layout_marginBottom="4dp"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragMainPersonalEtFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableStart="@drawable/person_icon"
+                    android:drawablePadding="8dp"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:inputType="none"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/fragPersonalImgUser"
-        app:layout_constraintStart_toStartOf="@id/fragPersonalImgUser"
-        app:layout_constraintEnd_toEndOf="@id/fragPersonalImgUser"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/frag_main_personal_birthdate_hint"
+                android:layout_marginBottom="4dp"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragMainPersonalEtBirthdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/cake_icon"
+                    android:drawablePadding="8dp"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:inputType="none"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/frag_main_personal_phone_number_hint"
+                android:layout_marginBottom="4dp"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragMainPersonalEtPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/phone_icon"
+                    android:drawablePadding="8dp"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:inputType="none"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        android:visibility="gone"
-        android:src="@drawable/crown_icon"
-        />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/frag_main_personal_address_hint"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragMainPersonalEtAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/location_icon_outline"
+                    android:drawablePadding="8dp"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:inputType="none"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/frag_main_personal_security_info_subtitle"
+                android:layout_marginVertical="10dp"
+                android:textSize="32sp"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/frag_main_personal_email_hint"
+                android:layout_marginBottom="4dp"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragMainPersonalEtEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/email"
+                    android:drawablePadding="8dp"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:inputType="none"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/frag_main_personal_password_hint"
+                app:passwordToggleEnabled="true"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragMainPersonalEtPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/password_icon"
+                    android:drawablePadding="8dp"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:inputType="textPassword"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <TextView
-        android:id="@+id/fragPersonalTvUserGreeting"
+        android:id="@+id/fragMainPersonalTvNothingToSee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        android:text="@string/act_main_user_greeting_default_txt"
+        android:text="@string/nothing_to_see_here_error_msg"
         android:textSize="20sp"
-
-        app:layout_constraintEnd_toEndOf="@id/fragPersonalImgAdminCrown"
-        app:layout_constraintStart_toStartOf="@id/fragPersonalImgAdminCrown"
-        app:layout_constraintTop_toBottomOf="@id/fragPersonalImgAdminCrown" />
+        android:visibility="gone"
+        />
 
     <ProgressBar
-        android:id="@+id/fragPersonalPbActivityLoading"
+        android:id="@+id/fragMainPersonalPbLoading"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        app:layout_constraintBottom_toBottomOf="@id/fragPersonalGlMiddle"
-        app:layout_constraintTop_toBottomOf="@id/fragPersonalTvUserGreeting"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/fragPersonalGlMiddle"
@@ -71,74 +179,91 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.7" />
 
-    <pl.droidsonroids.gif.GifImageButton
-        android:id="@+id/fragPersonalImgBtnEdit"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/fragMainPersonalButtonsLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:background="@drawable/transparent_background"
-        android:src="@drawable/edit_icon"
-
-        android:visibility="gone"
-
-        app:layout_constraintBottom_toTopOf="@id/fragPersonalGlBottom"
-        app:layout_constraintEnd_toStartOf="@+id/fragPersonalImgBtnDelete"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginVertical="16dp"
+        app:layout_constraintTop_toTopOf="@id/fragPersonalGlMiddle"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fragPersonalGlMiddle" />
-
-    <TextView
-        android:id="@+id/fragPersonalTvEditBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toBottomOf="@id/fragPersonalImgBtnEdit"
-        app:layout_constraintStart_toStartOf="@id/fragPersonalImgBtnEdit"
-        app:layout_constraintEnd_toEndOf="@id/fragPersonalImgBtnEdit"
-
-        android:visibility="gone"
-
-        android:text="@string/act_main_edit_account_btn_txt"
-        android:lines="2"
-        android:gravity="center"
-        />
-
-    <pl.droidsonroids.gif.GifImageButton
-        android:id="@+id/fragPersonalImgBtnDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:background="@drawable/transparent_background"
-        android:src="@drawable/trash_can_icon"
-        app:layout_constraintBottom_toTopOf="@id/fragPersonalGlBottom"
-
-        android:visibility="gone"
-
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/fragPersonalImgBtnEdit"
-        app:layout_constraintTop_toBottomOf="@id/fragPersonalGlMiddle" />
-
-    <TextView
-        android:id="@+id/fragPersonalTvDeleteBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toBottomOf="@id/fragPersonalImgBtnDelete"
-        app:layout_constraintStart_toStartOf="@id/fragPersonalImgBtnDelete"
-        app:layout_constraintEnd_toEndOf="@id/fragPersonalImgBtnDelete"
-
-        android:visibility="gone"
-
-        android:text="@string/act_main_delete_account_btn_txt"
-        android:lines="2"
-        android:gravity="center"
-        />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/fragPersonalGlBottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:gravity="center"
+        android:baselineAligned="false">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="0.5"
+            >
+
+            <pl.droidsonroids.gif.GifImageButton
+                android:id="@+id/fragPersonalImgBtnEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/transparent_background"
+                android:src="@drawable/edit_icon"
+
+                app:layout_constraintEnd_toStartOf="@+id/fragPersonalImgBtnDelete"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/fragPersonalGlMiddle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/fragPersonalTvEditBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintTop_toBottomOf="@id/fragPersonalImgBtnEdit"
+                app:layout_constraintStart_toStartOf="@id/fragPersonalImgBtnEdit"
+                app:layout_constraintEnd_toEndOf="@id/fragPersonalImgBtnEdit"
+
+                android:text="@string/act_main_edit_account_btn_txt"
+                android:lines="2"
+                android:gravity="center"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="0.5"
+            >
+            <pl.droidsonroids.gif.GifImageButton
+                android:id="@+id/fragPersonalImgBtnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/transparent_background"
+                android:src="@drawable/trash_can_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/fragPersonalImgBtnEdit"
+                app:layout_constraintTop_toBottomOf="@id/fragPersonalGlMiddle" />
+
+            <TextView
+                android:id="@+id/fragPersonalTvDeleteBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintTop_toBottomOf="@id/fragPersonalImgBtnDelete"
+                app:layout_constraintStart_toStartOf="@id/fragPersonalImgBtnDelete"
+                app:layout_constraintEnd_toEndOf="@id/fragPersonalImgBtnDelete"
+
+                android:text="@string/act_main_delete_account_btn_txt"
+                android:lines="2"
+                android:gravity="center"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

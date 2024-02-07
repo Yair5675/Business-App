@@ -4,6 +4,7 @@
     <!-- Strings belonging to the main activity: -->
     <string name="act_main_user_greeting_default_txt"><b>Hello guest!</b></string>
 
+
     <string name="act_main_edit_account_btn_txt">Edit\nAccount</string>
     <string name="act_main_delete_account_btn_txt">Delete\nAccount</string>
 
@@ -107,4 +108,15 @@
 
     <!-- Strings belonging to the day shifts num picker custom view: -->
     <string name="day_shifts_num_picker_sample_day">Day of the week</string>
+
+    <!-- Strings belonging to the personal fragment in the main activity: -->
+    <string name="frag_main_personal_personal_info_subtitle"><b>Personal Info:</b></string>
+    <string name="frag_main_personal_full_name_hint">Name</string>
+    <string name="frag_main_personal_birthdate_hint">Birthday</string>
+    <string name="frag_main_personal_phone_number_hint">Phone Number</string>
+    <string name="frag_main_personal_address_hint">Address</string>
+    <string name="frag_main_personal_security_info_subtitle"><b>Security Info:</b></string>
+    <string name="frag_main_personal_email_hint">Email</string>
+    <string name="frag_main_personal_password_hint">Password</string>
+    <string name="nothing_to_see_here_error_msg">Nothing to see here ༼ つ ◕_◕ ༽つ</string>
 </resources>
