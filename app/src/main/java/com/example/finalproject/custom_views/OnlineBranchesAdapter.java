@@ -1,6 +1,7 @@
 package com.example.finalproject.custom_views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.activities.BranchActivity;
 import com.example.finalproject.database.online.collections.Branch;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -61,12 +63,9 @@ public class OnlineBranchesAdapter extends FirestoreRecyclerAdapter<Branch, Onli
         return new BranchVH(rowView);
     }
 
-    public static class BranchVH extends RecyclerView.ViewHolder {
+    public class BranchVH extends RecyclerView.ViewHolder {
         // The text views in the row:
         private final TextView tvName, tvOpeningTime, tvClosingTime, tvAddress;
-
-        // The see more button:
-        private final Button btnSeeMore;
 
         // The apply to business button:
         private final Button btnApplyToBusiness;
@@ -82,8 +81,23 @@ public class OnlineBranchesAdapter extends FirestoreRecyclerAdapter<Branch, Onli
             this.tvOpeningTime = itemView.findViewById(R.id.rowBranchTvOpeningTime);
             this.tvClosingTime = itemView.findViewById(R.id.rowBranchTvClosingTime);
             this.tvAddress = itemView.findViewById(R.id.rowBranchTvAddress);
-            this.btnSeeMore = itemView.findViewById(R.id.rowBranchBtnSeeMore);
             this.btnApplyToBusiness = itemView.findViewById(R.id.rowBranchBtnApplyToBusiness);
+
+            // Go to the branch activity if the user clicks on the see more button:
+            itemView.findViewById(R.id.rowBranchBtnSeeMore).setOnClickListener(_v -> {
+                // Load the current branch:
+                final int index = getAbsoluteAdapterPosition();
+                if (index >= 0 && index < getItemCount()) {
+                    final Branch branch = getItem(getAbsoluteAdapterPosition());
+
+                    // Put the branch in the intent:
+                    final Intent intent = new Intent(context, BranchActivity.class);
+                    intent.putExtra("branch", branch);
+
+                    // Go to the activity:
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }
