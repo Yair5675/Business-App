@@ -1,8 +1,9 @@
 package com.example.finalproject.database.online.collections;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Branch {
+public class Branch implements Serializable {
     // The branch ID:
     private String branchId;
 
