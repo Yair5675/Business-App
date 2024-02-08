@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:background="@drawable/transparent_background"
     android:paddingHorizontal="8dp"
@@ -20,12 +21,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
+        android:layout_marginBottom="4dp"
         >
         <androidx.appcompat.widget.SearchView
             android:id="@+id/fragMainBranchesSvBusinesses"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:iconifiedByDefault="false"
             />
         <CheckedTextView
             android:id="@+id/fragMainBranchesMyCityCheckBox"
@@ -37,7 +40,13 @@
             android:checkMark="?android:attr/listChoiceIndicatorMultiple"
             />
     </LinearLayout>
-    
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragMainBranchesRvBranches"
         android:layout_width="match_parent"
