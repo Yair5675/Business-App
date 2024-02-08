@@ -1,10 +1,12 @@
 package com.example.finalproject.activities;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
@@ -49,6 +51,9 @@ public class BranchActivity extends AppCompatActivity {
 
         // Load the info from the branch:
         this.loadInfoFromBranch();
+
+        // Load the back button callback:
+        this.loadBackButtonCallback();
     }
 
     private void loadInfoFromBranch() {
@@ -84,5 +89,20 @@ public class BranchActivity extends AppCompatActivity {
             if (branch instanceof Branch)
                 this.currentBranch = (Branch) branch;
         }
+    }
+
+    private void loadBackButtonCallback() {
+        // Define the callback:
+        final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Go to the main activity:
+                final Intent intent = new Intent(BranchActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        };
+        // Add the callback:
+        getOnBackPressedDispatcher().addCallback(callback);
     }
 }
