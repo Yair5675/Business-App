@@ -64,6 +64,7 @@
     <string name="dialog_login_title"><b>Log In</b></string>
     <string name="dialog_login_button_txt">Log In</string>
 
+
     <!-- Strings belonging to the about dialog: -->
     <string name="dialog_about_title"><b>About Us</b></string>
     <string name="dialog_about_text">
@@ -72,8 +73,10 @@
         \n\nThis is his final project for the year, and he hopes you\'ll enjoy it!
     </string>
 
+
     <!-- Strings belonging to the users activity: -->
     <string name="act_users_title"><b>The App\'s Users:</b></string>
+
 
     <!-- Strings belonging to the user recyclerview row XML: -->
     <string name="row_user_country_title">Country:</string>
@@ -90,10 +93,12 @@
     <string name="row_users_sample_email">someEmail123@gmail.com</string>
     <string name="row_users_sample_phone">051–111–1111</string>
 
+
     <!-- Strings belonging to the branches fragment: -->
     <string name="frag_branches_businesses_title"><b>Businesses:</b></string>
     <string name="frag_branches_my_city_checkbox_txt">My city</string>
     <string name="frag_branches_add_business_txt">Add your business</string>
+
 
     <!-- Strings belonging to the first business input fragment: -->
     <string name="act_business_input_title"><b>Your Business Details:</b></string>
@@ -103,11 +108,14 @@
     <string name="frag_business_input_1_closing_time_hint">Closing Time</string>
     <string name="frag_business_input_1_shifts_subtitle"><b>The shifts in the week:</b></string>
 
+
     <!-- Strings belonging to the second business input fragment: -->
     <string name="frag_business_input_2_title"><b>Your business address:</b></string>
 
+
     <!-- Strings belonging to the day shifts num picker custom view: -->
     <string name="day_shifts_num_picker_sample_day">Day of the week</string>
+
 
     <!-- Strings belonging to the personal fragment in the main activity: -->
     <string name="frag_main_personal_personal_info_subtitle"><b>Personal Info:</b></string>
@@ -119,4 +127,13 @@
     <string name="frag_main_personal_email_hint">Email</string>
     <string name="frag_main_personal_password_hint">Password</string>
     <string name="nothing_to_see_here_error_msg">Nothing to see here ༼ つ ◕_◕ ༽つ</string>
+
+
+    <!-- Strings belonging to the branch row XML file: -->
+    <string name="row_branch_sample_branch_name">Some Business</string>
+    <string name="row_branch_sample_opening_time">Opening: 8:00</string>
+    <string name="row_branch_sample_closing_time">Closing: 22:00</string>
+    <string name="row_branch_sample_address">Business address</string>
+    <string name="row_branch_btn_see_more_txt">See more</string>
+    <string name="row_branch_btn_apply_txt">Apply to branch</string>
 </resources>

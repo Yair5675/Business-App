@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <TextView
+        android:id="@+id/rowBranchTvName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/row_branch_sample_branch_name"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:maxLines="2"
+        />
+
+    <TextView
+        android:id="@+id/rowBranchTvOpeningTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/row_branch_sample_opening_time"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/rowBranchTvClosingTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/row_branch_sample_closing_time"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/rowBranchTvAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/row_branch_sample_address"
+        android:textSize="16sp"
+        android:maxLines="2"
+        app:drawableStartCompat="@drawable/location_icon_outline"
+        android:drawablePadding="4dp"
+        android:layout_marginTop="4dp"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="16dp"
+        >
+        <android.widget.Button
+            android:id="@+id/rowBranchBtnSeeMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/rowBranchBtnApplyToBusiness"
+
+            android:drawableStart="@drawable/about_icon_white"
+            android:text="@string/row_branch_btn_see_more_txt"
+            android:drawablePadding="8dp"
+            android:paddingHorizontal="10dp"
+            style="@style/ImprovedButtonAppearance"
+            android:layout_gravity="start"
+            />
+
+        <android.widget.Button
+            android:id="@+id/rowBranchBtnApplyToBusiness"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rowBranchBtnSeeMore"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            style="@style/ImprovedButtonAppearance"
+            android:drawableStart="@drawable/assignment_add_icon_white"
+            android:drawablePadding="8dp"
+            android:paddingHorizontal="10dp"
+            android:text="@string/row_branch_btn_apply_txt"
+            android:layout_gravity="end"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
