@@ -91,7 +91,7 @@
     <string name="row_users_sample_phone">051–111–1111</string>
 
     <!-- Strings belonging to the branches fragment: -->
-    <string name="frag_branches_workplaces_title"><b>Workplaces:</b></string>
+    <string name="frag_branches_businesses_title"><b>Businesses:</b></string>
     <string name="frag_branches_my_city_checkbox_txt">My city</string>
     <string name="frag_branches_add_business_txt">Add your business</string>
 

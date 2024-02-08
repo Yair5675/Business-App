@@ -4,15 +4,15 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:background="@drawable/transparent_background"
+    android:paddingHorizontal="8dp"
     android:orientation="vertical">
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/frag_branches_workplaces_title"
-        android:textSize="20sp"
-        android:padding="4dp"
-        android:background="@color/gray"
+        android:text="@string/frag_branches_businesses_title"
+        android:textSize="32sp"
+        android:layout_marginBottom="10dp"
         />
 
     <LinearLayout
@@ -22,13 +22,13 @@
         android:gravity="center"
         >
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/fragBranchesSearchBranch"
+            android:id="@+id/fragMainBranchesSvBusinesses"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             />
         <CheckedTextView
-            android:id="@+id/fragBranchesMyCityCheckBox"
+            android:id="@+id/fragMainBranchesMyCityCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/frag_branches_my_city_checkbox_txt"
@@ -39,7 +39,7 @@
     </LinearLayout>
     
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragBranchesRvBranches"
+        android:id="@+id/fragMainBranchesRvBranches"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -53,7 +53,7 @@
         />
 
     <ImageView
-        android:id="@+id/fragBranchesImgAddBusiness"
+        android:id="@+id/fragMainBranchesImgAddBusiness"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/add_business_icon"
