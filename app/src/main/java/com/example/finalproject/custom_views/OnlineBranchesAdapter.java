@@ -45,7 +45,11 @@ public class OnlineBranchesAdapter extends FirestoreRecyclerAdapter<Branch, Onli
         holder.tvClosingTime.setText(closingTxt);
 
         // Set the branch's address:
-        holder.tvAddress.setText(branch.getAddress());
+        final String formattedAddress = String.format(
+                Locale.getDefault(), "%s, %s, %s",
+                branch.getCountry(), branch.getCity(), branch.getAddress()
+        );
+        holder.tvAddress.setText(formattedAddress);
 
     }
 
