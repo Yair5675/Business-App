@@ -23,7 +23,7 @@ import com.example.finalproject.fragments.input.business.BusinessRegistrationFor
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class BranchesFragment extends Fragment implements View.OnClickListener {
+public class BranchesFragment extends Fragment {
     // The connected user:
     private User connectedUser;
 
@@ -52,9 +52,6 @@ public class BranchesFragment extends Fragment implements View.OnClickListener {
         // Initialize layout manager:
         this.rvBranches.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // Connect the class to the "add business" image as an onClickListener:
-        parent.findViewById(R.id.fragMainBranchesImgAddBusiness).setOnClickListener(this);
-
         // Initialize the adapter:
         this.initAdapter();
 
@@ -82,19 +79,4 @@ public class BranchesFragment extends Fragment implements View.OnClickListener {
         this.connectedUser = connectedUser;
     }
 
-    @Override
-    public void onClick(View view) {
-        final int ID = view.getId();
-
-        if (ID == R.id.fragMainBranchesImgAddBusiness) {
-            // Create the registration form and set it:
-            final BusinessRegistrationForm form = new BusinessRegistrationForm(getResources(), this.connectedUser);
-            InputActivity.CurrentInput.setCurrentInputForm(form);
-
-            // Go to the input activity:
-            Intent intent = new Intent(requireContext(), InputActivity.class);
-            startActivity(intent);
-            requireActivity().finish();
-        }
-    }
 }
