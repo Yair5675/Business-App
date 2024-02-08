@@ -23,6 +23,7 @@ import com.example.finalproject.custom_views.LoginDialog;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.fragments.input.business.BusinessRegistrationForm;
 import com.example.finalproject.fragments.main.BranchesFragment;
 import com.example.finalproject.fragments.main.PersonalFragment;
 import com.example.finalproject.fragments.input.user.UserRegistrationForm;
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Hide certain items according to if a user is logged in:
         final boolean isUserLoggedIn = this.db.isUserSignedIn();
+        menu.findItem(R.id.menuUsersItemAddBusiness).setVisible(isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemSignUp).setVisible(!isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemSignIn).setVisible(!isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemVerification).setVisible(isUserLoggedIn && !this.db.isConnectedUserEmailVerified());
@@ -217,6 +219,18 @@ public class MainActivity extends AppCompatActivity {
         // If they want to read the "About Us" dialog:
         else if (ID == R.id.menuUsersItemAbout) {
             this.activateAboutDialog();
+        }
+
+        // If they want to add their own business:
+        else if (ID == R.id.menuUsersItemAddBusiness) {
+            // Create the registration form and set it in the input activity:
+            final BusinessRegistrationForm form = new BusinessRegistrationForm(getResources(), this.connectedUser);
+            InputActivity.CurrentInput.setCurrentInputForm(form);
+
+            // Go to the input activity:
+            Intent intent = new Intent(this, InputActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         // If they want to see the users:

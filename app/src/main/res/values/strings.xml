@@ -136,4 +136,5 @@
     <string name="row_branch_sample_address">Business address</string>
     <string name="row_branch_btn_see_more_txt">See more</string>
     <string name="row_branch_btn_apply_txt">Apply to branch</string>
+    <string name="users_menu_item_add_business_title">Add Your Business</string>
 </resources>
