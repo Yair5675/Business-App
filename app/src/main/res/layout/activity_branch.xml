@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:paddingHorizontal="8dp"
+    android:gravity="center"
+    android:paddingHorizontal="16dp"
+    android:background="@drawable/background"
     tools:context=".activities.BranchActivity">
 
     <TextView
@@ -15,62 +16,72 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/act_branch_business_name_sample"
-        android:textSize="32sp"
+        android:textSize="38sp"
         android:textStyle="bold"
         android:maxLines="2"
         android:layout_marginVertical="8dp"
         />
 
-    <TextView
-        android:id="@+id/actBranchTvCurrentOpenness"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/act_branch_closed_msg"
-        android:textSize="20sp"
-        />
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="8dp"
+        android:background="@drawable/white_background_circular_border"
+        >
 
-    <TextView
-        android:id="@+id/actBranchTvWorkingTimes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/act_branch_working_hours_sample"
-        android:textSize="20sp"
-        android:layout_marginBottom="8dp"
-        />
+        <TextView
+            android:id="@+id/actBranchTvCurrentOpenness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/act_branch_closed_msg"
+            android:textSize="20sp"
+            />
 
-    <TextView
-        android:id="@+id/actBranchTvAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/act_branch_business_address_sample"
-        android:textSize="20sp"
-        android:maxLines="2"
-        app:drawableStartCompat="@drawable/location_icon_outline"
-        android:drawablePadding="4dp"
-        android:layout_marginBottom="8dp"
-        />
+        <TextView
+            android:id="@+id/actBranchTvWorkingTimes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/act_branch_working_hours_sample"
+            android:textSize="20sp"
+            android:layout_marginBottom="8dp"
+            />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider"
-        android:layout_marginVertical="8dp"
-        />
+        <TextView
+            android:id="@+id/actBranchTvAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/act_branch_business_address_sample"
+            android:textSize="20sp"
+            android:maxLines="2"
+            app:drawableStartCompat="@drawable/location_icon_outline"
+            android:drawablePadding="4dp"
+            android:layout_marginBottom="8dp"
+            />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/act_branch_employees_subtitle"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginVertical="8dp"
+            />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/actBranchRvEmployees"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="8dp"
-        />
-    
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/act_branch_employees_subtitle"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/actBranchRvEmployees"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="8dp"
+            />
+    </LinearLayout>
+
 </LinearLayout>

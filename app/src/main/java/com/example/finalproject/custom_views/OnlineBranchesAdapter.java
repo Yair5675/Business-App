@@ -70,9 +70,6 @@ public class OnlineBranchesAdapter extends FirestoreRecyclerAdapter<Branch, Onli
         // The apply to business button:
         private final Button btnApplyToBusiness;
 
-        // TODO: Add implementation for both buttons (see more opens a dialog/activity, apply adds
-        //  the applying user to a sub-collection in the branch
-
         public BranchVH(@NonNull View itemView) {
             super(itemView);
 
