@@ -1,5 +1,7 @@
 package com.example.finalproject.database.online.collections;
 
+import androidx.annotation.NonNull;
+
 import com.example.finalproject.BuildConfig;
 
 import java.io.Serializable;
@@ -30,6 +32,22 @@ public class User implements Serializable {
 
     // An empty constructor (requirement for firestore):
     public User() {}
+
+    // A copy constructor:
+    public User(@NonNull User other) {
+        this.uid = other.uid;
+        this.name = other.name;
+        this.surname = other.surname;
+        this.fullName = other.fullName;
+        this.email = other.email;
+        this.password = other.password;
+        this.phoneNumber = other.phoneNumber;
+        this.birthdate = (Date) other.birthdate.clone();
+        this.city = other.city;
+        this.country = other.country;
+        this.address = other.address;
+        this.imagePath = other.imagePath;
+    }
 
     public boolean isAdmin() {
         return this.phoneNumber != null && this.phoneNumber.equals(BuildConfig.ADMIN_PHONE_NUMBER);
