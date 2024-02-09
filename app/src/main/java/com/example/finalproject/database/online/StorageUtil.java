@@ -44,4 +44,30 @@ public class StorageUtil {
                 )
                 .into(imageView);
     }
+
+    /**
+     * Loads the image of the user into an image view.
+     * @param context The context calling the load, necessary for Glide.
+     * @param path The path in the storage to the desired image.
+     * @param imageView The image view that the user's image will be loaded into.
+     * @param errorImg The ID of a drawable that will be shown if an error occurred while retrieving
+     *                 the user's image.
+     */
+    public static void loadImgFromStorage(
+            Context context,
+            String path,
+            ImageView imageView,
+            @DrawableRes int errorImg
+    ) {
+        final StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        Glide.with(context)
+                .load(storageRef.child(path))
+                .apply(
+                        new RequestOptions()
+                                .error(errorImg)
+                                .circleCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                )
+                .into(imageView);
+    }
 }
