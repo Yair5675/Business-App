@@ -27,8 +27,11 @@ public class UserUpdateForm extends InputForm {
     // A reference to the online database:
     private final OnlineDatabase db;
 
-    // The currently connected user:
-    private final User user;
+    // The user before their details were changed:
+    private final User oldUser;
+
+    // The user after their details were changed:
+    private final User newUser;
 
     // The user's image:
     private Bitmap userImg;
@@ -44,8 +47,9 @@ public class UserUpdateForm extends InputForm {
                 new UserInputFragment3(connectedUser)
         );
 
-        // Save the user:
-        this.user = connectedUser;
+        // Save the user (copy for the new to prevent aliasing):
+        this.oldUser = connectedUser;
+        this.newUser = new User(this.oldUser);
 
         // Initialize the online database reference:
         this.db = OnlineDatabase.getInstance();
@@ -54,7 +58,7 @@ public class UserUpdateForm extends InputForm {
     @Override
     public void onEndForm(Context context, Consumer<Result<Void, Exception>> onCompleteListener) {
         // Save the old email and password:
-        final String oldEmail = this.user.getEmail(), oldPassword = this.user.getPassword();
+        final String oldEmail = this.oldUser.getEmail(), oldPassword = this.oldUser.getPassword();
 
         // Set the new information in the user's object (except for the new email):
         this.loadInfoFromFragments();
@@ -64,15 +68,15 @@ public class UserUpdateForm extends InputForm {
         OnFailureListener failureListener = getOnFailureListener(context, onCompleteListener);
 
         // Update the email if it is different:
-        if (!user.getEmail().equals(oldEmail))
+        if (!oldUser.getEmail().equals(oldEmail))
             this.db.updateUserEmail(
-                    oldEmail, user.getEmail(), oldPassword,
+                    oldEmail, oldUser.getEmail(), oldPassword,
                     unused -> Log.d("InputActivity", "Sent verification email"),
                     e -> Log.e("InputActivity", "Failed to change email", e)
             );
 
         // Update the user in the database
-        this.db.updateUser(user, user.getEmail(), oldPassword, this.userImg, successListener, failureListener);
+        this.db.updateUser(oldUser, oldUser.getEmail(), oldPassword, this.userImg, successListener, failureListener);
     }
 
     private static OnSuccessListener<Void> getOnSuccessListener(
@@ -130,24 +134,24 @@ public class UserUpdateForm extends InputForm {
 
     private void loadInfoFromFirstFragment() {
         final Bundle bundle1 = this.inputFragments[0].getInputs();
-        this.user
-                .setName(bundle1.getString(UserInputFragment1.NAME_KEY, user.getName()))
-                .setSurname(bundle1.getString(UserInputFragment1.SURNAME_KEY, user.getSurname()))
-                .setEmail(bundle1.getString(UserInputFragment1.EMAIL_KEY, user.getEmail()))
-                .setPassword(bundle1.getString(UserInputFragment1.PASSWORD_KEY, user.getPassword()))
+        this.newUser
+                .setName(bundle1.getString(UserInputFragment1.NAME_KEY, oldUser.getName()))
+                .setSurname(bundle1.getString(UserInputFragment1.SURNAME_KEY, oldUser.getSurname()))
+                .setEmail(bundle1.getString(UserInputFragment1.EMAIL_KEY, oldUser.getEmail()))
+                .setPassword(bundle1.getString(UserInputFragment1.PASSWORD_KEY, oldUser.getPassword()))
                 ;
         Serializable birthdate = bundle1.getSerializable(UserInputFragment1.BIRTHDATE_KEY);
         if (birthdate instanceof Date)
-            this.user.setBirthdate((Date) birthdate);
+            this.newUser.setBirthdate((Date) birthdate);
     }
 
     private void loadInfoFromSecondFragment() {
         final Bundle bundle2 = this.inputFragments[1].getInputs();
-        this.user
-                .setPhoneNumber(bundle2.getString(UserInputFragment2.PHONE_KEY, user.getPhoneNumber()))
-                .setCountry(bundle2.getString(UserInputFragment2.COUNTRY_KEY, user.getCountry()))
-                .setCity(bundle2.getString(UserInputFragment2.CITY_KEY, user.getCity()))
-                .setAddress(bundle2.getString(UserInputFragment2.ADDRESS_KEY, user.getAddress()))
+        this.newUser
+                .setPhoneNumber(bundle2.getString(UserInputFragment2.PHONE_KEY, oldUser.getPhoneNumber()))
+                .setCountry(bundle2.getString(UserInputFragment2.COUNTRY_KEY, oldUser.getCountry()))
+                .setCity(bundle2.getString(UserInputFragment2.CITY_KEY, oldUser.getCity()))
+                .setAddress(bundle2.getString(UserInputFragment2.ADDRESS_KEY, oldUser.getAddress()))
         ;
     }
 
