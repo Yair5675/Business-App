@@ -45,14 +45,21 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
     private Uri uriPhoto;
     private Bitmap bitmapPhoto;
 
+    // The original image of the user (if it's an update page):
+    private Bitmap orgPhoto;
+
+    // Whether or not the image has been changed:
+    private boolean isImageChanged;
+
     // The method through which the photo was taken (camera or gallery):
     private PhotoTakenFrom photoTakenFrom;
 
     // Tag for debugging purposes:
     private static final String TAG = "UserInputFragment3";
 
-    // A key for the getInputs method:
+    // Keys for the getInputs method:
     public static final String PHOTO_KEY = "photo";
+    public static final String IS_IMAGE_CHANGED_KEY = "isImageChanged";
 
     private enum PhotoTakenFrom {
         CAMERA,
@@ -64,6 +71,7 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
     public UserInputFragment3(@Nullable User connectedUser) {
         this.user = connectedUser;
         this.db = OnlineDatabase.getInstance();
+        this.isImageChanged = false;
     }
 
     public void loadInputsFromUser(User user) {
@@ -71,6 +79,9 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
         if (this.bitmapPhoto == null)
             // Get the bitmap from the database and set it:
             this.db.getUserImage(user, userImage -> {
+                // Set as the original image:
+                this.orgPhoto = userImage;
+
                 // Save the user's image:
                 bitmapPhoto = userImage;
 
@@ -177,7 +188,13 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
      */
     private boolean loadBitmapFromUri() {
         try {
+            // Get the new image:
             this.bitmapPhoto = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), this.uriPhoto);
+
+            // Compare it to the original image (in a thread for performance issues):
+            Thread thread = new Thread(() -> this.isImageChanged = this.orgPhoto.sameAs(this.bitmapPhoto));
+            thread.start();
+
             return true;
         } catch (IOException e) {
             Log.e("UserInputFragment3 - loadBitmapFromUri", e.toString());
@@ -229,6 +246,10 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
         // Return the bitmap photo in a bundle:
         final Bundle bundle = new Bundle();
         bundle.putByteArray(PHOTO_KEY, Util.toByteArray(this.bitmapPhoto));
+
+        // Also signal if the image was changed or not:
+        if (this.orgPhoto != null)
+            bundle.putBoolean(IS_IMAGE_CHANGED_KEY, this.isImageChanged);
         return bundle;
     }
 
