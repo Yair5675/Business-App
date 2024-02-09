@@ -18,10 +18,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class OnlineEmployeeAdapter extends FirestoreRecyclerAdapter<Employee, OnlineEmployeeAdapter.EmployeeVH> {
     // The context of the recyclerView:
-    private Context context;
+    private final Context context;
 
-    public OnlineEmployeeAdapter(@NonNull FirestoreRecyclerOptions<Employee> options) {
+    public OnlineEmployeeAdapter(Context context, @NonNull FirestoreRecyclerOptions<Employee> options) {
         super(options);
+        this.context = context;
     }
 
     @Override

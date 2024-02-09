@@ -2,6 +2,7 @@ package com.example.finalproject.activities;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -10,7 +11,12 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.custom_views.OnlineEmployeeAdapter;
 import com.example.finalproject.database.online.collections.Branch;
+import com.example.finalproject.database.online.collections.Employee;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -47,14 +53,38 @@ public class BranchActivity extends AppCompatActivity {
         this.tvAddress = findViewById(R.id.actBranchTvAddress);
         this.rvEmployees = findViewById(R.id.actBranchRvEmployees);
 
+        // Initialize layout manager:
+        this.rvEmployees.setLayoutManager(new LinearLayoutManager(this));
+
         // Load the branch from the given intent:
         this.loadBranchFromIntent();
 
         // Load the info from the branch:
         this.loadInfoFromBranch();
 
+        // Initialize the recycler view adapter:
+        this.initAdapter();
+
         // Load the back button callback:
         this.loadBackButtonCallback();
+    }
+
+    private void initAdapter() {
+        // Get a reference to the database:
+        final FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
+
+        // Create the recyclerView's options:
+        final Query query = dbRef
+                .collection("branches")
+                .document(this.currentBranch.getBranchId())
+                .collection("employees");
+        FirestoreRecyclerOptions<Employee> options = new FirestoreRecyclerOptions.Builder<Employee>()
+                .setLifecycleOwner(this)
+                .setQuery(query, Employee.class)
+                .build();
+
+        // Create and set the adapter for the recycler view:
+        this.rvEmployees.setAdapter(new OnlineEmployeeAdapter(this, options));
     }
 
     private void loadInfoFromBranch() {
@@ -83,8 +113,6 @@ public class BranchActivity extends AppCompatActivity {
 
         // Set the address:
         this.tvAddress.setText(this.currentBranch.getFullAddress());
-
-        // TODO: Implement an employee online adapter for a recycler view and set it
     }
 
     private boolean isBranchOpen() {
