@@ -33,6 +33,9 @@ public class UserUpdateForm extends InputForm {
     // The user after their details were changed:
     private final User newUser;
 
+    // Whether or not the user's image was changed:
+    private boolean isImageChanged;
+
     // The user's image:
     private Bitmap userImg;
 
@@ -129,7 +132,7 @@ public class UserUpdateForm extends InputForm {
         this.loadInfoFromSecondFragment();
 
         // Load the image from the third input fragment:
-        this.loadUserImg();
+        this.loadInfoFromThirdFragment();
     }
 
     private void loadInfoFromFirstFragment() {
@@ -155,10 +158,16 @@ public class UserUpdateForm extends InputForm {
         ;
     }
 
-    private void loadUserImg() {
+    private void loadInfoFromThirdFragment() {
+        // Get the bundle:
         final Bundle bundle2 = this.inputFragments[2].getInputs();
+
+        // Get the image:
         final byte[] data = bundle2.getByteArray(UserInputFragment3.PHOTO_KEY);
         if (data != null)
             this.userImg = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+        // Get whether or not the image has changed (default to true just in case):
+        this.isImageChanged = bundle2.getBoolean(UserInputFragment3.IS_IMAGE_CHANGED_KEY, true);
     }
 }
