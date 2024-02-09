@@ -5,14 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Branch;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class BranchActivity extends AppCompatActivity {
@@ -60,7 +61,15 @@ public class BranchActivity extends AppCompatActivity {
         // Set the company name:
         this.tvCompanyName.setText(this.currentBranch.getCompanyName());
 
-        // TODO: Implement a thread that changes the current openness
+        // Set the current openness:
+        if (isBranchOpen()) {
+            this.tvCurrentOpenness.setText(R.string.act_branch_opened_msg);
+            this.tvCurrentOpenness.setTextColor(Color.GREEN);
+        }
+        else {
+            this.tvCurrentOpenness.setText(R.string.act_branch_closed_msg);
+            this.tvCurrentOpenness.setTextColor(Color.RED);
+        }
 
         // Set the opening and closing time:
         final int openHour = this.currentBranch.getOpeningTime() / 60,
@@ -76,6 +85,13 @@ public class BranchActivity extends AppCompatActivity {
         this.tvAddress.setText(this.currentBranch.getFullAddress());
 
         // TODO: Implement an employee online adapter for a recycler view and set it
+    }
+
+    private boolean isBranchOpen() {
+        final Calendar calendar = Calendar.getInstance();
+        final int currentMinutes = 60 * calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE);
+        return this.currentBranch.getClosingTime() > currentMinutes &&
+                currentMinutes >= this.currentBranch.getOpeningTime();
     }
 
     private void loadBranchFromIntent() {
