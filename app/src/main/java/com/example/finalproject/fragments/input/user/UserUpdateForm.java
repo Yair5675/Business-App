@@ -11,22 +11,30 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.online.OnlineDatabase;
+import com.example.finalproject.database.online.StorageUtil;
+import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.util.Result;
+import com.example.finalproject.util.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.function.Consumer;
 
 public class UserUpdateForm extends InputForm {
-    // A reference to the online database:
-    private final OnlineDatabase db;
-
     // The user before their details were changed:
     private final User oldUser;
 
@@ -38,6 +46,9 @@ public class UserUpdateForm extends InputForm {
 
     // The user's image:
     private Bitmap userImg;
+    
+    // Tag for debugging purposes:
+    private static final String TAG = "UserUpdateForm";
 
     public UserUpdateForm(@NonNull User connectedUser, Resources res) {
         super(
@@ -54,32 +65,187 @@ public class UserUpdateForm extends InputForm {
         this.oldUser = connectedUser;
         this.newUser = new User(this.oldUser);
 
-        // Initialize the online database reference:
-        this.db = OnlineDatabase.getInstance();
     }
 
     @Override
     public void onEndForm(Context context, Consumer<Result<Void, Exception>> onCompleteListener) {
-        // Save the old email and password:
-        final String oldEmail = this.oldUser.getEmail(), oldPassword = this.oldUser.getPassword();
-
-        // Set the new information in the user's object (except for the new email):
-        this.loadInfoFromFragments();
-
         // Initialize callbacks:
         OnSuccessListener<Void> successListener = getOnSuccessListener(context, onCompleteListener);
         OnFailureListener failureListener = getOnFailureListener(context, onCompleteListener);
+        Log.d(TAG, "endForm");
+        // Re-authenticate the user:
+        reauthenticateUser(unused -> {
+            // Set the new information in the user's object (except for the new email):
+            this.loadInfoFromFragments();
+            Log.d(TAG, "endForm1");
 
-        // Update the email if it is different:
-        if (!oldUser.getEmail().equals(oldEmail))
-            this.db.updateUserEmail(
-                    oldEmail, oldUser.getEmail(), oldPassword,
-                    unused -> Log.d("InputActivity", "Sent verification email"),
-                    e -> Log.e("InputActivity", "Failed to change email", e)
+            // Validate user connectivity:
+            if (this.isUserConnectivityValid()) {
+                Log.d(TAG, "endForm2");
+
+                // Update the user's authentication details first:
+                this.updateAuthDetails(unused1 -> {
+                    Log.d(TAG, "endForm3");
+
+                    // Update the user's image second:
+                    this.updateUserImage(unused2 -> {
+                        Log.d(TAG, "endForm4");
+
+                        // Update the user in the database:
+                        this.updateDatabaseDetails(successListener, failureListener);
+                    }, failureListener);
+                }, failureListener);
+            }
+        }, e -> {
+            Log.e(TAG, "Unable to re-authenticate user", e);
+            Toast.makeText(context, "Something went wrong. Log out and try again", Toast.LENGTH_SHORT).show();
+            failureListener.onFailure(e);
+        });
+    }
+
+    private void updateAuthDetails(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        // Check if the user changed their email:
+        if (!this.newUser.getEmail().equals(this.oldUser.getEmail()))
+            this.updateUserEmail(unused -> {
+                // Check if the user changed their password:
+                if (!this.newUser.getPassword().equals(this.oldUser.getPassword()))
+                    updateUserPassword(onSuccessListener, onFailureListener);
+            }, onFailureListener);
+        // Check if the user changed their password:
+        else if (!this.newUser.getPassword().equals(this.oldUser.getPassword()))
+            this.updateUserPassword(onSuccessListener, onFailureListener);
+        // If nothing was changed, simply activate the on success listener:
+        else
+            onSuccessListener.onSuccess(null);
+    }
+
+    private void updateUserEmail(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        // Update the email and send a verification email and update the user's email:
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null)
+            user.verifyBeforeUpdateEmail(this.newUser.getEmail())
+                    .addOnSuccessListener(onSuccessListener)
+                    .addOnFailureListener(onFailureListener);
+    }
+
+    private void updateUserPassword(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        // Get the current user:
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        // Update the password:
+        if (user != null)
+            user.updatePassword(this.newUser.getPassword())
+                    .addOnSuccessListener(onSuccessListener)
+                    .addOnFailureListener(onFailureListener);
+    }
+
+    private void reauthenticateUser(
+            OnSuccessListener<Void> onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        // Get the current user:
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            AuthCredential credential = EmailAuthProvider.getCredential(
+                    this.oldUser.getEmail(), this.oldUser.getPassword()
             );
+            user.reauthenticate(credential)
+                    .addOnSuccessListener(onSuccessListener)
+                    .addOnFailureListener(onFailureListener);
+        }
+    }
 
-        // Update the user in the database
-        this.db.updateUser(oldUser, oldUser.getEmail(), oldPassword, this.userImg, successListener, failureListener);
+    private void updateUserImage(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        // Check if the image has been changed:
+        if (this.isImageChanged) {
+            final StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+            // Add the new image:
+            final String newPath = StorageUtil.getStorageImagePath(this.newUser.getUid());
+            storageRef.child(newPath)
+                    .putBytes(Util.toByteArray(this.userImg))
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // Delete the old image:
+                        storageRef.child(this.oldUser.getImagePath())
+                                .delete()
+                                .addOnSuccessListener(unused -> {
+                                    // Set the new path for the user:
+                                    this.newUser.setImagePath(newPath);
+
+                                    // Activate the callback:
+                                    onSuccessListener.onSuccess(null);
+                                })
+                                .addOnFailureListener(e -> {
+                                    // Delete the old photo:
+                                    storageRef.child(newPath).delete();
+
+                                    // Activate the failure callback:
+                                    onFailureListener.onFailure(e);
+                                });
+                    })
+                    .addOnFailureListener(onFailureListener);
+        }
+        // If not, just activate the success callback:
+        else
+            onSuccessListener.onSuccess(null);
+    }
+
+    private void updateDatabaseDetails(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        // Get a reference to the database:
+        final FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
+
+        // Update the user document:
+        dbRef.collection("users")
+                .document(this.newUser.getUid())
+                .set(this.newUser, SetOptions.merge())
+                // Update every employee document of the user across all branches:
+                .addOnSuccessListener(unused -> updateEmployeesCollectionGroup(onSuccessListener, onFailureListener))
+                .addOnFailureListener(onFailureListener);
+    }
+
+    private void updateEmployeesCollectionGroup(
+            OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener
+    ) {
+        // Create a reference to the database:
+        final FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
+
+        // Create the updated employee object (isManager attribute will be changed):
+        final Employee newEmployee = Employee.fromUser(this.newUser, false);
+
+        // Get all the employees whose ID is similar to the updated user:
+        dbRef.collectionGroup("employees")
+                .whereEqualTo("uid", this.oldUser.getUid())
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    // Create a batched write:
+                    final WriteBatch writeBatch = dbRef.batch();
+
+                    querySnapshot.forEach(documentSnapshot -> {
+                        // Get the old employee object:
+                        final Employee oldEmployee = documentSnapshot.toObject(Employee.class);
+
+                        // Set the isManager attribute:
+                        newEmployee.setManager(oldEmployee.isManager());
+
+                        // Update the document:
+                        writeBatch.set(documentSnapshot.getReference(), newEmployee, SetOptions.merge());
+                    });
+
+                    // Commit the batch:
+                    writeBatch.commit()
+                            .addOnSuccessListener(onSuccessListener)
+                            .addOnFailureListener(onFailureListener);
+                })
+                .addOnFailureListener(onFailureListener);
+    }
+
+    private boolean isUserConnectivityValid() {
+        // Get a reference to firebase authentication:
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        // Make sure the updated user is the connected user:
+        FirebaseUser connectedUser = auth.getCurrentUser();
+        return connectedUser != null && connectedUser.getUid().equals(this.oldUser.getUid());
     }
 
     private static OnSuccessListener<Void> getOnSuccessListener(
