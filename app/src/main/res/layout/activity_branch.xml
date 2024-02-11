@@ -80,8 +80,45 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+            <android.widget.Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:drawableStart="@drawable/cancel_icon_filled"
+                android:drawablePadding="8dp"
+                android:paddingHorizontal="10dp"
+                android:layout_marginEnd="8dp"
+
+                android:backgroundTint="@color/red"
+                style="@style/ImprovedButtonAppearance"
+                android:text="@string/act_branch_btn_leave_txt"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                />
+
+            <android.widget.Button
+                android:id="@+id/rowBranchBtnApplyToBusiness"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+
+                style="@style/ImprovedButtonAppearance"
+                android:drawableStart="@drawable/assignment_add_icon_white"
+                android:drawablePadding="8dp"
+                android:paddingHorizontal="10dp"
+                android:text="@string/row_branch_btn_apply_txt"
+                android:layout_gravity="end"
+                />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
