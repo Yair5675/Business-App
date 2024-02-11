@@ -14,6 +14,7 @@ import com.example.finalproject.R;
 import com.example.finalproject.custom_views.OnlineEmployeeAdapter;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
+import com.example.finalproject.util.EmployeeActions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -84,7 +85,15 @@ public class BranchActivity extends AppCompatActivity {
                 .build();
 
         // Create and set the adapter for the recycler view:
-        this.rvEmployees.setAdapter(new OnlineEmployeeAdapter(this, options));
+        this.rvEmployees.setAdapter(new OnlineEmployeeAdapter(
+                // TODO: Check if the current user is a manager
+                true,this, this.getEmployeesActions(), options)
+        );
+    }
+
+    private EmployeeActions getEmployeesActions() {
+        // TODO: Implement this function
+        return null;
     }
 
     private void loadInfoFromBranch() {

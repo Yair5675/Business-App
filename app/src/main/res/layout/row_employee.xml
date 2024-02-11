@@ -31,4 +31,12 @@
         android:src="@drawable/crown_icon"
         android:layout_marginEnd="8dp"
         />
+
+    <ImageView
+        android:id="@+id/rowEmployeeImgMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/more_vert_icon"
+        android:layout_marginEnd="8dp"
+        />
 </LinearLayout>
