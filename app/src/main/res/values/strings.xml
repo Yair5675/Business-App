@@ -146,4 +146,10 @@
     <string name="act_branch_working_hours_sample">Open during: 8:00 – 22:00</string>
     <string name="act_branch_business_address_sample">Some address</string>
     <string name="act_branch_employees_subtitle">Employees:</string>
+
+
+    <!-- Strings belonging to the employee menu: -->
+    <string name="employee_menu_item_promote_title">Promote</string>
+    <string name="employee_menu_item_demote_title">Demote</string>
+    <string name="employee_menu_item_fire_title">Fire</string>
 </resources>
