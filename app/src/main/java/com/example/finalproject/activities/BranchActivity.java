@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
@@ -43,8 +44,22 @@ public class BranchActivity extends AppCompatActivity {
     // The text view that shows the branch's address:
     private TextView tvAddress;
 
+    // The adapter for the recycler view:
+    private OnlineEmployeeAdapter adapter;
+
     // The recycler view that shows the branch's employees:
     private RecyclerView rvEmployees;
+
+    // The user's status in the branch:
+    private EmployeeStatus employeeStatus;
+    private enum EmployeeStatus {
+        MANAGER,
+        EMPLOYED,
+        UNEMPLOYED
+    }
+
+    // Tag for debugging purposes:
+    private static final String TAG = "BranchActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +85,65 @@ public class BranchActivity extends AppCompatActivity {
         // Load the info from the branch:
         this.loadInfoFromBranch();
 
+        // Set initial employee status to "employed":
+        this.employeeStatus = EmployeeStatus.EMPLOYED;
+
         // Initialize the recycler view adapter:
         this.initAdapter();
 
         // Load the back button callback:
         this.loadBackButtonCallback();
+
+        // Activate the listener to check if the user is a manager in this branch:
+        this.listenToEmployeeStatus();
+    }
+
+    private void listenToEmployeeStatus() {
+        // Get a reference to the database:
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db
+                .collection("branches")
+                .document(this.currentBranch.getBranchId())
+                .collection("employees")
+                .document(this.currentUser.getUid())
+                // Add a snapshot listener:
+                .addSnapshotListener(this, (value, error) -> {
+                    // Check the error:
+                    if (error != null) {
+                        Log.e(TAG, "Listen failed", error);
+                        return;
+                    }
+
+                    // Check if the user isn't employed at the branch:
+                    EmployeeStatus status;
+                    if (value == null || !value.exists())
+                        status = EmployeeStatus.UNEMPLOYED;
+
+                    else {
+                        // Convert to employee:
+                        final Employee employee = value.toObject(Employee.class);
+
+                        // Check if the employee is a manager:
+                        if (employee == null)
+                            status = EmployeeStatus.UNEMPLOYED;
+                        else if (employee.isManager())
+                            status = EmployeeStatus.MANAGER;
+                        else
+                            status = EmployeeStatus.EMPLOYED;
+                    }
+
+                    // Change the status for the activity:
+                    this.setEmployeeStatus(status);
+
+                });
+    }
+
+    private void setEmployeeStatus(EmployeeStatus status) {
+        // Save the status:
+        this.employeeStatus = status;
+
+        // Update the adapter:
+        this.adapter.setIsManager(status == EmployeeStatus.MANAGER);
     }
 
     private void loadUserFromIntent() {
@@ -105,10 +174,13 @@ public class BranchActivity extends AppCompatActivity {
                 .build();
 
         // Create and set the adapter for the recycler view:
-        this.rvEmployees.setAdapter(new OnlineEmployeeAdapter(
-                // TODO: Check if the current user is a manager
-                true,this, this.getEmployeesActions(), options)
+        this.adapter = new OnlineEmployeeAdapter(
+                this.employeeStatus == EmployeeStatus.MANAGER,
+                this,
+                this.getEmployeesActions(),
+                options
         );
+        this.rvEmployees.setAdapter(this.adapter);
     }
 
     private EmployeeActions getEmployeesActions() {
