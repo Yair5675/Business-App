@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.StorageUtil;
-import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.util.Result;
@@ -26,7 +25,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -198,44 +196,7 @@ public class UserUpdateForm extends InputForm {
         dbRef.collection("users")
                 .document(this.newUser.getUid())
                 .set(this.newUser, SetOptions.merge())
-                // Update every employee document of the user across all branches:
-                .addOnSuccessListener(unused -> updateEmployeesCollectionGroup(onSuccessListener, onFailureListener))
-                .addOnFailureListener(onFailureListener);
-    }
-
-    private void updateEmployeesCollectionGroup(
-            OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener
-    ) {
-        // Create a reference to the database:
-        final FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
-
-        // Create the updated employee object (isManager attribute will be changed):
-        final Employee newEmployee = Employee.fromUser(this.newUser, false);
-
-        // Get all the employees whose ID is similar to the updated user:
-        dbRef.collectionGroup("employees")
-                .whereEqualTo("uid", this.oldUser.getUid())
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    // Create a batched write:
-                    final WriteBatch writeBatch = dbRef.batch();
-
-                    querySnapshot.forEach(documentSnapshot -> {
-                        // Get the old employee object:
-                        final Employee oldEmployee = documentSnapshot.toObject(Employee.class);
-
-                        // Set the isManager attribute:
-                        newEmployee.setManager(oldEmployee.isManager());
-
-                        // Update the document:
-                        writeBatch.set(documentSnapshot.getReference(), newEmployee, SetOptions.merge());
-                    });
-
-                    // Commit the batch:
-                    writeBatch.commit()
-                            .addOnSuccessListener(onSuccessListener)
-                            .addOnFailureListener(onFailureListener);
-                })
+                .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(onFailureListener);
     }
 
