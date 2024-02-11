@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
@@ -50,6 +52,12 @@ public class BranchActivity extends AppCompatActivity {
     // The recycler view that shows the branch's employees:
     private RecyclerView rvEmployees;
 
+    // The button that allows the user to leave the branch:
+    private Button btnLeave;
+
+    // The button that allows the user to apply to the branch:
+    private Button btnApply;
+
     // The user's status in the branch:
     private EmployeeStatus employeeStatus;
     private enum EmployeeStatus {
@@ -72,6 +80,8 @@ public class BranchActivity extends AppCompatActivity {
         this.tvWorkingHours = findViewById(R.id.actBranchTvWorkingTimes);
         this.tvAddress = findViewById(R.id.actBranchTvAddress);
         this.rvEmployees = findViewById(R.id.actBranchRvEmployees);
+        this.btnApply = findViewById(R.id.actBranchBtnApplyToBusiness);
+        this.btnLeave = findViewById(R.id.actBranchBtnLeaveBranch);
 
         // Initialize layout manager:
         this.rvEmployees.setLayoutManager(new LinearLayoutManager(this));
@@ -85,11 +95,11 @@ public class BranchActivity extends AppCompatActivity {
         // Load the info from the branch:
         this.loadInfoFromBranch();
 
-        // Set initial employee status to "employed":
-        this.employeeStatus = EmployeeStatus.EMPLOYED;
-
         // Initialize the recycler view adapter:
         this.initAdapter();
+
+        // Set initial employee status to "employed":
+        this.setEmployeeStatus(EmployeeStatus.UNEMPLOYED);
 
         // Load the back button callback:
         this.loadBackButtonCallback();
@@ -134,7 +144,6 @@ public class BranchActivity extends AppCompatActivity {
 
                     // Change the status for the activity:
                     this.setEmployeeStatus(status);
-
                 });
     }
 
@@ -144,6 +153,12 @@ public class BranchActivity extends AppCompatActivity {
 
         // Update the adapter:
         this.adapter.setIsManager(status == EmployeeStatus.MANAGER);
+
+        // Show the "leave branch" button if the user is employed at the branch or the "apply to
+        // branch" if they aren't:
+        final boolean isEmployed = status != EmployeeStatus.UNEMPLOYED;
+        this.btnApply.setVisibility(isEmployed ? View.GONE : View.VISIBLE);
+        this.btnLeave.setVisibility(isEmployed ? View.VISIBLE : View.GONE);
     }
 
     private void loadUserFromIntent() {
