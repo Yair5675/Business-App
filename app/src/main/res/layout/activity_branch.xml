@@ -90,6 +90,7 @@
             android:gravity="center"
             >
             <android.widget.Button
+                android:id="@+id/actBranchBtnLeaveBranch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -106,7 +107,7 @@
                 />
 
             <android.widget.Button
-                android:id="@+id/rowBranchBtnApplyToBusiness"
+                android:id="@+id/actBranchBtnApplyToBusiness"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
