@@ -1,6 +1,5 @@
 package com.example.finalproject.fragments.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.activities.InputActivity;
 import com.example.finalproject.custom_views.OnlineBranchesAdapter;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.User;
-import com.example.finalproject.fragments.input.business.BusinessRegistrationForm;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -36,8 +33,12 @@ public class BranchesFragment extends Fragment {
     // The search view that allows the user to search for a specific business:
     private SearchView svBranches;
 
+    // TODO: Implement search view
+
     // The checkbox that allows the user to search for businesses in their city only:
     private CheckedTextView checkboxMyCity;
+
+    // TODO: Implement city check box
 
     @Nullable
     @Override
@@ -69,7 +70,7 @@ public class BranchesFragment extends Fragment {
                 .build();
 
         // Create the adapter and set the options:
-        this.adapter = new OnlineBranchesAdapter(requireContext(), options);
+        this.adapter = new OnlineBranchesAdapter(this.connectedUser, requireContext(), options);
 
         // Set the adapter for the recycler view:
         this.rvBranches.setAdapter(this.adapter);

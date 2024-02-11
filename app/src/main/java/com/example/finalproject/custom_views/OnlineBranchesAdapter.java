@@ -14,17 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalproject.R;
 import com.example.finalproject.activities.BranchActivity;
 import com.example.finalproject.database.online.collections.Branch;
+import com.example.finalproject.database.online.collections.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 import java.util.Locale;
 
 public class OnlineBranchesAdapter extends FirestoreRecyclerAdapter<Branch, OnlineBranchesAdapter.BranchVH> {
+    // The connected user:
+    private final User user;
+
     // The context of the recycler view:
     private final Context context;
 
-    public OnlineBranchesAdapter(Context context, @NonNull FirestoreRecyclerOptions<Branch> options) {
+    public OnlineBranchesAdapter(User user, Context context, @NonNull FirestoreRecyclerOptions<Branch> options) {
         super(options);
+        this.user = user;
         this.context = context;
     }
 
@@ -87,8 +92,9 @@ public class OnlineBranchesAdapter extends FirestoreRecyclerAdapter<Branch, Onli
                 if (index >= 0 && index < getItemCount()) {
                     final Branch branch = getItem(getAbsoluteAdapterPosition());
 
-                    // Put the branch in the intent:
+                    // Put the branch and user in the intent:
                     final Intent intent = new Intent(context, BranchActivity.class);
+                    intent.putExtra("user", user);
                     intent.putExtra("branch", branch);
 
                     // Go to the activity:

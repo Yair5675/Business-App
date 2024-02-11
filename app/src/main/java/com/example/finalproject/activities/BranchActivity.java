@@ -14,6 +14,7 @@ import com.example.finalproject.R;
 import com.example.finalproject.custom_views.OnlineEmployeeAdapter;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.EmployeeActions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,6 +25,9 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class BranchActivity extends AppCompatActivity {
+    // The current user connected to the app:
+    private User currentUser;
+
     // The current branch that is being displayed:
     private Branch currentBranch;
 
@@ -57,6 +61,9 @@ public class BranchActivity extends AppCompatActivity {
         // Initialize layout manager:
         this.rvEmployees.setLayoutManager(new LinearLayoutManager(this));
 
+        // Load the user from the given intent:
+        this.loadUserFromIntent();
+
         // Load the branch from the given intent:
         this.loadBranchFromIntent();
 
@@ -68,6 +75,19 @@ public class BranchActivity extends AppCompatActivity {
 
         // Load the back button callback:
         this.loadBackButtonCallback();
+    }
+
+    private void loadUserFromIntent() {
+        // Get the intent:
+        final Intent intent = getIntent();
+
+        // Check that a user was indeed given:
+        if (intent.hasExtra("user")) {
+            Serializable user = intent.getSerializableExtra("user");
+            // Check type (also null checker):
+            if (user instanceof User)
+                this.currentUser = (User) user;
+        }
     }
 
     private void initAdapter() {
