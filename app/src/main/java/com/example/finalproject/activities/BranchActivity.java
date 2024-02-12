@@ -349,7 +349,32 @@ public class BranchActivity extends AppCompatActivity {
 
         @Override
         public void demote(Employee employee) {
-            // TODO: Use the cloud function to demote the employee
+            // Show the progress bar and hide the "Leave branch":
+            pbLoading.setVisibility(View.VISIBLE);
+            btnLeave.setVisibility(View.GONE);
+
+            // Call the cloud function:
+            this.functionsHandler.setEmployeeStatus(
+                    employee.getUid(),
+                    currentBranch.getBranchId(),
+                    false,
+                    () -> {
+                        // Show the "Leave branch" button and hide the progress bar:
+                        pbLoading.setVisibility(View.GONE);
+                        btnLeave.setVisibility(View.VISIBLE);
+                    },
+                    e -> {
+                        // Show the "Leave branch" button and hide the progress bar:
+                        pbLoading.setVisibility(View.GONE);
+                        btnLeave.setVisibility(View.VISIBLE);
+
+                        // Log the error:
+                        Log.e(TAG, "Error demoting employee", e);
+
+                        // Alert the user:
+                        Toast.makeText(BranchActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+            );
         }
 
         @Override
