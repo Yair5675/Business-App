@@ -1,7 +1,13 @@
 package com.example.finalproject.database.online.collections;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.functions.FirebaseFunctions;
+
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Branch implements Serializable {
     // The branch ID:
@@ -111,5 +117,23 @@ public class Branch implements Serializable {
 
     public void setDailyShiftsNum(List<Integer> dailyShiftsNum) {
         this.dailyShiftsNum = dailyShiftsNum;
+    }
+
+    public void fireUser(User user, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        // Get an instance of firebase cloud functions (in middle east because the functions are
+        // there):
+        final String region = "me-west1";
+        FirebaseFunctions functions = FirebaseFunctions.getInstance(region);
+
+        // Call the fire_user_from_branch function with the user and branch IDs:
+        final Map<String, String> data = new HashMap<>();
+        data.put("uid", user.getUid());
+        data.put("branchId", this.branchId);
+        functions
+                .getHttpsCallable("fire_user_from_branch")
+                .call(data)
+                // The function shouldn't return anything if it succeeds:
+                .addOnSuccessListener(_r -> onSuccessListener.onSuccess(null))
+                .addOnFailureListener(onFailureListener);
     }
 }
