@@ -319,7 +319,32 @@ public class BranchActivity extends AppCompatActivity {
 
         @Override
         public void promote(Employee employee) {
-            // TODO: Use the cloud function to promote the employee
+            // Show the progress bar and hide the "Leave branch":
+            pbLoading.setVisibility(View.VISIBLE);
+            btnLeave.setVisibility(View.GONE);
+
+            // Call the cloud function:
+            this.functionsHandler.setEmployeeStatus(
+                    employee.getUid(),
+                    currentBranch.getBranchId(),
+                    true,
+                    () -> {
+                        // Show the "Leave branch" button and hide the progress bar:
+                        pbLoading.setVisibility(View.GONE);
+                        btnLeave.setVisibility(View.VISIBLE);
+                    },
+                    e -> {
+                        // Show the "Leave branch" button and hide the progress bar:
+                        pbLoading.setVisibility(View.GONE);
+                        btnLeave.setVisibility(View.VISIBLE);
+
+                        // Log the error:
+                        Log.e(TAG, "Error promoting employee", e);
+
+                        // Alert the user:
+                        Toast.makeText(BranchActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+            );
         }
 
         @Override
