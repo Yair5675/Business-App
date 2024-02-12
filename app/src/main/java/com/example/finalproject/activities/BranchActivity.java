@@ -124,7 +124,7 @@ public class BranchActivity extends AppCompatActivity {
         this.btnLeave.setVisibility(View.GONE);
 
         // Fire the current user:
-        this.currentBranch.fireUser(this.currentUser, unused -> {
+        this.currentBranch.fireUser(this.currentUser.getUid(), unused -> {
             // Make the progress bar disappear:
             this.pbLoading.setVisibility(View.GONE);
 

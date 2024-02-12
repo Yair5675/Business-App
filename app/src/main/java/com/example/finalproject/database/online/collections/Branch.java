@@ -119,7 +119,7 @@ public class Branch implements Serializable {
         this.dailyShiftsNum = dailyShiftsNum;
     }
 
-    public void fireUser(User user, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+    public void fireUser(String uid, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         // Get an instance of firebase cloud functions (in middle east because the functions are
         // there):
         final String region = "me-west1";
@@ -127,7 +127,7 @@ public class Branch implements Serializable {
 
         // Call the fire_user_from_branch function with the user and branch IDs:
         final Map<String, String> data = new HashMap<>();
-        data.put("uid", user.getUid());
+        data.put("uid", uid);
         data.put("branchId", this.branchId);
         functions
                 .getHttpsCallable("fire_user_from_branch")
