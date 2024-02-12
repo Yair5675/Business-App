@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.OnlineEmployeeAdapter;
@@ -58,6 +60,9 @@ public class BranchActivity extends AppCompatActivity {
     // The button that allows the user to apply to the branch:
     private Button btnApply;
 
+    // The progress bar in the activity, shown when loading something:
+    private ProgressBar pbLoading;
+
     // The user's status in the branch:
     private EmployeeStatus employeeStatus;
     private enum EmployeeStatus {
@@ -82,6 +87,8 @@ public class BranchActivity extends AppCompatActivity {
         this.rvEmployees = findViewById(R.id.actBranchRvEmployees);
         this.btnApply = findViewById(R.id.actBranchBtnApplyToBusiness);
         this.btnLeave = findViewById(R.id.actBranchBtnLeaveBranch);
+        this.pbLoading = findViewById(R.id.actBranchPbLoading);
+        this.pbLoading.setVisibility(View.GONE);
 
         // Initialize layout manager:
         this.rvEmployees.setLayoutManager(new WrapperLinearLayoutManager(this));
@@ -91,6 +98,9 @@ public class BranchActivity extends AppCompatActivity {
 
         // Load the branch from the given intent:
         this.loadBranchFromIntent();
+
+        // Load onClickListeners:
+        this.btnLeave.setOnClickListener(_v -> this.leaveBranch());
 
         // Load the info from the branch:
         this.loadInfoFromBranch();
@@ -106,6 +116,34 @@ public class BranchActivity extends AppCompatActivity {
 
         // Activate the listener to check if the user is a manager in this branch:
         this.listenToEmployeeStatus();
+    }
+
+    private void leaveBranch() {
+        // Show the progress bar and make the "leave branch" button disappear:
+        this.pbLoading.setVisibility(View.VISIBLE);
+        this.btnLeave.setVisibility(View.GONE);
+
+        // Fire the current user:
+        this.currentBranch.fireUser(this.currentUser, unused -> {
+            // Make the progress bar disappear:
+            this.pbLoading.setVisibility(View.GONE);
+
+            // Set the employee status to unemployed:
+            this.setEmployeeStatus(EmployeeStatus.UNEMPLOYED);
+
+            // Alert the user:
+            Toast.makeText(this, "Left branch successfully!", Toast.LENGTH_SHORT).show();
+        }, e -> {
+            // Make the progress bar disappear and the "leave branch" button re-appear:
+            this.pbLoading.setVisibility(View.GONE);
+            this.btnLeave.setVisibility(View.VISIBLE);
+
+            // Log the error:
+            Log.e(TAG, "Error leaving branch", e);
+
+            // Alert the user:
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void listenToEmployeeStatus() {
