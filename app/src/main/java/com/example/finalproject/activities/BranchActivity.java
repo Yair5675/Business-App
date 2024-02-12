@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.OnlineEmployeeAdapter;
+import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
@@ -124,26 +125,32 @@ public class BranchActivity extends AppCompatActivity {
         this.btnLeave.setVisibility(View.GONE);
 
         // Fire the current user:
-        this.currentBranch.fireUser(this.currentUser.getUid(), unused -> {
-            // Make the progress bar disappear:
-            this.pbLoading.setVisibility(View.GONE);
+        final CloudFunctionsHandler functionsHandler = CloudFunctionsHandler.getInstance();
+        functionsHandler.fireUserFromBranch(
+                this.currentUser.getUid(),
+                this.currentBranch.getBranchId(),
+                () -> {
+                    // Make the progress bar disappear:
+                    this.pbLoading.setVisibility(View.GONE);
 
-            // Set the employee status to unemployed:
-            this.setEmployeeStatus(EmployeeStatus.UNEMPLOYED);
+                    // Set the employee status to unemployed (shows apply button automatically):
+                    this.setEmployeeStatus(EmployeeStatus.UNEMPLOYED);
 
-            // Alert the user:
-            Toast.makeText(this, "Left branch successfully!", Toast.LENGTH_SHORT).show();
-        }, e -> {
-            // Make the progress bar disappear and the "leave branch" button re-appear:
-            this.pbLoading.setVisibility(View.GONE);
-            this.btnLeave.setVisibility(View.VISIBLE);
+                    // Alert the user:
+                    Toast.makeText(this, "Left branch successfully!", Toast.LENGTH_SHORT).show();
+                },
+                e -> {
+                    // Make the progress bar disappear and the "leave branch" button re-appear:
+                    this.pbLoading.setVisibility(View.GONE);
+                    this.btnLeave.setVisibility(View.VISIBLE);
 
-            // Log the error:
-            Log.e(TAG, "Error leaving branch", e);
+                    // Log the error:
+                    Log.e(TAG, "Error leaving branch", e);
 
-            // Alert the user:
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
-        });
+                    // Alert the user:
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+        );
     }
 
     private void listenToEmployeeStatus() {
@@ -303,11 +310,11 @@ public class BranchActivity extends AppCompatActivity {
      * Inner class whose purpose is to handle actions performed on an employee in the recycler view
      */
     private class EmployeeActionsHandler implements EmployeeActions {
-        // A reference to the database:
-        private final FirebaseFirestore dbRef;
+        // The cloud functions handler:
+        private final CloudFunctionsHandler functionsHandler;
 
         public EmployeeActionsHandler() {
-            this.dbRef = FirebaseFirestore.getInstance();
+            this.functionsHandler = CloudFunctionsHandler.getInstance();
         }
 
         @Override
@@ -333,21 +340,25 @@ public class BranchActivity extends AppCompatActivity {
             }
 
             // Fire the employee:
-            currentBranch.fireUser(employee.getUid(), unused -> {
-                // Show the "Leave branch" button and hide the progress bar:
-                pbLoading.setVisibility(View.GONE);
-                btnLeave.setVisibility(View.VISIBLE);
-            }, e -> {
-                // Show the "Leave branch" button and hide the progress bar:
-                pbLoading.setVisibility(View.GONE);
-                btnLeave.setVisibility(View.VISIBLE);
+            this.functionsHandler.fireUserFromBranch(
+                    currentUser.getUid(),
+                    currentBranch.getBranchId(),
+                    () -> {
+                        // Show the "Leave branch" button and hide the progress bar:
+                        pbLoading.setVisibility(View.GONE);
+                        btnLeave.setVisibility(View.VISIBLE);
+                    },
+                    e -> {
+                        // Show the "Leave branch" button and hide the progress bar:
+                        pbLoading.setVisibility(View.GONE);
+                        btnLeave.setVisibility(View.VISIBLE);
 
-                // Log the error:
-                Log.e(TAG, "Error firing employee", e);
+                        // Log the error:
+                        Log.e(TAG, "Error firing employee", e);
 
-                // Alert the user:
-                Toast.makeText(BranchActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-            });
+                        // Alert the user:
+                        Toast.makeText(BranchActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    });
         }
     }
 }
