@@ -27,6 +27,8 @@ public class BranchesFragment extends Fragment {
     // The recycler view that holds all the branches:
     private RecyclerView rvBranches;
 
+    // TODO: Add some sort of visual indicator if the recycler view is empty
+
     // The adapter of the recycler view:
     private OnlineBranchesAdapter adapter;
 

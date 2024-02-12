@@ -55,6 +55,9 @@ public class BranchActivity extends AppCompatActivity {
     // The recycler view that shows the branch's employees:
     private RecyclerView rvEmployees;
 
+    // TODO: Add some sort of visual indicator if the recycler view is empty
+
+    // TODO: Implement a search bar to look for a particular employee
     // The button that allows the user to leave the branch:
     private Button btnLeave;
 
