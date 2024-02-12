@@ -4,7 +4,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -16,6 +15,7 @@ import com.example.finalproject.custom_views.OnlineUsersAdapter;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Util;
+import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 
@@ -42,7 +42,7 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
         this.rvUsers = findViewById(R.id.actUsersRvUsers);
 
         // Initialize layout manager:
-        this.rvUsers.setLayoutManager(new LinearLayoutManager(this));
+        this.rvUsers.setLayoutManager(new WrapperLinearLayoutManager(this));
 
         // Initialize the database:
         this.db = OnlineDatabase.getInstance();
