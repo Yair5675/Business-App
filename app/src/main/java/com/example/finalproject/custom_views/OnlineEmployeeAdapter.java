@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,11 @@ public class OnlineEmployeeAdapter extends FirestoreRecyclerAdapter<Employee, On
 
         // Show the more image only if the employee is an admin:
         holder.imgMore.setVisibility(this.isManager ? View.VISIBLE : View.GONE);
+
+        // Show menu items according to certain conditions:
+        holder.menuItemPromote.setVisible(this.isManager && !employee.isManager());
+        holder.menuItemDemote.setVisible(this.isManager && employee.isManager());
+        holder.menuItemFire.setVisible(this.isManager);
     }
 
     @NonNull
@@ -86,6 +92,9 @@ public class OnlineEmployeeAdapter extends FirestoreRecyclerAdapter<Employee, On
         // The "more options" image:
         private final ImageView imgMore;
 
+        // The menu items:
+        private final MenuItem menuItemPromote, menuItemDemote, menuItemFire;
+
         public EmployeeVH(@NonNull View itemView) {
             super(itemView);
 
@@ -98,6 +107,13 @@ public class OnlineEmployeeAdapter extends FirestoreRecyclerAdapter<Employee, On
             // Create popup menu:
             final PopupMenu popupMenu = new PopupMenu(context, this.imgMore, Gravity.END);
             popupMenu.inflate(R.menu.employee_menu);
+            popupMenu.setOnMenuItemClickListener(this);
+
+            // Load the menu items:
+            final Menu menu = popupMenu.getMenu();
+            this.menuItemPromote = menu.findItem(R.id.menuEmployeeItemPromote);
+            this.menuItemDemote = menu.findItem(R.id.menuEmployeeItemDemote);
+            this.menuItemFire = menu.findItem(R.id.menuEmployeeItemFire);
 
             // Activate it when the more image is pressed:
             this.imgMore.setOnClickListener((_v) -> popupMenu.show());
