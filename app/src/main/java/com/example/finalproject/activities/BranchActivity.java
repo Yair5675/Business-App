@@ -356,6 +356,15 @@ public class BranchActivity extends AppCompatActivity {
             pbLoading.setVisibility(View.VISIBLE);
             btnLeave.setVisibility(View.GONE);
 
+            // Make sure this isn't the current user:
+            if (employee.getUid().equals(currentUser.getUid())) {
+                Toast.makeText(BranchActivity.this, "You can't demote yourself", Toast.LENGTH_SHORT).show();
+                // Show the "Leave branch" button and hide the progress bar:
+                pbLoading.setVisibility(View.GONE);
+                btnLeave.setVisibility(View.VISIBLE);
+                return;
+            }
+
             // Call the cloud function:
             this.functionsHandler.setEmployeeStatus(
                     employee.getUid(),
@@ -389,6 +398,9 @@ public class BranchActivity extends AppCompatActivity {
             // Make sure this isn't the current user:
             if (employee.getUid().equals(currentUser.getUid())) {
                 Toast.makeText(BranchActivity.this, "You can't fire yourself", Toast.LENGTH_SHORT).show();
+                // Show the "Leave branch" button and hide the progress bar:
+                pbLoading.setVisibility(View.GONE);
+                btnLeave.setVisibility(View.VISIBLE);
                 return;
             }
 
