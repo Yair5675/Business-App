@@ -10,13 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.OnlineBranchesAdapter;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -51,7 +51,7 @@ public class BranchesFragment extends Fragment {
         this.checkboxMyCity = parent.findViewById(R.id.fragMainBranchesMyCityCheckBox);
 
         // Initialize layout manager:
-        this.rvBranches.setLayoutManager(new LinearLayoutManager(requireContext()));
+        this.rvBranches.setLayoutManager(new WrapperLinearLayoutManager(requireContext()));
 
         // Initialize the adapter:
         this.initAdapter();

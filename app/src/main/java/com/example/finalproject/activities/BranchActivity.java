@@ -2,7 +2,6 @@ package com.example.finalproject.activities;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -19,6 +18,7 @@ import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.EmployeeActions;
+import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -84,7 +84,7 @@ public class BranchActivity extends AppCompatActivity {
         this.btnLeave = findViewById(R.id.actBranchBtnLeaveBranch);
 
         // Initialize layout manager:
-        this.rvEmployees.setLayoutManager(new LinearLayoutManager(this));
+        this.rvEmployees.setLayoutManager(new WrapperLinearLayoutManager(this));
 
         // Load the user from the given intent:
         this.loadUserFromIntent();

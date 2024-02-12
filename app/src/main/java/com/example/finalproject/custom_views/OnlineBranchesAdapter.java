@@ -90,7 +90,7 @@ public class OnlineBranchesAdapter extends FirestoreRecyclerAdapter<Branch, Onli
                 // Load the current branch:
                 final int index = getAbsoluteAdapterPosition();
                 if (index >= 0 && index < getItemCount()) {
-                    final Branch branch = getItem(getAbsoluteAdapterPosition());
+                    final Branch branch = getItem(index);
 
                     // Put the branch and user in the intent:
                     final Intent intent = new Intent(context, BranchActivity.class);
