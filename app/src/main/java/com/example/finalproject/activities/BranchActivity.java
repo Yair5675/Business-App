@@ -49,6 +49,9 @@ public class BranchActivity extends AppCompatActivity {
     // The text view that shows the branch's address:
     private TextView tvAddress;
 
+    // The text view that appears if the employees recycler view is empty:
+    private TextView tvEmployeeNotFound;
+
     // The adapter for the recycler view:
     private OnlineEmployeeAdapter adapter;
 
@@ -87,10 +90,14 @@ public class BranchActivity extends AppCompatActivity {
         this.tvWorkingHours = findViewById(R.id.actBranchTvWorkingTimes);
         this.tvAddress = findViewById(R.id.actBranchTvAddress);
         this.rvEmployees = findViewById(R.id.actBranchRvEmployees);
+        this.tvEmployeeNotFound = findViewById(R.id.actBranchTvEmployeeNotFound);
         this.btnApply = findViewById(R.id.actBranchBtnApplyToBusiness);
         this.btnLeave = findViewById(R.id.actBranchBtnLeaveBranch);
         this.pbLoading = findViewById(R.id.actBranchPbLoading);
         this.pbLoading.setVisibility(View.GONE);
+
+        // Hide the "Employee not found" textView:
+        this.tvEmployeeNotFound.setVisibility(View.GONE);
 
         // Initialize layout manager:
         this.rvEmployees.setLayoutManager(new WrapperLinearLayoutManager(this));
@@ -251,6 +258,16 @@ public class BranchActivity extends AppCompatActivity {
         this.adapter = new OnlineEmployeeAdapter(
                 this.employeeStatus == EmployeeStatus.MANAGER,
                 this,
+                () -> {
+                    // Show the "Employee not found" textView and hide the recyclerView:
+                    this.tvEmployeeNotFound.setVisibility(View.VISIBLE);
+                    this.rvEmployees.setVisibility(View.GONE);
+                },
+                () -> {
+                    // Show the recyclerView and hide the "Employee not found" textView:
+                    this.tvEmployeeNotFound.setVisibility(View.GONE);
+                    this.rvEmployees.setVisibility(View.VISIBLE);
+                },
                 new EmployeeActionsHandler(),
                 options
         );

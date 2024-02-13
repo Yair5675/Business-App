@@ -83,6 +83,17 @@
             android:layout_marginBottom="16dp"
             />
 
+        <TextView
+            android:id="@+id/actBranchTvEmployeeNotFound"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/act_branch_employee_not_found_txt"
+            android:textStyle="bold"
+            android:textSize="32sp"
+            android:gravity="center"
+            />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

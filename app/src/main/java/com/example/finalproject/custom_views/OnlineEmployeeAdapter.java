@@ -22,7 +22,7 @@ import com.example.finalproject.util.EmployeeActions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class OnlineEmployeeAdapter extends FirestoreRecyclerAdapter<Employee, OnlineEmployeeAdapter.EmployeeVH> {
+public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmployeeAdapter.EmployeeVH> {
     // Whether the user viewing the employees is a manager or not:
     private boolean isManager;
 
@@ -34,10 +34,11 @@ public class OnlineEmployeeAdapter extends FirestoreRecyclerAdapter<Employee, On
 
     public OnlineEmployeeAdapter(
             boolean isManager, Context context,
+            Runnable onEmptyCallback, Runnable onNotEmptyCallback,
             EmployeeActions employeeActions,
             @NonNull FirestoreRecyclerOptions<Employee> options
     ) {
-        super(options);
+        super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.isManager = isManager;
         this.employeeActions = employeeActions;
         this.context = context;
