@@ -19,11 +19,7 @@ public abstract class Notification {
      * An enum for all possible types of the notifications.
      */
     public enum NotificationType {
-        PROMOTED,
-        DEMOTED,
-        FIRED,
-        APPLIED,
-        HIRED
+        EMPLOYEE_ACTION
     }
 
     public Notification() {
