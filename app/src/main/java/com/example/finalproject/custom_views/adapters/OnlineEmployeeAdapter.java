@@ -1,4 +1,4 @@
-package com.example.finalproject.custom_views;
+package com.example.finalproject.custom_views.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -19,7 +19,6 @@ import com.example.finalproject.R;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.util.EmployeeActions;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmployeeAdapter.EmployeeVH> {

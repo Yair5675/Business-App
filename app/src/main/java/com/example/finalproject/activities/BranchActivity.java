@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
-import com.example.finalproject.custom_views.OnlineEmployeeAdapter;
+import com.example.finalproject.custom_views.adapters.OnlineEmployeeAdapter;
 import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
