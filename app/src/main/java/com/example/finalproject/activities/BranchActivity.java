@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -133,9 +132,7 @@ public class BranchActivity extends AppCompatActivity {
             this.btnLeave.setVisibility(View.VISIBLE);
 
             // Alert the user:
-            Toast t = Toast.makeText(this, "You can't leave! You're the last one standing", Toast.LENGTH_SHORT);
-            t.setGravity(Gravity.CENTER, 0,0);
-            t.show();
+            Toast.makeText(this, "You can't leave! You're the last one standing", Toast.LENGTH_SHORT).show();
             return;
         }
 
