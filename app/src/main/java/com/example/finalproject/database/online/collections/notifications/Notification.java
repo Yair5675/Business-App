@@ -1,21 +1,20 @@
-package com.example.finalproject.database.online.collections;
+package com.example.finalproject.database.online.collections.notifications;
 
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 
-public class Notification {
+public abstract class Notification {
     // Description for the notification:
     private String description;
 
-    // The type of the notification:
+    // The type of the notification, necessary because firestore doesn't support inheritance:
     private NotificationType type;
 
     // A timestamp indicating when the notification was saved in the database:
     @ServerTimestamp
     private Date timestamp;
 
-    // TODO: Convert into an abstract class with inheritors that hold more info
     /**
      * An enum for all possible types of the notifications.
      */
