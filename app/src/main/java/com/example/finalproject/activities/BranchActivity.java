@@ -144,6 +144,8 @@ public class BranchActivity extends AppCompatActivity {
         functionsHandler.fireUserFromBranch(
                 this.currentUser.getUid(),
                 this.currentBranch.getBranchId(),
+                this.currentUser.getFullName(),
+                this.currentBranch.getCompanyName(),
                 () -> {
                     // Make the progress bar disappear:
                     this.pbLoading.setVisibility(View.GONE);
@@ -422,8 +424,10 @@ public class BranchActivity extends AppCompatActivity {
 
             // Fire the employee:
             this.functionsHandler.fireUserFromBranch(
-                    currentUser.getUid(),
+                    employee.getUid(),
                     currentBranch.getBranchId(),
+                    employee.getFullName(),
+                     currentBranch.getCompanyName(),
                     () -> {
                         // Show the "Leave branch" button and hide the progress bar:
                         pbLoading.setVisibility(View.GONE);

@@ -29,6 +29,8 @@ public class CloudFunctionsHandler {
     public void fireUserFromBranch(
             String uid,
             String branchId,
+            String userName,
+            String branchName,
             Runnable onSuccessListener,
             OnFailureListener onFailureListener
     ) {
@@ -36,6 +38,8 @@ public class CloudFunctionsHandler {
         final Map<String, String> data = new HashMap<>();
         data.put("uid", uid);
         data.put("branchId", branchId);
+        data.put("userName", userName);
+        data.put("branchName", branchName);
 
         // Call the function with the parameters:
         functions
