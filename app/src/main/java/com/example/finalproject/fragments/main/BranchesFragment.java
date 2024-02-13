@@ -87,6 +87,11 @@ public class BranchesFragment extends Fragment {
                     this.tvBusinessNotFound.setVisibility(View.VISIBLE);
                     this.rvBranches.setVisibility(View.GONE);
                 },
+                () -> {
+                    // Hide the "business not found" text view and show the recycler view:
+                    this.tvBusinessNotFound.setVisibility(View.GONE);
+                    this.rvBranches.setVisibility(View.VISIBLE);
+                },
                 options
         );
 

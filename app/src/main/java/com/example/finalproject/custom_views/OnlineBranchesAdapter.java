@@ -27,10 +27,10 @@ public class OnlineBranchesAdapter extends OnlineAdapter<Branch, OnlineBranchesA
     private final Context context;
 
     public OnlineBranchesAdapter(
-            User user, Context context, Runnable onEmptyCallback,
+            User user, Context context, Runnable onEmptyCallback, Runnable onNotEmptyCallback,
             @NonNull FirestoreRecyclerOptions<Branch> options
     ) {
-        super(context, onEmptyCallback, options);
+        super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.user = user;
         this.context = context;
     }

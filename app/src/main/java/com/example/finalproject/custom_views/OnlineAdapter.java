@@ -15,10 +15,19 @@ public abstract class OnlineAdapter<T, VH extends RecyclerView.ViewHolder> exten
     // A callback that's run every time the adapter is empty:
     private final Runnable onEmptyCallback;
 
-    public OnlineAdapter(Context context, Runnable onEmptyCallback, @NonNull FirestoreRecyclerOptions<T> options) {
+    // A callback that's run every time the data changes and the recycle has at least one item:
+    private final Runnable onNotEmptyCallback;
+
+    public OnlineAdapter(
+            Context context,
+            Runnable onEmptyCallback,
+            Runnable onNotEmptyCallback,
+            @NonNull FirestoreRecyclerOptions<T> options
+    ) {
         super(options);
         this.context = context;
         this.onEmptyCallback = onEmptyCallback;
+        this.onNotEmptyCallback = onNotEmptyCallback;
     }
 
     public boolean isEmpty() {
@@ -32,5 +41,7 @@ public abstract class OnlineAdapter<T, VH extends RecyclerView.ViewHolder> exten
         // Check if the recycler view is empty:
         if (this.isEmpty())
             this.onEmptyCallback.run();
+        else
+            this.onNotEmptyCallback.run();
     }
 }
