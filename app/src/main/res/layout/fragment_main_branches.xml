@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/frag_branches_businesses_title"
+        android:text="@string/frag_main_branches_businesses_title"
         android:textSize="32sp"
         android:layout_marginBottom="10dp"
         />
@@ -34,7 +34,7 @@
             android:id="@+id/fragMainBranchesMyCityCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/frag_branches_my_city_checkbox_txt"
+            android:text="@string/frag_main_branches_my_city_checkbox_txt"
             android:gravity="center"
             android:layout_marginHorizontal="4dp"
             android:checkMark="?android:attr/listChoiceIndicatorMultiple"
@@ -54,6 +54,17 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="4dp"
+        />
+
+    <TextView
+        android:id="@+id/fragMainBranchesTvNoBusinessFound"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/frag_main_branches_business_not_found_txt"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:gravity="center"
         />
 
 

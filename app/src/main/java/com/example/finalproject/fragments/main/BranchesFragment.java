@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +28,8 @@ public class BranchesFragment extends Fragment {
     // The recycler view that holds all the branches:
     private RecyclerView rvBranches;
 
-    // TODO: Add some sort of visual indicator if the recycler view is empty
+    // The text view that appears if the recycler view is empty:
+    private TextView tvBusinessNotFound;
 
     // The adapter of the recycler view:
     private OnlineBranchesAdapter adapter;
@@ -51,6 +53,10 @@ public class BranchesFragment extends Fragment {
         this.rvBranches = parent.findViewById(R.id.fragMainBranchesRvBranches);
         this.svBranches = parent.findViewById(R.id.fragMainBranchesSvBusinesses);
         this.checkboxMyCity = parent.findViewById(R.id.fragMainBranchesMyCityCheckBox);
+        this.tvBusinessNotFound = parent.findViewById(R.id.fragMainBranchesTvNoBusinessFound);
+
+        // Set the "Business not found" textView's visibility to gone:
+        this.tvBusinessNotFound.setVisibility(View.GONE);
 
         // Initialize layout manager:
         this.rvBranches.setLayoutManager(new WrapperLinearLayoutManager(requireContext()));
@@ -72,7 +78,17 @@ public class BranchesFragment extends Fragment {
                 .build();
 
         // Create the adapter and set the options:
-        this.adapter = new OnlineBranchesAdapter(this.connectedUser, requireContext(), options);
+        this.adapter = new OnlineBranchesAdapter(
+                this.connectedUser,
+                requireContext(),
+                () -> {
+                    // Show the "business not found" text view and make the recycler view disappear
+                    // (if it doesn't disappear then the text isn't full-screen):
+                    this.tvBusinessNotFound.setVisibility(View.VISIBLE);
+                    this.rvBranches.setVisibility(View.GONE);
+                },
+                options
+        );
 
         // Set the adapter for the recycler view:
         this.rvBranches.setAdapter(this.adapter);

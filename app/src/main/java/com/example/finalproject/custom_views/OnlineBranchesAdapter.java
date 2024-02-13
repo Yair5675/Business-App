@@ -15,20 +15,22 @@ import com.example.finalproject.R;
 import com.example.finalproject.activities.BranchActivity;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.User;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 import java.util.Locale;
 
-public class OnlineBranchesAdapter extends FirestoreRecyclerAdapter<Branch, OnlineBranchesAdapter.BranchVH> {
+public class OnlineBranchesAdapter extends OnlineAdapter<Branch, OnlineBranchesAdapter.BranchVH> {
     // The connected user:
     private final User user;
 
     // The context of the recycler view:
     private final Context context;
 
-    public OnlineBranchesAdapter(User user, Context context, @NonNull FirestoreRecyclerOptions<Branch> options) {
-        super(options);
+    public OnlineBranchesAdapter(
+            User user, Context context, Runnable onEmptyCallback,
+            @NonNull FirestoreRecyclerOptions<Branch> options
+    ) {
+        super(context, onEmptyCallback, options);
         this.user = user;
         this.context = context;
     }

@@ -15,6 +15,7 @@
 
     <!-- Strings belonging to the users menu: -->
     <string name="users_menu_item_about_title">About Us</string>
+    <string name="users_menu_item_add_business_title">Add Your Business</string>
     <string name="users_menu_item_sign_up_title">Sign Up</string>
     <string name="users_menu_item_sign_in_title">Sign In</string>
     <string name="users_menu_item_verify_email_title">Verify Email</string>
@@ -95,9 +96,10 @@
 
 
     <!-- Strings belonging to the branches fragment: -->
-    <string name="frag_branches_businesses_title"><b>Businesses:</b></string>
-    <string name="frag_branches_my_city_checkbox_txt">My city</string>
-    <string name="frag_branches_add_business_txt">Add your business</string>
+    <string name="frag_main_branches_businesses_title"><b>Businesses:</b></string>
+    <string name="frag_main_branches_my_city_checkbox_txt">My city</string>
+    <string name="frag_main_branches_add_business_txt">Add your business</string>
+    <string name="frag_main_branches_business_not_found_txt">No business was found\nಥ_ಥ</string>
 
 
     <!-- Strings belonging to the first business input fragment: -->
@@ -136,7 +138,6 @@
     <string name="row_branch_sample_address">Business address</string>
     <string name="row_branch_btn_see_more_txt">See more</string>
     <string name="row_branch_btn_apply_txt">Apply to branch</string>
-    <string name="users_menu_item_add_business_title">Add Your Business</string>
 
 
     <!-- Strings belonging to the branch activity: -->
