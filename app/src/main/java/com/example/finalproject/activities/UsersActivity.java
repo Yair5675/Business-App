@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.OnlineUsersAdapter;
@@ -27,6 +28,9 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
 
     // The recycler view of the users:
     private RecyclerView rvUsers;
+
+    // The text view that will appear if the users recyclerView is empty:
+    private TextView tvNoUsersFound;
 
     // The online adapter populating the recycler view:
     private OnlineUsersAdapter onlineAdapter;
@@ -63,6 +67,10 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
 
         // If he isn't an admin, hide the search view:
         svUsers.setVisibility(currentUser.isAdmin() ? View.VISIBLE : View.GONE);
+
+        // Initialize the "No users found" textView and make it disappear:
+        this.tvNoUsersFound = findViewById(R.id.actUsersTvUserNotFound);
+        this.tvNoUsersFound.setVisibility(View.GONE);
 
         // Initialize the online adapter:
         this.initAdapter(currentUser);
@@ -116,7 +124,20 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
                     .limit(1);
 
         FirestoreRecyclerOptions<User> options = builder.setQuery(query, User.class).build();
-        this.onlineAdapter = new OnlineUsersAdapter(this, options);
+        this.onlineAdapter = new OnlineUsersAdapter(
+                this,
+                () -> {
+                    // Make the "No users found" textView appear and the recyclerView disappear:
+                    this.tvNoUsersFound.setVisibility(View.VISIBLE);
+                    this.rvUsers.setVisibility(View.GONE);
+                },
+                () -> {
+                    // Make the recyclerView appear and the "No users found" textView disappear:
+                    this.tvNoUsersFound.setVisibility(View.GONE);
+                    this.rvUsers.setVisibility(View.VISIBLE);
+                },
+                options
+        );
         this.rvUsers.setAdapter(this.onlineAdapter);
     }
 

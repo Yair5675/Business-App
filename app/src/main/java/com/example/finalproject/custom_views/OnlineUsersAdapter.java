@@ -12,10 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 import java.time.LocalDate;
@@ -24,17 +22,18 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Locale;
 
-public class OnlineUsersAdapter extends FirestoreRecyclerAdapter<User, OnlineUsersAdapter.UserVH> {
-    // A reference to the database:
-    private final OnlineDatabase db;
-
+public class OnlineUsersAdapter extends OnlineAdapter<User, OnlineUsersAdapter.UserVH> {
     // The context of the recyclerView:
     private final Context context;
 
-    public OnlineUsersAdapter(Context context, @NonNull FirestoreRecyclerOptions<User> options) {
-        super(options);
+    public OnlineUsersAdapter(
+            Context context,
+            Runnable onEmptyCallback,
+            Runnable onNotEmptyCallback,
+            @NonNull FirestoreRecyclerOptions<User> options
+    ) {
+        super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.context = context;
-        this.db = OnlineDatabase.getInstance();
     }
 
     @Override

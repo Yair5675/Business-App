@@ -3,13 +3,9 @@
 
     <!-- Strings belonging to the main activity: -->
     <string name="act_main_user_greeting_default_txt"><b>Hello guest!</b></string>
-
-
     <string name="act_main_edit_account_btn_txt">Edit\nAccount</string>
     <string name="act_main_delete_account_btn_txt">Delete\nAccount</string>
-
     <string name="act_main_content_description_user_img">A picture of the user</string>
-
     <string name="act_main_credits_txt"><b>Made by Yair Ziv</b></string>
 
 
@@ -77,6 +73,7 @@
 
     <!-- Strings belonging to the users activity: -->
     <string name="act_users_title"><b>The App\'s Users:</b></string>
+    <string name="act_users_user_not_found_txt">No user was found</string>
 
 
     <!-- Strings belonging to the user recyclerview row XML: -->
