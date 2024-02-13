@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -126,6 +127,19 @@ public class BranchActivity extends AppCompatActivity {
         // Show the progress bar and make the "leave branch" button disappear:
         this.pbLoading.setVisibility(View.VISIBLE);
         this.btnLeave.setVisibility(View.GONE);
+
+        // Prevent the user from leaving if they are the only employee:
+        if (this.adapter.getItemCount() == 1) {
+            // Make the progress bar disappear and the "leave branch" button re-appear:
+            this.pbLoading.setVisibility(View.GONE);
+            this.btnLeave.setVisibility(View.VISIBLE);
+
+            // Alert the user:
+            Toast t = Toast.makeText(this, "You can't leave! You're the last one standing", Toast.LENGTH_SHORT);
+            t.setGravity(Gravity.CENTER, 0,0);
+            t.show();
+            return;
+        }
 
         // Fire the current user:
         final CloudFunctionsHandler functionsHandler = CloudFunctionsHandler.getInstance();
