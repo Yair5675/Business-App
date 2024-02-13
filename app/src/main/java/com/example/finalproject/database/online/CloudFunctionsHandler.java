@@ -50,6 +50,8 @@ public class CloudFunctionsHandler {
             String uid,
             String branchId,
             boolean isManager,
+            String userName,
+            String branchName,
             Runnable onSuccessListener,
             OnFailureListener onFailureListener
     ) {
@@ -58,6 +60,8 @@ public class CloudFunctionsHandler {
         data.put("uid", uid);
         data.put("branchId", branchId);
         data.put("manager", isManager);
+        data.put("userName", userName);
+        data.put("branchName", branchName);
 
         // Call the function with the parameters:
         functions
