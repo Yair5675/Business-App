@@ -157,4 +157,9 @@
     <!-- Strings belonging to the branch applications fragment: -->
     <string name="frag_branch_applications_pending_applications_subtitle"><b>Pending Applications:</b></string>
     <string name="frag_branch_applications_no_application_found_txt"><b>No applications found</b></string>
+
+
+    <!-- Strings belonging to the application row: -->
+    <string name="row_application_reject_button_txt">Reject</string>
+    <string name="row_application_accept_button_txt">Accept</string>
 </resources>
