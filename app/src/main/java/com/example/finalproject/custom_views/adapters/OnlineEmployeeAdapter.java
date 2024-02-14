@@ -22,6 +22,9 @@ import com.example.finalproject.util.EmployeeActions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmployeeAdapter.EmployeeVH> {
+    // The current user's ID:
+    private final String currentUserId;
+
     // Whether the user viewing the employees is a manager or not:
     private boolean isManager;
 
@@ -32,13 +35,14 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
     private final Context context;
 
     public OnlineEmployeeAdapter(
-            boolean isManager, Context context,
+            boolean isManager, String currentUserId, Context context,
             Runnable onEmptyCallback, Runnable onNotEmptyCallback,
             EmployeeActions employeeActions,
             @NonNull FirestoreRecyclerOptions<Employee> options
     ) {
         super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.isManager = isManager;
+        this.currentUserId = currentUserId;
         this.employeeActions = employeeActions;
         this.context = context;
     }
@@ -62,8 +66,9 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
         // Show the crown image only if the employee is a manager:
         holder.imgCrown.setVisibility(employee.isManager() ? View.VISIBLE : View.GONE);
 
-        // Show the more image only if the employee is an admin:
-        holder.imgMore.setVisibility(this.isManager ? View.VISIBLE : View.GONE);
+        // Show the more image only if the employee is an admin and not the current user:
+        final boolean isCurrentUser = this.currentUserId.equals(employee.getUid());
+        holder.imgMore.setVisibility(this.isManager && !isCurrentUser ? View.VISIBLE : View.GONE);
 
         // Show menu items according to certain conditions:
         holder.menuItemPromote.setVisible(this.isManager && !employee.isManager());

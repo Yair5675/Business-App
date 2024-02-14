@@ -250,6 +250,7 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Create and set the adapter for the recycler view:
         this.adapter = new OnlineEmployeeAdapter(
                 this.employeeStatus == EmployeeStatus.MANAGER,
+                this.currentUser.getUid(),
                 requireContext(),
                 () -> {
                     // Show the "Employee not found" textView and hide the recyclerView:
