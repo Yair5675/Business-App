@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
     android:paddingHorizontal="16dp"
     android:background="@drawable/background"
     tools:context=".activities.BranchActivity">
 
-    <TextView
-        android:id="@+id/actBranchTvCompanyName"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/actBranchTopEdge"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/act_branch_business_name_sample"
-        android:textSize="38sp"
-        android:textStyle="bold"
-        android:maxLines="2"
-        android:layout_marginVertical="8dp"
-        />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/actBranchBottomEdge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toTopOf="@id/actBranchTopEdge"
+        app:layout_constraintBottom_toBottomOf="@id/actBranchBottomEdge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:padding="8dp"
@@ -32,111 +40,26 @@
         >
 
         <TextView
-            android:id="@+id/actBranchTvCurrentOpenness"
+            android:id="@+id/actBranchTvCompanyName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/act_branch_closed_msg"
-            android:textSize="20sp"
-            />
-
-        <TextView
-            android:id="@+id/actBranchTvWorkingTimes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/act_branch_working_hours_sample"
-            android:textSize="20sp"
-            android:layout_marginBottom="8dp"
-            />
-
-        <TextView
-            android:id="@+id/actBranchTvAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/act_branch_business_address_sample"
-            android:textSize="20sp"
+            android:gravity="center"
+            android:text="@string/act_branch_business_name_sample"
+            android:textSize="38sp"
+            android:textStyle="bold"
             android:maxLines="2"
-            app:drawableStartCompat="@drawable/location_icon_outline"
-            android:drawablePadding="4dp"
-            android:layout_marginBottom="8dp"
             />
 
-        <View
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider"
-            android:layout_marginVertical="8dp"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/act_branch_employees_subtitle"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/actBranchRvEmployees"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="16dp"
-            />
-
-        <TextView
-            android:id="@+id/actBranchTvEmployeeNotFound"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/act_branch_employee_not_found_txt"
-            android:textStyle="bold"
-            android:textSize="32sp"
-            android:gravity="center"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
+            android:layout_height="match_parent"
             >
-            <android.widget.Button
-                android:id="@+id/actBranchBtnLeaveBranch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:drawableStart="@drawable/cancel_icon_filled"
-                android:drawablePadding="8dp"
-                android:paddingHorizontal="10dp"
-                android:layout_marginEnd="8dp"
-
-                android:backgroundTint="@color/red"
-                style="@style/ImprovedButtonAppearance"
-                android:text="@string/act_branch_btn_leave_txt"
-                android:textColor="@color/white"
-                android:textAllCaps="false"
-                />
-
-            <ProgressBar
-                android:id="@+id/actBranchPbLoading"
-                android:layout_width="wrap_content"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/actBranchFragmentContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
-
-            <android.widget.Button
-                android:id="@+id/actBranchBtnApplyToBusiness"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-
-                style="@style/ImprovedButtonAppearance"
-                android:drawableStart="@drawable/assignment_add_icon_white"
-                android:drawablePadding="8dp"
-                android:paddingHorizontal="10dp"
-                android:text="@string/row_branch_btn_apply_txt"
-                android:layout_gravity="end"
-                />
-        </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

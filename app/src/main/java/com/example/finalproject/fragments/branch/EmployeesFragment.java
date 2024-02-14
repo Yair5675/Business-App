@@ -26,6 +26,7 @@ import com.example.finalproject.util.EmployeeActions;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.util.Calendar;
@@ -37,9 +38,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
 
     // The current branch that is being displayed:
     private final Branch currentBranch;
-
-    // The text view displaying the branch's name:
-    private TextView tvCompanyName;
 
     // The text view that tells the user if the branch is currently opened or closed:
     private TextView tvCurrentOpenness;
@@ -75,6 +73,9 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     // Reference to cloud functions:
     private final CloudFunctionsHandler functionsHandler;
 
+    // The listener for the employee's data:
+    private ListenerRegistration employeeListener;
+
     public EmployeesFragment(User currentUser, Branch currentBranch) {
         this.currentUser = currentUser;
         this.currentBranch = currentBranch;
@@ -108,10 +109,46 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Set initial employee status to "employed":
         this.setEmployeeStatus(EmployeeStatus.UNEMPLOYED);
 
-        // Activate the listener to check if the user is a manager in this branch:
-        this.listenToEmployeeStatus();
-
         return parent;
+    }
+
+    private void initListener() {
+        // Add the listener:
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        this.employeeListener = db
+                .collection("branches")
+                .document(this.currentBranch.getBranchId())
+                .collection("employees")
+                .document(this.currentUser.getUid())
+                // Add a snapshot listener:
+                .addSnapshotListener((value, error) -> {
+                    // Check the error:
+                    if (error != null) {
+                        Log.e(TAG, "Listen failed", error);
+                        return;
+                    }
+
+                    // Check if the user isn't employed at the branch:
+                    EmployeeStatus status;
+                    if (value == null || !value.exists())
+                        status = EmployeeStatus.UNEMPLOYED;
+
+                    else {
+                        // Convert to employee:
+                        final Employee employee = value.toObject(Employee.class);
+
+                        // Check if the employee is a manager:
+                        if (employee == null)
+                            status = EmployeeStatus.UNEMPLOYED;
+                        else if (employee.isManager())
+                            status = EmployeeStatus.MANAGER;
+                        else
+                            status = EmployeeStatus.EMPLOYED;
+                    }
+
+                    // Change the status for the activity:
+                    this.setEmployeeStatus(status);
+                });
     }
 
     private enum EmployeeStatus {
@@ -124,15 +161,14 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     private static final String TAG = "BranchFragmentEmployees";
 
     private void loadViews(View parent) {
-        this.tvCompanyName = parent.findViewById(R.id.actBranchTvCompanyName);
-        this.tvCurrentOpenness = parent.findViewById(R.id.actBranchTvCurrentOpenness);
-        this.tvWorkingHours = parent.findViewById(R.id.actBranchTvWorkingTimes);
-        this.tvAddress = parent.findViewById(R.id.actBranchTvAddress);
-        this.rvEmployees = parent.findViewById(R.id.actBranchRvEmployees);
-        this.tvEmployeeNotFound = parent.findViewById(R.id.actBranchTvEmployeeNotFound);
-        this.btnApply = parent.findViewById(R.id.actBranchBtnApplyToBusiness);
-        this.btnLeave = parent.findViewById(R.id.actBranchBtnLeaveBranch);
-        this.pbLoading = parent.findViewById(R.id.actBranchPbLoading);
+        this.tvCurrentOpenness = parent.findViewById(R.id.fragBranchEmployeesTvCurrentOpenness);
+        this.tvWorkingHours = parent.findViewById(R.id.fragBranchEmployeesTvWorkingTimes);
+        this.tvAddress = parent.findViewById(R.id.fragBranchEmployeesTvAddress);
+        this.rvEmployees = parent.findViewById(R.id.fragBranchEmployeesRvEmployees);
+        this.tvEmployeeNotFound = parent.findViewById(R.id.fragBranchEmployeesTvEmployeeNotFound);
+        this.btnApply = parent.findViewById(R.id.fragBranchEmployeesBtnApplyToBusiness);
+        this.btnLeave = parent.findViewById(R.id.fragBranchEmployeesBtnLeaveBranch);
+        this.pbLoading = parent.findViewById(R.id.fragBranchEmployeesPbLoading);
         this.pbLoading.setVisibility(View.GONE);
     }
 
@@ -183,45 +219,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         );
     }
 
-    private void listenToEmployeeStatus() {
-        // Get a reference to the database:
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db
-                .collection("branches")
-                .document(this.currentBranch.getBranchId())
-                .collection("employees")
-                .document(this.currentUser.getUid())
-                // Add a snapshot listener:
-                .addSnapshotListener(requireActivity(), (value, error) -> {
-                    // Check the error:
-                    if (error != null) {
-                        Log.e(TAG, "Listen failed", error);
-                        return;
-                    }
-
-                    // Check if the user isn't employed at the branch:
-                    EmployeeStatus status;
-                    if (value == null || !value.exists())
-                        status = EmployeeStatus.UNEMPLOYED;
-
-                    else {
-                        // Convert to employee:
-                        final Employee employee = value.toObject(Employee.class);
-
-                        // Check if the employee is a manager:
-                        if (employee == null)
-                            status = EmployeeStatus.UNEMPLOYED;
-                        else if (employee.isManager())
-                            status = EmployeeStatus.MANAGER;
-                        else
-                            status = EmployeeStatus.EMPLOYED;
-                    }
-
-                    // Change the status for the activity:
-                    this.setEmployeeStatus(status);
-                });
-    }
-
     private void setEmployeeStatus(EmployeeStatus status) {
         // Save the status:
         this.employeeStatus = status;
@@ -270,9 +267,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     }
 
     private void loadInfoFromBranch() {
-        // Set the company name:
-        this.tvCompanyName.setText(this.currentBranch.getCompanyName());
-
         // Set the current openness:
         if (isBranchOpen()) {
             this.tvCurrentOpenness.setText(R.string.act_branch_opened_msg);
@@ -414,5 +408,24 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
                     // Alert the user:
                     Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Initialize the listener:
+        this.initListener();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Unbind the listener:
+        if (this.employeeListener != null) {
+            this.employeeListener.remove();
+            this.employeeListener = null;
+        }
     }
 }
