@@ -337,15 +337,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         pbLoading.setVisibility(View.VISIBLE);
         btnLeave.setVisibility(View.GONE);
 
-        // Make sure this isn't the current user:
-        if (employee.getUid().equals(currentUser.getUid())) {
-            Toast.makeText(requireContext(), "You can't demote yourself", Toast.LENGTH_SHORT).show();
-            // Show the "Leave branch" button and hide the progress bar:
-            pbLoading.setVisibility(View.GONE);
-            btnLeave.setVisibility(View.VISIBLE);
-            return;
-        }
-
         // Call the cloud function:
         this.functionsHandler.setEmployeeStatus(
                 employee.getUid(),
@@ -377,15 +368,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Show the progress bar and hide the "Leave branch":
         pbLoading.setVisibility(View.VISIBLE);
         btnLeave.setVisibility(View.GONE);
-
-        // Make sure this isn't the current user:
-        if (employee.getUid().equals(currentUser.getUid())) {
-            Toast.makeText(requireContext(), "You can't fire yourself", Toast.LENGTH_SHORT).show();
-            // Show the "Leave branch" button and hide the progress bar:
-            pbLoading.setVisibility(View.GONE);
-            btnLeave.setVisibility(View.VISIBLE);
-            return;
-        }
 
         // Fire the employee:
         this.functionsHandler.fireUserFromBranch(
