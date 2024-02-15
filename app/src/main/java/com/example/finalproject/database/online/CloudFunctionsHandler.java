@@ -83,7 +83,6 @@ public class CloudFunctionsHandler {
     public void resolveApplication(
             EmployeeActionNotification notification,
             Branch branch,
-            String uid,
             boolean accepted,
             boolean isManager,
             Runnable onSuccessListener,
@@ -92,7 +91,7 @@ public class CloudFunctionsHandler {
         // Get the user from the database:
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
-                .document(uid)
+                .document(notification.getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     final User user = documentSnapshot.toObject(User.class);
@@ -114,6 +113,8 @@ public class CloudFunctionsHandler {
                                 .addOnSuccessListener(_r -> onSuccessListener.run())
                                 .addOnFailureListener(onFailureListener);
                     }
+
+                    // TODO: Add implementation for rejecting a user application
                 })
                 .addOnFailureListener(onFailureListener);
     }
