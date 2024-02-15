@@ -5,6 +5,9 @@ import com.google.firebase.firestore.ServerTimestamp;
 import java.util.Date;
 
 public abstract class Notification {
+    // The ID of the notification:
+    private String notificationId;
+
     // Description for the notification:
     private String description;
 
@@ -48,5 +51,13 @@ public abstract class Notification {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(String notificationId) {
+        this.notificationId = notificationId;
     }
 }
