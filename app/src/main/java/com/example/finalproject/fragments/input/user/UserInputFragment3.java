@@ -192,8 +192,10 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
             this.bitmapPhoto = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), this.uriPhoto);
 
             // Compare it to the original image (in a thread for performance issues):
-            Thread thread = new Thread(() -> this.isImageChanged = this.orgPhoto.sameAs(this.bitmapPhoto));
-            thread.start();
+            if (this.orgPhoto != null) {
+                Thread thread = new Thread(() -> this.isImageChanged = this.orgPhoto.sameAs(this.bitmapPhoto));
+                thread.start();
+            }
 
             return true;
         } catch (IOException e) {

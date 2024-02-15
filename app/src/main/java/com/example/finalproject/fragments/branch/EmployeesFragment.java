@@ -22,12 +22,15 @@ import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.database.online.collections.notifications.EmployeeActionNotification;
 import com.example.finalproject.util.EmployeeActions;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -98,6 +101,7 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         this.rvEmployees.setLayoutManager(new WrapperLinearLayoutManager(requireContext()));
 
         // Load onClickListeners:
+        this.btnApply.setOnClickListener(_v -> this.applyToBranch());
         this.btnLeave.setOnClickListener(_v -> this.leaveBranch());
 
         // Load the info from the branch:
@@ -110,6 +114,47 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         this.setEmployeeStatus(EmployeeStatus.UNEMPLOYED);
 
         return parent;
+    }
+
+    private void applyToBranch() {
+        // Hide the apply button and show the progress bar:
+        this.pbLoading.setVisibility(View.VISIBLE);
+        this.btnApply.setVisibility(View.GONE);
+
+        // Get a reference to the database:
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Create a new notification function:
+        EmployeeActionNotification notification = EmployeeActionNotification.appliedNotification(
+                this.currentUser.getUid(), this.currentUser.getFullName(),
+                this.currentBranch.getBranchId(), this.currentBranch.getCompanyName()
+        );
+
+        // Create an empty notification document:
+        DocumentReference notificationRef = db.collection("notifications").document();
+
+        // Set its ID in the notification object:
+        notification.setNotificationId(notificationRef.getId());
+
+        // Set the notification object in the document:
+        notificationRef.set(notification, SetOptions.merge())
+                .addOnCompleteListener(task -> {
+                    // Show the apply button again and hide the progress bar:
+                    this.btnApply.setVisibility(View.VISIBLE);
+                    this.pbLoading.setVisibility(View.GONE);
+
+                    if (task.isSuccessful()) {
+                        // If the task is successful, alert the user:
+                        Toast.makeText(requireContext(), "Successfully applied to the branch!", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        // Log the error:
+                        Log.e(TAG, "Failed to apply to branch", task.getException());
+
+                        // Alert the user:
+                        Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void initListener() {
