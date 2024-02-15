@@ -1,6 +1,10 @@
 package com.example.finalproject.database.online;
 
+import com.example.finalproject.database.online.collections.Branch;
+import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.database.online.collections.notifications.EmployeeActionNotification;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.functions.FirebaseFunctions;
 
 import java.util.HashMap;
@@ -73,6 +77,44 @@ public class CloudFunctionsHandler {
                 .call(data)
                 // The function shouldn't return anything if it succeeds:
                 .addOnSuccessListener(_r -> onSuccessListener.run())
+                .addOnFailureListener(onFailureListener);
+    }
+
+    public void resolveApplication(
+            EmployeeActionNotification notification,
+            Branch branch,
+            String uid,
+            boolean accepted,
+            boolean isManager,
+            Runnable onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        // Get the user from the database:
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    final User user = documentSnapshot.toObject(User.class);
+                    if (user == null) {
+                        onFailureListener.onFailure(new Exception("Couldn't load user"));
+                        return;
+                    }
+
+                    if (accepted) {
+                        final Map<String, Object> data = new HashMap<>();
+                        data.put("notification", notification.jsonifyNotification());
+                        data.put("user", user.jsonifyUser());
+                        data.put("branch", branch.jsonifyBranch());
+                        data.put("manager", isManager);
+
+                        this.functions
+                                .getHttpsCallable("accept_application")
+                                .call(data)
+                                .addOnSuccessListener(_r -> onSuccessListener.run())
+                                .addOnFailureListener(onFailureListener);
+                    }
+                })
                 .addOnFailureListener(onFailureListener);
     }
 }
