@@ -1,5 +1,7 @@
 package com.example.finalproject.database.online.collections;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -113,4 +115,8 @@ public class Branch implements Serializable {
         this.dailyShiftsNum = dailyShiftsNum;
     }
 
+    public String jsonifyBranch() {
+        final Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 }

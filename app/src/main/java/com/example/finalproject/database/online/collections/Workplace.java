@@ -1,5 +1,7 @@
 package com.example.finalproject.database.online.collections;
 
+import com.google.gson.Gson;
+
 public class Workplace {
     // The branch's ID:
     private String branchId;
@@ -87,5 +89,10 @@ public class Workplace {
 
         // Return the workplace object:
         return workplace;
+    }
+
+    public String jsonifyWorkplace() {
+        final Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

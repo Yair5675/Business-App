@@ -3,6 +3,7 @@ package com.example.finalproject.database.online.collections;
 import androidx.annotation.NonNull;
 
 import com.example.finalproject.BuildConfig;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -171,6 +172,11 @@ public class User implements Serializable {
     public User setImagePath(String imagePath) {
         this.imagePath = imagePath;
         return this;
+    }
+
+    public String jsonifyUser() {
+        final Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
     public static int getMinAge() {

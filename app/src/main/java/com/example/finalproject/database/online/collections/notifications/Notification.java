@@ -1,6 +1,7 @@
 package com.example.finalproject.database.online.collections.notifications;
 
 import com.google.firebase.firestore.ServerTimestamp;
+import com.google.gson.Gson;
 
 import java.util.Date;
 
@@ -59,5 +60,10 @@ public abstract class Notification {
 
     public void setNotificationId(String notificationId) {
         this.notificationId = notificationId;
+    }
+
+    public String jsonifyNotification() {
+        final Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

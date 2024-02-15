@@ -1,5 +1,7 @@
 package com.example.finalproject.database.online.collections;
 
+import com.google.gson.Gson;
+
 public class Employee {
     // The user's ID:
     private String uid;
@@ -98,5 +100,10 @@ public class Employee {
 
         // Return it:
         return employee;
+    }
+
+    public String jsonifyEmployee() {
+        final Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }
