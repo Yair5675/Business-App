@@ -15,12 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.StorageUtil;
+import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.notifications.EmployeeActionNotification;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotification, OnlineApplicationsAdapter.ApplicationVH> implements View.OnClickListener {
+    // The current branch that the applications are referring to:
+    private final Branch currentBranch;
+
     // A reference to firestore database:
     private final FirebaseFirestore dbRef;
 
@@ -28,10 +32,11 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotif
     private static final String TAG = "OnlineApplicationsAdapter";
 
     public OnlineApplicationsAdapter(
-            Context context, Runnable onEmptyCallback, Runnable onNotEmptyCallback,
+            Context context, Branch currentBranch, Runnable onEmptyCallback, Runnable onNotEmptyCallback,
             @NonNull FirestoreRecyclerOptions<EmployeeActionNotification> options
     ) {
         super(context, onEmptyCallback, onNotEmptyCallback, options);
+        this.currentBranch = currentBranch;
         this.dbRef = FirebaseFirestore.getInstance();
     }
 
