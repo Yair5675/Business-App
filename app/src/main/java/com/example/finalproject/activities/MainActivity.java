@@ -3,8 +3,6 @@ package com.example.finalproject.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.Dialog;
@@ -20,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.LoginDialog;
+import com.example.finalproject.custom_views.adapters.ScreenSlideAdapter;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
@@ -140,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initPagerAdapter() {
         // Initialize the adapter and prevent the user from swiping at first:
-        ScreenSlideAdapter adapter = new ScreenSlideAdapter(this);
+        ScreenSlideAdapter adapter = new ScreenSlideAdapter(this, this.getFragments());
         this.pager.setAdapter(adapter);
         this.pager.setUserInputEnabled(false);
         this.pager.setCurrentItem(getPersonalFragmentIndex());
@@ -262,26 +261,5 @@ public class MainActivity extends AppCompatActivity {
 
         // Show the dialog:
         dialog.show();
-    }
-
-    private class ScreenSlideAdapter extends FragmentStateAdapter {
-        // The fragments inside the main activity:
-        private final Fragment[] fragments;
-
-        public ScreenSlideAdapter(@NonNull FragmentActivity fragmentActivity) {
-            super(fragmentActivity);
-            this.fragments = getFragments();
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            return this.fragments[position];
-        }
-
-        @Override
-        public int getItemCount() {
-            return this.fragments.length;
-        }
     }
 }
