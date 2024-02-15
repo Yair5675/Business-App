@@ -113,8 +113,16 @@ public class CloudFunctionsHandler {
                                 .addOnSuccessListener(_r -> onSuccessListener.run())
                                 .addOnFailureListener(onFailureListener);
                     }
+                    else {
+                        // If they are not accepted, just delete the notification from the database:
+                        db
+                                .collection("notifications")
+                                .document(notification.getUid())
+                                .delete()
+                                .addOnSuccessListener(_r -> onSuccessListener.run())
+                                .addOnFailureListener(onFailureListener);
+                    }
 
-                    // TODO: Add implementation for rejecting a user application
                 })
                 .addOnFailureListener(onFailureListener);
     }
