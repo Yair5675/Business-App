@@ -9,11 +9,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.User;
@@ -21,12 +23,17 @@ import com.example.finalproject.database.online.collections.notifications.Employ
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotification, OnlineApplicationsAdapter.ApplicationVH> implements View.OnClickListener {
+import java.util.Locale;
+
+public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotification, OnlineApplicationsAdapter.ApplicationVH> {
     // The current branch that the applications are referring to:
     private final Branch currentBranch;
 
     // A reference to firestore database:
     private final FirebaseFirestore dbRef;
+
+    // A reference to the cloud functions handler:
+    private final CloudFunctionsHandler functionsHandler;
 
     // Tag for debugging purposes:
     private static final String TAG = "OnlineApplicationsAdapter";
@@ -37,6 +44,7 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotif
     ) {
         super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.currentBranch = currentBranch;
+        this.functionsHandler = CloudFunctionsHandler.getInstance();
         this.dbRef = FirebaseFirestore.getInstance();
     }
 
@@ -56,9 +64,45 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotif
         // Set the user's image:
         this.setUserImgOnHolder(holder, notification.getUid());
 
-        // Set onClickListeners for the accept and reject buttons:
-        holder.btnAccept.setOnClickListener(this);
-        holder.btnReject.setOnClickListener(this);
+        // Resolve the applications when the buttons are clicked:
+        holder.btnAccept.setOnClickListener(_v -> this.resolveApplication(holder, notification, true));
+        holder.btnReject.setOnClickListener(_v -> this.resolveApplication(holder, notification, false));
+    }
+
+    private void resolveApplication(ApplicationVH holder, EmployeeActionNotification notification, boolean accepted) {
+        // Hide the two buttons:
+        holder.btnAccept.setVisibility(View.GONE);
+        holder.btnReject.setVisibility(View.GONE);
+
+        // Show the progress bar:
+        holder.pbLoading.setVisibility(View.VISIBLE);
+
+        // Call the cloud function:
+        this.functionsHandler.resolveApplication(
+                notification, this.currentBranch, accepted, false,
+                () -> {
+                    // Alert the user:
+                    String msg = String.format(
+                            Locale.getDefault(),
+                            "%s was successfully %s",
+                            notification.getUserName(),
+                            accepted ? "accepted" : "rejected"
+                    );
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                },
+                e -> {
+                    // Show the buttons:
+                    holder.btnAccept.setVisibility(View.VISIBLE);
+                    holder.btnReject.setVisibility(View.VISIBLE);
+
+                    // Hide the progress bar:
+                    holder.pbLoading.setVisibility(View.GONE);
+
+                    // Log the error and alert the user:
+                    Log.e(TAG, "Couldn't resolve application", e);
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+        );
     }
 
     private void setUserImgOnHolder(ApplicationVH holder, String uid) {
@@ -87,11 +131,6 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotif
                     Log.e(TAG, "Failed to get user", e);
                     holder.pbLoading.setVisibility(View.GONE);
                 });
-    }
-
-    @Override
-    public void onClick(View view) {
-        // TODO: Call the appropriate cloud function for each type of notification
     }
 
     public static class ApplicationVH extends RecyclerView.ViewHolder {

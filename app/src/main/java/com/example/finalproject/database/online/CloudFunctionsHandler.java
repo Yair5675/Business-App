@@ -117,7 +117,7 @@ public class CloudFunctionsHandler {
                         // If they are not accepted, just delete the notification from the database:
                         db
                                 .collection("notifications")
-                                .document(notification.getUid())
+                                .document(notification.getNotificationId())
                                 .delete()
                                 .addOnSuccessListener(_r -> onSuccessListener.run())
                                 .addOnFailureListener(onFailureListener);
