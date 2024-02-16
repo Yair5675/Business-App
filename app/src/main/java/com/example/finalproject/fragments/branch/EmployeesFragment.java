@@ -24,6 +24,7 @@ import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.EmployeeActions;
+import com.example.finalproject.util.EmployeeStatus;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentReference;
@@ -194,12 +195,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
                     // Change the status for the activity:
                     this.setEmployeeStatus(status);
                 });
-    }
-
-    private enum EmployeeStatus {
-        MANAGER,
-        EMPLOYED,
-        UNEMPLOYED
     }
 
     // Tag for debugging purposes:
