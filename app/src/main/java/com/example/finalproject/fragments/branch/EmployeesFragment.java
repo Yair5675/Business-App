@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.adapters.OnlineEmployeeAdapter;
 import com.example.finalproject.database.online.CloudFunctionsHandler;
+import com.example.finalproject.database.online.collections.Application;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
-import com.example.finalproject.database.online.collections.notifications.EmployeeActionNotification;
 import com.example.finalproject.util.EmployeeActions;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -124,24 +124,20 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Get a reference to the database:
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Create a new notification function:
-        EmployeeActionNotification notification = EmployeeActionNotification.appliedNotification(
-                this.currentUser.getUid(), this.currentUser.getFullName(),
-                this.currentBranch.getBranchId(), this.currentBranch.getCompanyName()
+        // Create a new application object:
+        final Application application = new Application(
+                this.currentUser.getUid(), this.currentUser.getFullName(), this.currentUser.getImagePath()
         );
 
-        // Create an empty notification document:
+        // Create an empty notification document with its ID equal to the current user's ID:
         DocumentReference notificationRef = db
                 .collection("branches")
                 .document(this.currentBranch.getBranchId())
                 .collection("applications")
-                .document();
+                .document(this.currentUser.getUid());
 
-        // Set its ID in the notification object:
-        notification.setNotificationId(notificationRef.getId());
-
-        // Set the notification object in the document:
-        notificationRef.set(notification, SetOptions.merge())
+        // Set the application object in the document:
+        notificationRef.set(application, SetOptions.merge())
                 .addOnCompleteListener(task -> {
                     // Show the apply button again and hide the progress bar:
                     this.btnApply.setVisibility(View.VISIBLE);
