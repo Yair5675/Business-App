@@ -131,7 +131,11 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         );
 
         // Create an empty notification document:
-        DocumentReference notificationRef = db.collection("notifications").document();
+        DocumentReference notificationRef = db
+                .collection("branches")
+                .document(this.currentBranch.getBranchId())
+                .collection("applications")
+                .document();
 
         // Set its ID in the notification object:
         notification.setNotificationId(notificationRef.getId());

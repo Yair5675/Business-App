@@ -62,8 +62,9 @@ public class ApplicationsFragment extends Fragment {
 
         // Create the query:
         final Query query = dbRef
-                .collection("notifications")
-                .whereEqualTo("actionType", "APPLIED");
+                .collection("branches")
+                .document(this.branch.getBranchId())
+                .collection("applications");
 
         // Create the recyclerView's options:
         FirestoreRecyclerOptions<EmployeeActionNotification> options = new FirestoreRecyclerOptions.Builder<EmployeeActionNotification>()
