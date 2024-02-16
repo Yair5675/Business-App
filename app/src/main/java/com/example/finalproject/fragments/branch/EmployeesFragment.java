@@ -236,7 +236,8 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         final Query query = dbRef
                 .collection("branches")
                 .document(this.currentBranch.getBranchId())
-                .collection("employees");
+                .collection("employees")
+                .orderBy("manager", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Employee> options = new FirestoreRecyclerOptions.Builder<Employee>()
                 .setLifecycleOwner(this)
                 .setQuery(query, Employee.class)
