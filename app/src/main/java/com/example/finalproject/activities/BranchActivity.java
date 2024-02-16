@@ -1,13 +1,17 @@
 package com.example.finalproject.activities;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
@@ -77,6 +81,35 @@ public class BranchActivity extends AppCompatActivity {
         // Load the back button callback:
         this.loadBackButtonCallback();
 
+        // Set the toolbar:
+        final Toolbar toolbar = findViewById(R.id.actBranchToolbar);
+        this.setSupportActionBar(toolbar);
+
+        // Show the back button on the toolbar:
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
+
+        // Set the title of the toolbar:
+        final TextView tvTitle = findViewById(R.id.actBranchTvToolbarTitle);
+        tvTitle.setText(this.currentBranch.getCompanyName());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Get the id of the item:
+        final int ID = item.getItemId();
+
+        // Configure back navigation with the toolbar:
+        if (ID == android.R.id.home) {
+            final Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+
+        // If it's another item, use super call:
+        return super.onOptionsItemSelected(item);
     }
 
     private void initStatusListener() {
