@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public class OnlineBranchesAdapter extends OnlineAdapter<Branch, OnlineBranchesAdapter.BranchVH> {
     // The connected user:
-    private final User user;
+    private User user;
 
     // The context of the recycler view:
     private final Context context;
@@ -32,6 +32,10 @@ public class OnlineBranchesAdapter extends OnlineAdapter<Branch, OnlineBranchesA
         super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.user = user;
         this.context = context;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

@@ -101,6 +101,8 @@ public class BranchesFragment extends Fragment {
 
     public void setUser(User connectedUser) {
         this.connectedUser = connectedUser;
+        if (this.adapter != null)
+            this.adapter.setUser(connectedUser);
     }
 
 }
