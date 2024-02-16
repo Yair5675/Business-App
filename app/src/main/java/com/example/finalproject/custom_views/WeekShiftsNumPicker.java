@@ -12,6 +12,7 @@ import com.example.finalproject.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class WeekShiftsNumPicker extends LinearLayout {
     public static final String SHIFTS_NUM_KEY = "shiftsNum";
@@ -55,7 +56,7 @@ public class WeekShiftsNumPicker extends LinearLayout {
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public void setShiftsNum(ArrayList<Integer> shiftsNum) {
+    public void setShiftsNum(List<Integer> shiftsNum) {
         if (shiftsNum.size() == this.dayShiftsNumPickers.length) {
             for (int i = 0; i < this.dayShiftsNumPickers.length; i++)
                 this.dayShiftsNumPickers[i].setShiftNum(shiftsNum.get(i));

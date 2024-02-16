@@ -60,7 +60,7 @@ public class BusinessRegistrationForm extends InputForm {
                 res.getString(R.string.act_business_input_title),
 
                 // Set the input fragments:
-                new BusinessInputFragment1(),
+                new BusinessInputFragment1(null),
                 new BusinessInputFragment2(connectedUser.getCountry())
         );
 

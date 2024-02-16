@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.WeekShiftsNumPicker;
+import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.fragments.input.InputFragment;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.ImprovedTextWatcher;
@@ -28,6 +29,9 @@ import java.util.Locale;
 import java.util.function.Function;
 
 public class BusinessInputFragment1 extends InputFragment {
+    // A reference to the branch whose details are being changed:
+    private final Branch branch;
+
     // The views responsible for the company name:
     private TextInputLayout tilCompanyName;
     private TextInputEditText etCompanyName;
@@ -60,6 +64,10 @@ public class BusinessInputFragment1 extends InputFragment {
     public static final String CLOSING_TIME_MINUTES_KEY = "closingTimeMinutes";
     public static final String WEEKLY_SHIFTS_NUM_KEY = "weeklyShiftsNum";
 
+    public BusinessInputFragment1(@Nullable Branch branch) {
+        this.branch = branch;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -85,7 +93,35 @@ public class BusinessInputFragment1 extends InputFragment {
         // Initialize the text watchers:
         this.initTextWatchers();
 
+        // Try to load previous info:
+        this.loadInfoFromBranch();
+
         return parent;
+    }
+
+    private void loadInfoFromBranch() {
+        // Check if the saved branch is null:
+        if (this.branch == null)
+            return;
+
+        // Set company name:
+        this.etCompanyName.setText(this.branch.getCompanyName());
+
+        // Set branch password:
+        this.etBranchPassword.setText(this.branch.getPassword());
+
+        // Set opening and closing time:
+        this.setOpeningTime(
+                this.branch.getOpeningTime() / 60,
+                this.branch.getOpeningTime() % 60
+        );
+        this.setClosingTime(
+                this.branch.getClosingTime() / 60,
+                this.branch.getClosingTime() % 60
+        );
+
+        // Set shifts num:
+        this.shiftsPicker.setShiftsNum(this.branch.getDailyShiftsNum());
     }
 
     private void initTimePickers() {
