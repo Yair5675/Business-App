@@ -238,8 +238,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         functionsHandler.fireUserFromBranch(
                 this.currentUser.getUid(),
                 this.currentBranch.getBranchId(),
-                this.currentUser.getFullName(),
-                this.currentBranch.getCompanyName(),
                 () -> {
                     // Make the progress bar disappear:
                     this.pbLoading.setVisibility(View.GONE);
@@ -414,8 +412,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         this.functionsHandler.fireUserFromBranch(
                 employee.getUid(),
                 currentBranch.getBranchId(),
-                employee.getFullName(),
-                currentBranch.getCompanyName(),
                 () -> {
                     // Show the "Leave branch" button and hide the progress bar:
                     pbLoading.setVisibility(View.GONE);
