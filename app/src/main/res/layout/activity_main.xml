@@ -9,6 +9,14 @@
     android:gravity="center_horizontal"
     tools:context=".activities.MainActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/actMainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/app_name"
+        android:background="@color/toolbar_color"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

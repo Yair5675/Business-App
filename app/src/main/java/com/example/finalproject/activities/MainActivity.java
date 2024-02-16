@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
                 this, getResources(),
                 this::initWithUser
         );
+
+        // Set the toolbar:
+        this.setSupportActionBar(findViewById(R.id.actMainToolbar));
     }
 
     private void initWithUser(User user) {
