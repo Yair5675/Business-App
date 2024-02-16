@@ -162,4 +162,10 @@
     <!-- Strings belonging to the application row: -->
     <string name="row_application_reject_button_txt">Reject</string>
     <string name="row_application_accept_button_txt">Accept</string>
+
+
+    <!-- Strings belonging to the branch menu: -->
+    <string name="branch_menu_item_edit">Edit Branch</string>
+    <string name="branch_menu_item_delete">Delete Branch</string>
+    <string name="branch_menu_item_set_shifts">Set Shifts</string>
 </resources>

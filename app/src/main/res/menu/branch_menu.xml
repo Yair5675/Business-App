@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menuBranchItemEdit"
+        android:title="@string/branch_menu_item_edit"
+        android:icon="@drawable/edit_icon_2"
+        app:showAsAction="ifRoom"
+        />
+    <item android:id="@+id/menuBranchItemDelete"
+        android:title="@string/branch_menu_item_delete"
+        android:icon="@drawable/delete_icon"
+        app:showAsAction="ifRoom"
+        />
+    <item android:id="@+id/menuBranchItemSetShifts"
+        android:title="@string/branch_menu_item_set_shifts"
+        app:showAsAction="never"
+        />
+</menu>
