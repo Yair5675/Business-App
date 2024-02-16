@@ -1,5 +1,7 @@
 package com.example.finalproject.fragments.input.business;
 
+import static com.example.finalproject.util.Constants.SIMILAR_BRANCH_FOUND_ERROR;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.Workplace;
 import com.example.finalproject.fragments.input.InputForm;
+import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.Result;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,8 +54,6 @@ public class BusinessRegistrationForm extends InputForm {
     // Tag for debugging purposes:
     private static final String TAG = "BusinessRegistrationForm";
 
-    // Error message in case a similar branch was found:
-    private static final String SIMILAR_BRANCH_FOUND_ERROR = "Similar branch found";
 
     public BusinessRegistrationForm(Resources res, User connectedUser) {
         super(
