@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.StorageUtil;
+import com.example.finalproject.database.online.collections.Application;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.notifications.EmployeeActionNotification;
@@ -25,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Locale;
 
-public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotification, OnlineApplicationsAdapter.ApplicationVH> {
+public class OnlineApplicationsAdapter extends OnlineAdapter<Application, OnlineApplicationsAdapter.ApplicationVH> {
     // The current branch that the applications are referring to:
     private final Branch currentBranch;
 
@@ -40,7 +41,7 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotif
 
     public OnlineApplicationsAdapter(
             Context context, Branch currentBranch, Runnable onEmptyCallback, Runnable onNotEmptyCallback,
-            @NonNull FirestoreRecyclerOptions<EmployeeActionNotification> options
+            @NonNull FirestoreRecyclerOptions<Application> options
     ) {
         super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.currentBranch = currentBranch;
@@ -57,19 +58,19 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotif
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull ApplicationVH holder, int position, @NonNull EmployeeActionNotification notification) {
+    protected void onBindViewHolder(@NonNull ApplicationVH holder, int position, @NonNull Application application) {
         // Set the user's name:
-        holder.tvUserName.setText(notification.getUserName());
+        holder.tvUserName.setText(application.getUserFullName());
 
         // Set the user's image:
-        this.setUserImgOnHolder(holder, notification.getUid());
+        StorageUtil.loadImgFromStorage(this.context, application.getUserImagePath(), holder.userImg, R.drawable.guest);
 
         // Resolve the applications when the buttons are clicked:
-        holder.btnAccept.setOnClickListener(_v -> this.resolveApplication(holder, notification, true));
-        holder.btnReject.setOnClickListener(_v -> this.resolveApplication(holder, notification, false));
+        holder.btnAccept.setOnClickListener(_v -> this.resolveApplication(holder, application, true));
+        holder.btnReject.setOnClickListener(_v -> this.resolveApplication(holder, application, false));
     }
 
-    private void resolveApplication(ApplicationVH holder, EmployeeActionNotification notification, boolean accepted) {
+    private void resolveApplication(ApplicationVH holder, Application application, boolean accepted) {
         // Hide the two buttons:
         holder.btnAccept.setVisibility(View.GONE);
         holder.btnReject.setVisibility(View.GONE);
@@ -77,32 +78,7 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<EmployeeActionNotif
         // Show the progress bar:
         holder.pbLoading.setVisibility(View.VISIBLE);
 
-        // Call the cloud function:
-        this.functionsHandler.resolveApplication(
-                notification, this.currentBranch, accepted, false,
-                () -> {
-                    // Alert the user:
-                    String msg = String.format(
-                            Locale.getDefault(),
-                            "%s was successfully %s",
-                            notification.getUserName(),
-                            accepted ? "accepted" : "rejected"
-                    );
-                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-                },
-                e -> {
-                    // Show the buttons:
-                    holder.btnAccept.setVisibility(View.VISIBLE);
-                    holder.btnReject.setVisibility(View.VISIBLE);
-
-                    // Hide the progress bar:
-                    holder.pbLoading.setVisibility(View.GONE);
-
-                    // Log the error and alert the user:
-                    Log.e(TAG, "Couldn't resolve application", e);
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                }
-        );
+        // TODO: Call the cloud function with the application object:
     }
 
     private void setUserImgOnHolder(ApplicationVH holder, String uid) {

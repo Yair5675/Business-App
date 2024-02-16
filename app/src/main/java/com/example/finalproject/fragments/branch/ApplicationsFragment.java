@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.adapters.OnlineApplicationsAdapter;
+import com.example.finalproject.database.online.collections.Application;
 import com.example.finalproject.database.online.collections.Branch;
-import com.example.finalproject.database.online.collections.notifications.EmployeeActionNotification;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -67,9 +67,9 @@ public class ApplicationsFragment extends Fragment {
                 .collection("applications");
 
         // Create the recyclerView's options:
-        FirestoreRecyclerOptions<EmployeeActionNotification> options = new FirestoreRecyclerOptions.Builder<EmployeeActionNotification>()
+        FirestoreRecyclerOptions<Application> options = new FirestoreRecyclerOptions.Builder<Application>()
                 .setLifecycleOwner(this)
-                .setQuery(query, EmployeeActionNotification.class)
+                .setQuery(query, Application.class)
                 .build();
 
         // Create the adapter:
