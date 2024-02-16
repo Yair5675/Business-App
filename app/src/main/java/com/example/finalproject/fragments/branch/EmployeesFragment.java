@@ -29,7 +29,6 @@ import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.SetOptions;
 
@@ -76,9 +75,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
 
     // Reference to cloud functions:
     private final CloudFunctionsHandler functionsHandler;
-
-    // The listener for the employee's data:
-    private ListenerRegistration employeeListener;
 
     public EmployeesFragment(User currentUser, Branch currentBranch) {
         this.currentUser = currentUser;
@@ -158,45 +154,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
                 });
     }
 
-    private void initListener() {
-        // Add the listener:
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        this.employeeListener = db
-                .collection("branches")
-                .document(this.currentBranch.getBranchId())
-                .collection("employees")
-                .document(this.currentUser.getUid())
-                // Add a snapshot listener:
-                .addSnapshotListener((value, error) -> {
-                    // Check the error:
-                    if (error != null) {
-                        Log.e(TAG, "Listen failed", error);
-                        return;
-                    }
-
-                    // Check if the user isn't employed at the branch:
-                    EmployeeStatus status;
-                    if (value == null || !value.exists())
-                        status = EmployeeStatus.UNEMPLOYED;
-
-                    else {
-                        // Convert to employee:
-                        final Employee employee = value.toObject(Employee.class);
-
-                        // Check if the employee is a manager:
-                        if (employee == null)
-                            status = EmployeeStatus.UNEMPLOYED;
-                        else if (employee.isManager())
-                            status = EmployeeStatus.MANAGER;
-                        else
-                            status = EmployeeStatus.EMPLOYED;
-                    }
-
-                    // Change the status for the activity:
-                    this.setEmployeeStatus(status);
-                });
-    }
-
     // Tag for debugging purposes:
     private static final String TAG = "BranchFragmentEmployees";
 
@@ -257,7 +214,7 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         );
     }
 
-    private void setEmployeeStatus(EmployeeStatus status) {
+    public void setEmployeeStatus(EmployeeStatus status) {
         // Save the status:
         this.employeeStatus = status;
 
@@ -423,24 +380,5 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
                     // Alert the user:
                     Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
                 });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // Initialize the listener:
-        this.initListener();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // Unbind the listener:
-        if (this.employeeListener != null) {
-            this.employeeListener.remove();
-            this.employeeListener = null;
-        }
     }
 }

@@ -7,14 +7,18 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.adapters.ScreenSlideAdapter;
 import com.example.finalproject.database.online.collections.Branch;
+import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.branch.ApplicationsFragment;
 import com.example.finalproject.fragments.branch.EmployeesFragment;
+import com.example.finalproject.util.EmployeeStatus;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
 
@@ -33,6 +37,12 @@ public class BranchActivity extends AppCompatActivity {
 
     // The view pager that allows the user to swipe between fragments:
     private ViewPager2 pager;
+
+    // The user's status in the branch:
+    private EmployeeStatus employeeStatus;
+
+    // Tag for debugging purposes:
+    private static final String TAG = "BranchActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +68,73 @@ public class BranchActivity extends AppCompatActivity {
         this.pager = findViewById(R.id.actBranchPager);
         this.initPagerAdapter();
 
+        // Set the initial employee status to unemployed:
+        this.employeeStatus = EmployeeStatus.UNEMPLOYED;
+
+        // Listen to the current user's status in the current branch:
+        this.initStatusListener();
+
         // Load the back button callback:
         this.loadBackButtonCallback();
 
+    }
+
+    private void initStatusListener() {
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("branches")
+                .document(this.currentBranch.getBranchId())
+                .collection("employees")
+                .document(this.currentUser.getUid())
+                .addSnapshotListener(this, (value, error) -> {
+                    // Check the error:
+                    if (error != null) {
+                        Log.e(TAG, "Listen failed", error);
+                        return;
+                    }
+
+                    // Check if the user isn't employed at the branch:
+                    EmployeeStatus status;
+                    if (value == null || !value.exists())
+                        status = EmployeeStatus.UNEMPLOYED;
+
+                    else {
+                        // Convert to employee:
+                        final Employee employee = value.toObject(Employee.class);
+
+                        // Check if the employee is a manager:
+                        if (employee == null)
+                            status = EmployeeStatus.UNEMPLOYED;
+                        else if (employee.isManager())
+                            status = EmployeeStatus.MANAGER;
+                        else
+                            status = EmployeeStatus.EMPLOYED;
+                    }
+
+                    // Change the status for the activity:
+                    this.setEmployeeStatus(status);
+                });
+    }
+
+    private void setEmployeeStatus(EmployeeStatus status) {
+        // Save the current status:
+        this.employeeStatus = status;
+
+        // Only allow the user to scroll between fragments if they are managers:
+        if (this.employeeStatus != EmployeeStatus.MANAGER) {
+            this.pager.setCurrentItem(0);
+            this.pager.setUserInputEnabled(false);
+        }
+        else
+            this.pager.setUserInputEnabled(true);
+
+        // Set the status in the employees fragment:
+        this.employeesFragment.setEmployeeStatus(status);
     }
 
     private void initPagerAdapter() {
         // Initialize the adapter and prevent the user from swiping at first:
         ScreenSlideAdapter adapter = new ScreenSlideAdapter(this, this.getFragments());
         this.pager.setAdapter(adapter);
-        this.pager.setCurrentItem(0);
     }
 
     private Fragment[] getFragments() {
