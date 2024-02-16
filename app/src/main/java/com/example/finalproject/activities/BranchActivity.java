@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.branch.ApplicationsFragment;
 import com.example.finalproject.fragments.branch.EmployeesFragment;
+import com.example.finalproject.fragments.input.business.BusinessUpdateForm;
 import com.example.finalproject.util.EmployeeStatus;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -96,6 +98,22 @@ public class BranchActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        // Inflate the branch menu XML file:
+        getMenuInflater().inflate(R.menu.branch_menu, menu);
+
+        // Show The items only if the current user is a manager:
+        final boolean isManager = this.employeeStatus == EmployeeStatus.MANAGER;
+        menu.findItem(R.id.menuBranchItemEdit).setVisible(isManager);
+        menu.findItem(R.id.menuBranchItemDelete).setVisible(isManager);
+        menu.findItem(R.id.menuBranchItemSetShifts).setVisible(isManager);
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Get the id of the item:
         final int ID = item.getItemId();
@@ -105,6 +123,18 @@ public class BranchActivity extends AppCompatActivity {
             finish();
             return true;
         }
+        // If the manager wants to update the branch:
+        else if (ID == R.id.menuBranchItemEdit) {
+            // Create the update form and set it in the input activity:
+            BusinessUpdateForm updateForm = new BusinessUpdateForm(this.currentBranch, getResources());
+            InputActivity.CurrentInput.setCurrentInputForm(updateForm);
+
+            // Go to the input activity:
+            Intent intent = new Intent(this, InputActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        // TODO: Implement delete and set shifts items too
 
         // If it's another item, use super call:
         return super.onOptionsItemSelected(item);
