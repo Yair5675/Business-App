@@ -19,19 +19,13 @@ import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.Application;
 import com.example.finalproject.database.online.collections.Branch;
-import com.example.finalproject.database.online.collections.User;
-import com.example.finalproject.database.online.collections.notifications.EmployeeActionNotification;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Locale;
 
 public class OnlineApplicationsAdapter extends OnlineAdapter<Application, OnlineApplicationsAdapter.ApplicationVH> {
     // The current branch that the applications are referring to:
     private final Branch currentBranch;
-
-    // A reference to firestore database:
-    private final FirebaseFirestore dbRef;
 
     // A reference to the cloud functions handler:
     private final CloudFunctionsHandler functionsHandler;
@@ -46,7 +40,6 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
         super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.currentBranch = currentBranch;
         this.functionsHandler = CloudFunctionsHandler.getInstance();
-        this.dbRef = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -78,35 +71,42 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
         // Show the progress bar:
         holder.pbLoading.setVisibility(View.VISIBLE);
 
-        // TODO: Call the cloud function with the application object:
-    }
-
-    private void setUserImgOnHolder(ApplicationVH holder, String uid) {
-        // Show the progress bar until the image is loaded:
-        holder.pbLoading.setVisibility(View.VISIBLE);
-
-        // Get the image with a query:
-        this.dbRef.collection("users")
-                .document(uid)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    // Get the user object:
-                    final User user = documentSnapshot.toObject(User.class);
-
-                    // Set the image in the imageView:
-                    if (user != null)
-                        StorageUtil.loadUserImgFromStorage(this.context, user, holder.userImg, R.drawable.guest);
-                    else
-                        Log.e(TAG, "Failed to convert document to User object");
+        // Call the cloud function to accept or reject the user:
+        this.functionsHandler.resolveApplication(
+                application.getUid(),
+                this.currentBranch,
+                accepted,
+                false, // TODO: Change that later
+                () -> {
+                    // Show the two buttons:
+                    holder.btnAccept.setVisibility(View.VISIBLE);
+                    holder.btnReject.setVisibility(View.VISIBLE);
 
                     // Hide the progress bar:
                     holder.pbLoading.setVisibility(View.GONE);
-                })
-                .addOnFailureListener(e -> {
-                    // Log the error and hide the progress bar:
-                    Log.e(TAG, "Failed to get user", e);
+
+                    // Alert the user:
+                    final String msg = String.format(
+                            Locale.getDefault(),
+                            "%s was successfully %s",
+                            application.getUserFullName(), accepted ? "accepted" : "rejected"
+                    );
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                }, e -> {
+                    // Show the two buttons:
+                    holder.btnAccept.setVisibility(View.VISIBLE);
+                    holder.btnReject.setVisibility(View.VISIBLE);
+
+                    // Hide the progress bar:
                     holder.pbLoading.setVisibility(View.GONE);
-                });
+
+                    // Alert the user:
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+
+                    // Log the error:
+                    Log.e(TAG, "Failed to accept/reject user", e);
+                }
+        );
     }
 
     public static class ApplicationVH extends RecyclerView.ViewHolder {
