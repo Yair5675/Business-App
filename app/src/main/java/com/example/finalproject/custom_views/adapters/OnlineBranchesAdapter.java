@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -74,9 +73,6 @@ public class OnlineBranchesAdapter extends OnlineAdapter<Branch, OnlineBranchesA
         // The text views in the row:
         private final TextView tvName, tvOpeningTime, tvClosingTime, tvAddress;
 
-        // The apply to business button:
-        private final Button btnApplyToBusiness;
-
         public BranchVH(@NonNull View itemView) {
             super(itemView);
 
@@ -85,7 +81,6 @@ public class OnlineBranchesAdapter extends OnlineAdapter<Branch, OnlineBranchesA
             this.tvOpeningTime = itemView.findViewById(R.id.rowBranchTvOpeningTime);
             this.tvClosingTime = itemView.findViewById(R.id.rowBranchTvClosingTime);
             this.tvAddress = itemView.findViewById(R.id.rowBranchTvAddress);
-            this.btnApplyToBusiness = itemView.findViewById(R.id.rowBranchBtnApplyToBusiness);
 
             // Go to the branch activity if the user clicks on the see more button:
             itemView.findViewById(R.id.rowBranchBtnSeeMore).setOnClickListener(_v -> {
