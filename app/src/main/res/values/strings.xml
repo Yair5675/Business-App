@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Final Project</string>
+    <string name="app_name">Shift-Flow</string>
 
     <!-- Strings belonging to the main activity: -->
     <string name="act_main_user_greeting_default_txt"><b>Hello guest!</b></string>
