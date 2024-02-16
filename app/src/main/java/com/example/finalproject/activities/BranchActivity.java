@@ -102,8 +102,6 @@ public class BranchActivity extends AppCompatActivity {
 
         // Configure back navigation with the toolbar:
         if (ID == android.R.id.home) {
-            final Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
             finish();
             return true;
         }
@@ -205,9 +203,6 @@ public class BranchActivity extends AppCompatActivity {
         final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // Go to the main activity:
-                final Intent intent = new Intent(BranchActivity.this, MainActivity.class);
-                startActivity(intent);
                 finish();
             }
         };
