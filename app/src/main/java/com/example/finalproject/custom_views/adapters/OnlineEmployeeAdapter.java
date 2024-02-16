@@ -2,6 +2,8 @@ package com.example.finalproject.custom_views.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,9 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,6 +59,15 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
 
     @Override
     protected void onBindViewHolder(@NonNull EmployeeVH holder, int position, @NonNull Employee employee) {
+        // Change the background color if it's the current user:
+        @ColorInt int color;
+        final Resources res = this.context.getResources();
+        if (employee.getUid().equals(this.currentUserId))
+            color = res.getColor(R.color.row_highlight, this.context.getTheme());
+        else
+            color = Color.WHITE;
+        holder.rowLayout.setBackgroundColor(color);
+
         // Set the employee's image:
         StorageUtil.loadImgFromStorage(
                 this.context, employee.getImagePath(), holder.imgEmployee, R.drawable.guest
@@ -85,6 +98,9 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
     }
 
     public class EmployeeVH extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener {
+        // The layout of the row:
+        private final LinearLayout rowLayout;
+
         // The image view of the user:
         private final ImageView imgEmployee;
 
@@ -104,6 +120,7 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
             super(itemView);
 
             // Load the views:
+            this.rowLayout = itemView.findViewById(R.id.rowEmployeeMainLayout);
             this.imgEmployee = itemView.findViewById(R.id.rowEmployeeImage);
             this.tvFullName = itemView.findViewById(R.id.rowEmployeeTvFullName);
             this.imgCrown = itemView.findViewById(R.id.rowEmployeeImgCrown);
