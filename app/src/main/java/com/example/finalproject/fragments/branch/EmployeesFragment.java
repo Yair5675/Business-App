@@ -355,8 +355,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
                 employee.getUid(),
                 currentBranch.getBranchId(),
                 true,
-                employee.getFullName(),
-                currentBranch.getCompanyName(),
                 () -> {
                     // Show the "Leave branch" button and hide the progress bar:
                     pbLoading.setVisibility(View.GONE);
@@ -387,8 +385,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
                 employee.getUid(),
                 currentBranch.getBranchId(),
                 false,
-                employee.getFullName(),
-                currentBranch.getCompanyName(),
                 () -> {
                     // Show the "Leave branch" button and hide the progress bar:
                     pbLoading.setVisibility(View.GONE);
