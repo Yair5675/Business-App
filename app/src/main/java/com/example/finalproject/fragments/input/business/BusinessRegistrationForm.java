@@ -61,7 +61,7 @@ public class BusinessRegistrationForm extends InputForm {
 
                 // Set the input fragments:
                 new BusinessInputFragment1(null),
-                new BusinessInputFragment2(connectedUser.getCountry())
+                new BusinessInputFragment2(connectedUser.getCountry(), null)
         );
 
         // Save the connected user:

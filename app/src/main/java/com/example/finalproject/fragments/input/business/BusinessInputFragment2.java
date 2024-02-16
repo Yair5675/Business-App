@@ -12,10 +12,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finalproject.R;
+import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.fragments.MapFragment;
 import com.example.finalproject.fragments.input.InputFragment;
 
 public class BusinessInputFragment2 extends InputFragment {
+    // A reference to the branch whose details are being changed:
+    private final Branch branch;
+
     // The country of the branch:
     private final String country;
 
@@ -27,8 +31,9 @@ public class BusinessInputFragment2 extends InputFragment {
     public static final String SELECTED_CITY_KEY = "selectedCity";
     public static final String SELECTED_ADDRESS_KEY = "selectedAddress";
 
-    public BusinessInputFragment2(String country) {
+    public BusinessInputFragment2(String country, @Nullable Branch branch) {
         this.country = country;
+        this.branch = branch;
     }
 
     @Nullable
@@ -49,9 +54,18 @@ public class BusinessInputFragment2 extends InputFragment {
         transaction.runOnCommit(() -> {
             // Restrict the map borders based on the country of the connected user:
             this.mapFragment.restrictToCountry(this.country);
+
+            // Try to load info from the given branch:
+            this.loadInfoFromBranch();
         });
 
         return parent;
+    }
+
+    private void loadInfoFromBranch() {
+        // Change the location in the mapFragment to the branch's location:
+        if (this.branch != null)
+            this.mapFragment.loadFromLocation(this.branch.getFullAddress());
     }
 
     @Override
