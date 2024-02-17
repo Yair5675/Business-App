@@ -208,7 +208,7 @@ public class BranchActivity extends AppCompatActivity {
             // Show the delete dialog:
             this.deleteBranchDialog.show();
         }
-        // TODO: Implement delete and set shifts items too
+        // TODO: Implement the set shifts item too
 
         // If it's another item, use super call:
         return super.onOptionsItemSelected(item);
