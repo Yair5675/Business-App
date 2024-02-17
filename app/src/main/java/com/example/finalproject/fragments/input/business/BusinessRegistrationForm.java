@@ -3,24 +3,24 @@ package com.example.finalproject.fragments.input.business;
 import static com.example.finalproject.util.Constants.SIMILAR_BRANCH_FOUND_ERROR;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.example.finalproject.activities.BranchActivity;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.Workplace;
 import com.example.finalproject.fragments.input.InputForm;
-import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.Result;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.List;
@@ -80,8 +80,10 @@ public class BusinessRegistrationForm extends InputForm {
         // Create the branch object:
         this.loadBranchObject();
 
-        // Check that a similar company doesn't already have a branch at that location:
+        // Get the onFailureListener:
         final OnFailureListener onFailureListener = getOnFailureListener(context, onCompleteListener);
+
+        // Check that a similar company doesn't already have a branch at that location:
         this.validateSimilarBranch(unused -> {
             // Create a new batch write:
             FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
@@ -90,13 +92,14 @@ public class BusinessRegistrationForm extends InputForm {
             // Add the new branch and set the ID to the object:
             final DocumentReference branchRef = dbRef.collection("branches").document();
             this.branch.setBranchId(branchRef.getId());
-            batch.set(branchRef, this.branch, SetOptions.merge());
+            batch.set(branchRef, this.branch);
 
             // Add the connected user to the list of employees as a manager:
             final Employee employee = Employee.fromUser(this.connectedUser, true);
-            final DocumentReference employeeRef = branchRef.collection("employees")
+            final DocumentReference employeeRef = branchRef
+                    .collection("employees")
                     .document(employee.getUid());
-            batch.set(employeeRef, employee, SetOptions.merge());
+            batch.set(employeeRef, employee);
 
             // Add the new branch to the list of workplaces in the connected user's document:
             final Workplace workplace = Workplace.fromBranch(this.branch, true);
@@ -104,12 +107,21 @@ public class BusinessRegistrationForm extends InputForm {
                     .document(this.connectedUser.getUid())
                     .collection("workplaces")
                     .document(workplace.getBranchId());
-            batch.set(workplaceRef, workplace, SetOptions.merge());
+            batch.set(workplaceRef, workplace);
 
             // Commit the batch:
             batch.commit().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
+                    // Alert the user:
                     Toast.makeText(context, "Business added successfully!", Toast.LENGTH_SHORT).show();
+
+                    // Go to the branch activity with the new branch:
+                    final Intent intent = new Intent(context, BranchActivity.class);
+                    intent.putExtra("user", this.connectedUser);
+                    intent.putExtra("branch", this.branch);
+                    context.startActivity(intent);
+
+                    // Activate the callback:
                     onCompleteListener.accept(Result.success(null));
                 }
                 else if (task.getException() != null)
