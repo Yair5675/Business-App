@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
+import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
@@ -210,7 +211,20 @@ public class BranchActivity extends AppCompatActivity {
     }
 
     private void deleteCurrentBranch() {
-        // TODO: Use cloud function here
+        Log.i(TAG, "delete");
+        // Call the delete branch cloud function:
+        final CloudFunctionsHandler functionsHandler = CloudFunctionsHandler.getInstance();
+        functionsHandler.deleteBranch(
+                this.currentBranch.getBranchId(),
+                () -> {
+                    // Alert the user and go to the previous activity:
+                    Toast.makeText(this, "Successfully deleted branch", Toast.LENGTH_SHORT).show();
+                    finish();
+                }, e -> {
+                    // Alert the user and log the error:
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to delete branch", e);
+                });
     }
 
     private void initStatusListener() {
