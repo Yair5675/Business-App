@@ -168,4 +168,13 @@
     <string name="branch_menu_item_edit">Edit Branch</string>
     <string name="branch_menu_item_delete">Delete Branch</string>
     <string name="branch_menu_item_set_shifts">Set Shifts</string>
+
+
+    <!-- Strings belonging to the delete branch dialog: -->
+    <string name="dialog_delete_branch_title">Delete branch</string>
+    <string name="dialog_delete_branch_warning_txt">Are you sure you want to delete your branch? This action is irreversible</string>
+    <string name="dialog_delete_branch_enter_password_txt">Enter the branch\'s password:</string>
+    <string name="dialog_delete_branch_branch_password_hint">Branch Password</string>
+    <string name="dialog_delete_branch_btn_cancel_txt">Cancel</string>
+    <string name="dialog_delete_branch_btn_confirm_txt">Confirm</string>
 </resources>

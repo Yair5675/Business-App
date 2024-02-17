@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/red"
+        android:text="@string/dialog_delete_branch_title"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:gravity="start"
+        android:padding="8dp"
+        />
+
+    <TextView
+        android:id="@+id/dialogDeleteBranchTvWarning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_delete_branch_warning_txt"
+        android:textSize="18sp"
+        android:padding="4dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/dialogDeleteBranchPasswordLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_delete_branch_enter_password_txt"
+            android:textSize="18sp"
+            android:padding="4dp"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dialogDeleteBranchTilPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            app:passwordToggleEnabled="true"
+            android:hint="@string/dialog_delete_branch_branch_password_hint"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dialogDeleteBranchEtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginVertical="8dp"
+        >
+        <android.widget.Button
+            android:id="@+id/dialogDeleteBranchBtnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ImprovedButtonAppearance"
+            android:backgroundTint="@color/gray"
+            android:text="@string/dialog_delete_branch_btn_cancel_txt"
+            android:layout_marginEnd="8dp"
+            />
+
+        <android.widget.Button
+            android:id="@+id/dialogDeleteBranchBtnConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ImprovedButtonAppearance"
+            android:backgroundTint="@color/red"
+            android:text="@string/dialog_delete_branch_btn_confirm_txt"
+            android:layout_marginStart="8dp"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
