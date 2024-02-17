@@ -146,10 +146,9 @@ public class InputActivity extends AppCompatActivity {
 
         // End the form:
         this.currentForm.onEndForm(this, result -> {
-            // If the result is a success, go to the main activity:
+            // If the result is a success, clear the current input and finish the activity:
             if (result.isOk()) {
-                final Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                CurrentInput.setCurrentInputForm(null);
                 finish();
             }
             // If not, just show the buttons again:
