@@ -3,7 +3,6 @@ package com.example.finalproject.fragments.input;
 import android.content.Context;
 
 import com.example.finalproject.util.Result;
-import com.google.android.gms.tasks.OnCompleteListener;
 
 import java.util.function.Consumer;
 
@@ -51,7 +50,9 @@ public abstract class InputForm {
 
     /**
      * A function that will be called once every page in the form was filled AND VALIDATED (the
-     * function is not responsible for validating its fragments).
+     * function is not responsible for validating its fragments). The function is responsible to
+     * start another activity and to exit the current activity. The caller of the function is
+     * responsible for finishing the activity.
      * @param context Context of the activity that calls the end form method.
      * @param onCompleteListener A callback that will be run once the method is finished. The
      *                           callback receives the result of the end form, which signals if it
