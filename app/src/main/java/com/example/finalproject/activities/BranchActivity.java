@@ -42,6 +42,9 @@ public class BranchActivity extends AppCompatActivity {
     // The employees fragment:
     private EmployeesFragment employeesFragment;
 
+    // The title of the activity:
+    private TextView tvTitle;
+
     // The title of the toolbar:
     private TextView tvToolbarTitle;
 
@@ -72,7 +75,8 @@ public class BranchActivity extends AppCompatActivity {
         this.loadBranchFromIntent();
 
         // Set the company name using the branch:
-        ((TextView) findViewById(R.id.actBranchTvCompanyName)).setText(this.currentBranch.getCompanyName());
+        this.tvTitle = findViewById(R.id.actBranchTvCompanyName);
+        this.tvTitle.setText(this.currentBranch.getCompanyName());
 
         // Create the employees fragment:
         this.employeesFragment = new EmployeesFragment(this.currentUser, this.currentBranch);
@@ -146,6 +150,7 @@ public class BranchActivity extends AppCompatActivity {
         this.employeesFragment.setCurrentBranch(branch);
         this.applicationsFragment.setBranch(branch);
         this.tvToolbarTitle.setText(branch.getCompanyName());
+        this.tvTitle.setText(branch.getCompanyName());
     }
 
     @Override
