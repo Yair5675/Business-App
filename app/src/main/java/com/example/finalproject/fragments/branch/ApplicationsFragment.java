@@ -40,7 +40,8 @@ public class ApplicationsFragment extends Fragment {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
-        this.adapter.setCurrentBranch(branch);
+        if (this.adapter != null)
+            this.adapter.setCurrentBranch(branch);
     }
 
     @Nullable
