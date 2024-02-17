@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="@string/dialog_delete_branch_warning_txt"
         android:textSize="18sp"
-        android:padding="4dp"
+        android:padding="8dp"
         />
 
     <LinearLayout
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:text="@string/dialog_delete_branch_enter_password_txt"
             android:textSize="18sp"
-            android:padding="4dp"
+            android:padding="8dp"
             />
 
         <com.google.android.material.textfield.TextInputLayout
