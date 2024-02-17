@@ -44,4 +44,9 @@
         android:drawablePadding="8dp"
         android:paddingHorizontal="10dp"
         />
+    <ProgressBar
+        android:id="@+id/dialogAddRolePbLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 </LinearLayout>

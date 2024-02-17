@@ -4,9 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
@@ -32,6 +34,9 @@ public class AddRoleDialog {
 
     // The ID of the branch that the role is added to:
     private final String branchId;
+
+    // The progress bar shown while the dialog is loading:
+    private final ProgressBar pbLoading;
 
     // A reference to the online database:
     private final FirebaseFirestore dbRef;
@@ -72,6 +77,7 @@ public class AddRoleDialog {
         this.tilRoleName = this.dialog.findViewById(R.id.dialogAddRoleTilRoleName);
         this.etRoleName = this.dialog.findViewById(R.id.dialogAddRoleEtRoleName);
         this.btnSubmit = this.dialog.findViewById(R.id.dialogAddRoleBtnSubmit);
+        this.pbLoading = this.dialog.findViewById(R.id.dialogAddRolePbLoading);
 
         // Initialize the text watcher for the role name input field:
         this.initTextWatcher();
@@ -84,6 +90,10 @@ public class AddRoleDialog {
         // Clear out previous text:
         this.etRoleName.setText("");
         this.tilRoleName.setError(null);
+
+        // Hide the progress bar and show the submit button:
+        this.pbLoading.setVisibility(View.GONE);
+        this.btnSubmit.setVisibility(View.VISIBLE);
 
         // Show the dialog:
         this.dialog.show();
@@ -111,6 +121,9 @@ public class AddRoleDialog {
 
             final String roleName = Util.getTextFromEt(this.etRoleName);
 
+            // Show the progress bar and hide the submit button:
+            this.pbLoading.setVisibility(View.VISIBLE);
+            this.btnSubmit.setVisibility(View.GONE);
 
             // Check if there is a similar branch:
             final OnFailureListener onFailureListener = e -> {
@@ -119,6 +132,10 @@ public class AddRoleDialog {
                     Toast.makeText(context, Constants.SIMILAR_ROLE_FOUND_ERROR, Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+
+                // Hide the progress bar and show the submit button:
+                this.pbLoading.setVisibility(View.GONE);
+                this.btnSubmit.setVisibility(View.VISIBLE);
             };
             this.validateSimilarRole(
                     roleName,
