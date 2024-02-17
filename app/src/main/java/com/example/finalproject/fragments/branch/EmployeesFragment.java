@@ -40,7 +40,7 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     private final User currentUser;
 
     // The current branch that is being displayed:
-    private final Branch currentBranch;
+    private Branch currentBranch;
 
     // The text view that tells the user if the branch is currently opened or closed:
     private TextView tvCurrentOpenness;
@@ -80,6 +80,18 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         this.currentUser = currentUser;
         this.currentBranch = currentBranch;
         this.functionsHandler = CloudFunctionsHandler.getInstance();
+    }
+
+    public void setCurrentBranch(Branch branch) {
+        this.currentBranch = branch;
+        if (this.fragmentInitialized())
+            this.loadInfoFromBranch();
+    }
+
+    private boolean fragmentInitialized() {
+        // Since all views are initialized at once, checking only one is enough to know the state
+        // of all of them:
+        return this.tvCurrentOpenness != null;
     }
 
 
