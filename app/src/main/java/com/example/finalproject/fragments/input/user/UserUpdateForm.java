@@ -1,6 +1,7 @@
 package com.example.finalproject.fragments.input.user;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.finalproject.R;
+import com.example.finalproject.activities.MainActivity;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputForm;
@@ -70,24 +72,20 @@ public class UserUpdateForm extends InputForm {
         // Initialize callbacks:
         OnSuccessListener<Void> successListener = getOnSuccessListener(context, onCompleteListener);
         OnFailureListener failureListener = getOnFailureListener(context, onCompleteListener);
-        Log.d(TAG, "endForm");
         // Re-authenticate the user:
         reauthenticateUser(unused -> {
+
             // Set the new information in the user's object (except for the new email):
             this.loadInfoFromFragments();
-            Log.d(TAG, "endForm1");
 
             // Validate user connectivity:
             if (this.isUserConnectivityValid()) {
-                Log.d(TAG, "endForm2");
 
                 // Update the user's authentication details first:
                 this.updateAuthDetails(unused1 -> {
-                    Log.d(TAG, "endForm3");
 
                     // Update the user's image second:
                     this.updateUserImage(unused2 -> {
-                        Log.d(TAG, "endForm4");
 
                         // Update the user in the database:
                         this.updateDatabaseDetails(successListener, failureListener);
@@ -215,6 +213,10 @@ public class UserUpdateForm extends InputForm {
         return unused -> {
             // Signal the user their info was updated successfully:
             Toast.makeText(context, "Updated Successfully!", Toast.LENGTH_SHORT).show();
+
+            // Go to the main activity:
+            final Intent intent = new Intent(context, MainActivity.class);
+            context.startActivity(intent);
 
             // Activate the callback:
             onCompleteListener.accept(Result.success(null));
