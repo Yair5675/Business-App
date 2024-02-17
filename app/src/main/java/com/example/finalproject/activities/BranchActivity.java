@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.adapters.ScreenSlideAdapter;
@@ -35,6 +36,9 @@ public class BranchActivity extends AppCompatActivity {
     // The current branch that is being displayed:
     private Branch currentBranch;
 
+    // A reference to the online database:
+    private FirebaseFirestore dbRef;
+
     // The employees fragment:
     private EmployeesFragment employeesFragment;
 
@@ -54,6 +58,9 @@ public class BranchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_branch);
+
+        // Initialize the database reference:
+        this.dbRef = FirebaseFirestore.getInstance();
 
         // Load the user from the given intent:
         this.loadUserFromIntent();
@@ -77,6 +84,9 @@ public class BranchActivity extends AppCompatActivity {
         // Set the initial employee status to unemployed:
         this.employeeStatus = EmployeeStatus.UNEMPLOYED;
 
+        // Listen to the branch document:
+        this.initBranchListener();
+
         // Listen to the current user's status in the current branch:
         this.initStatusListener();
 
@@ -95,6 +105,42 @@ public class BranchActivity extends AppCompatActivity {
         // Set the title of the toolbar:
         final TextView tvTitle = findViewById(R.id.actBranchTvToolbarTitle);
         tvTitle.setText(this.currentBranch.getCompanyName());
+    }
+
+    private void initBranchListener() {
+        this.dbRef
+                .collection("branches")
+                .document(this.currentBranch.getBranchId())
+                .addSnapshotListener(this, (branchDocument, error) -> {
+                    if (error != null) {
+                        // Log any error that occurred:
+                        Log.e(TAG, "Error listening to branch", error);
+
+                        // Go back to the main activity:
+                        Toast.makeText(this, "Couldn't load branch", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    // Check if the branch was deleted:
+                    else if (branchDocument == null || !branchDocument.exists()) {
+                        Toast.makeText(this, "The branch was deleted", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    // If it was updated, update it in the fragments:
+                    else {
+                        final Branch branch = branchDocument.toObject(Branch.class);
+                        if (branch != null)
+                            this.setCurrentBranch(branch);
+                        else
+                            Log.e(TAG, "Couldn't convert document to Branch object");
+                    }
+                });
+    }
+
+    private void setCurrentBranch(Branch branch) {
+        this.currentBranch = branch;
+        this.employeesFragment.setCurrentBranch(branch);
     }
 
     @Override
@@ -143,8 +189,7 @@ public class BranchActivity extends AppCompatActivity {
     }
 
     private void initStatusListener() {
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("branches")
+        this.dbRef.collection("branches")
                 .document(this.currentBranch.getBranchId())
                 .collection("employees")
                 .document(this.currentUser.getUid())
