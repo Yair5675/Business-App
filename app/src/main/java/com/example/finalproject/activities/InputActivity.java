@@ -16,26 +16,23 @@ import com.example.finalproject.R;
 import com.example.finalproject.fragments.input.InputForm;
 
 public class InputActivity extends AppCompatActivity {
-    // The current input form:
-    private InputForm currentForm;
-
     // The buttons that go forwards or backwards in the pages:
     private Button btnNext, btnPrev;
 
     // The progress bar that will be shown while the user's details are saved in the database:
     private ProgressBar progressBar;
 
+    // The current input form:
+    private static InputForm currentForm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
 
-        // Get the current input form:
-        this.currentForm = CurrentInput.getCurrentInputForm();
-
         // Set the title according to the form:
         final TextView title = findViewById(R.id.actInputTitle);
-        title.setText(this.currentForm.getTitle());
+        title.setText(currentForm.getTitle());
 
         // Initialize the next and previous buttons:
         this.btnNext = findViewById(R.id.actInputBtnNextOrRegister);
@@ -66,7 +63,7 @@ public class InputActivity extends AppCompatActivity {
             transaction.setCustomAnimations(enter, exit);
 
         // Replace the current fragment with the updated fragment:
-        transaction.replace(R.id.actInputFragmentContainer, this.currentForm.getCurrentPage());
+        transaction.replace(R.id.actInputFragmentContainer, currentForm.getCurrentPage());
 
         // Save change:
         transaction.commit();
@@ -75,7 +72,7 @@ public class InputActivity extends AppCompatActivity {
 
     private void updateNavigationButtons() {
         // If it's the first page, show the cancel symbol:
-        if (this.currentForm.isFirstPage()) {
+        if (currentForm.isFirstPage()) {
             this.btnPrev.setText(R.string.act_input_cancel_btn_text);
             this.btnPrev.setCompoundDrawablesWithIntrinsicBounds(R.drawable.cancel_symbol, 0, 0, 0);
         }
@@ -86,7 +83,7 @@ public class InputActivity extends AppCompatActivity {
         this.btnPrev.setCompoundDrawablePadding(8);
 
         // If it's the last page, show the confirm button:
-        if (this.currentForm.isLastPage()) {
+        if (currentForm.isLastPage()) {
             this.btnNext.setText(R.string.act_input_confirm_btn_text);
             this.btnNext.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.checkmark_symbol, 0);
         }
@@ -113,26 +110,26 @@ public class InputActivity extends AppCompatActivity {
 
     private void moveBackwards() {
         // If it's the first page, go back to the main activity:
-        if (this.currentForm.isFirstPage()) {
+        if (currentForm.isFirstPage()) {
             final Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         }
         else {
             // Go to the previous page and load it:
-            this.currentForm.prevPage();
+            currentForm.prevPage();
             this.loadCurrentPage(R.anim.slide_in_to_right, R.anim.slide_out_to_right);
         }
     }
 
     private void moveForward() {
         // Validate the current page:
-        if (this.currentForm.getCurrentPage().validateAndSetError()) {
+        if (currentForm.getCurrentPage().validateAndSetError()) {
             // If it's the last activity:
-            if (this.currentForm.isLastPage())
+            if (currentForm.isLastPage())
                 endForm();
             else {
-                this.currentForm.nextPage();
+                currentForm.nextPage();
                 this.loadCurrentPage(R.anim.slide_in_to_left, R.anim.slide_out_to_left);
             }
         }
@@ -145,10 +142,10 @@ public class InputActivity extends AppCompatActivity {
         this.btnPrev.setVisibility(View.GONE);
 
         // End the form:
-        this.currentForm.onEndForm(this, result -> {
+        currentForm.onEndForm(this, result -> {
             // If the result is a success, clear the current input and finish the activity:
             if (result.isOk()) {
-                CurrentInput.setCurrentInputForm(null);
+                currentForm = null;
                 finish();
             }
             // If not, just show the buttons again:
@@ -160,16 +157,7 @@ public class InputActivity extends AppCompatActivity {
         });
     }
 
-    public static class CurrentInput {
-        // The current input form:
-        private static InputForm currentInputForm;
-
-        public static InputForm getCurrentInputForm() {
-            return currentInputForm;
-        }
-
-        public static void setCurrentInputForm(InputForm currentInputForm) {
-            CurrentInput.currentInputForm = currentInputForm;
-        }
+    public static void setCurrentInputForm(InputForm inputForm) {
+        InputActivity.currentForm = inputForm;
     }
 }

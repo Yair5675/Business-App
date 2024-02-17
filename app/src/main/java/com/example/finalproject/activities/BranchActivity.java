@@ -196,7 +196,7 @@ public class BranchActivity extends AppCompatActivity {
             BusinessUpdateForm updateForm = new BusinessUpdateForm(
                     this.currentBranch, this.currentUser, getResources()
             );
-            InputActivity.CurrentInput.setCurrentInputForm(updateForm);
+            InputActivity.setCurrentInputForm(updateForm);
 
             // Go to the input activity:
             Intent intent = new Intent(this, InputActivity.class);

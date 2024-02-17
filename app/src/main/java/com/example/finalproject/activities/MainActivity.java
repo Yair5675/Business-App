@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         if (ID == R.id.menuUsersItemSignUp) {
             // Create the registration form and set it for the input activity:
             final UserRegistrationForm registrationForm = new UserRegistrationForm(getResources());
-            InputActivity.CurrentInput.setCurrentInputForm(registrationForm);
+            InputActivity.setCurrentInputForm(registrationForm);
 
             // Launch the input activity:
             final Intent intent = new Intent(this, InputActivity.class);
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         else if (ID == R.id.menuUsersItemAddBusiness) {
             // Create the registration form and set it in the input activity:
             final BusinessRegistrationForm form = new BusinessRegistrationForm(getResources(), this.connectedUser);
-            InputActivity.CurrentInput.setCurrentInputForm(form);
+            InputActivity.setCurrentInputForm(form);
 
             // Go to the input activity:
             Intent intent = new Intent(this, InputActivity.class);

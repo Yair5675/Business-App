@@ -187,7 +187,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
             if (this.connectedUser != null) {
                 // Create the update form and set the user form in it:
                 final UserUpdateForm updateForm = new UserUpdateForm(this.connectedUser, getResources());
-                InputActivity.CurrentInput.setCurrentInputForm(updateForm);
+                InputActivity.setCurrentInputForm(updateForm);
 
                 // Open the input activity:
                 Intent intent = new Intent(this.context, InputActivity.class);
