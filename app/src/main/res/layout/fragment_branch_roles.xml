@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/frag_branch_roles_title"
+        android:textSize="20sp"
+        android:layout_marginBottom="8dp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragBranchRolesRvRoles"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <android.widget.Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginVertical="16dp"
+
+        android:text="@string/frag_branch_role_add_role_btn_txt"
+        android:textSize="16sp"
+        style="@style/ImprovedButtonAppearance"
+
+        android:drawableStart="@drawable/add_icon_white"
+        android:drawablePadding="8dp"
+        android:paddingHorizontal="10dp"
+        />
+
+    <TextView
+        android:id="@+id/fragBranchRolesTvNoRolesFound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/frag_branch_roles_no_roles_found_txt"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:layout_marginVertical="16dp"
+        android:visibility="gone"
+        />
+</LinearLayout>
