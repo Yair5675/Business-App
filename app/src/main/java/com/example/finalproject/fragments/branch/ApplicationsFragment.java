@@ -22,7 +22,7 @@ import com.google.firebase.firestore.Query;
 
 public class ApplicationsFragment extends Fragment {
     // The current branch:
-    private final Branch branch;
+    private Branch branch;
 
     // The applications recyclerView:
     private RecyclerView rvApplications;
@@ -30,9 +30,17 @@ public class ApplicationsFragment extends Fragment {
     // The text view that appears when there are no applications for the branch:
     private TextView tvNoApplicationsFound;
 
+    // The adapter of the recycler view:
+    private OnlineApplicationsAdapter adapter;
+
 
     public ApplicationsFragment(Branch branch) {
         this.branch = branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+        this.adapter.setCurrentBranch(branch);
     }
 
     @Nullable
@@ -73,7 +81,7 @@ public class ApplicationsFragment extends Fragment {
                 .build();
 
         // Create the adapter:
-        OnlineApplicationsAdapter adapter = new OnlineApplicationsAdapter(
+        this.adapter = new OnlineApplicationsAdapter(
                 requireContext(),
                 this.branch,
                 () -> {
