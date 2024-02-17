@@ -1,4 +1,4 @@
-package com.example.finalproject.custom_views;
+package com.example.finalproject.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
