@@ -107,8 +107,11 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Initialize the recycler view adapter:
         this.initAdapter();
 
-        // Set initial employee status to "employed":
-        this.setEmployeeStatus(EmployeeStatus.UNEMPLOYED);
+        // If the status was already set, refresh it:
+        if (this.employeeStatus != null)
+            this.setEmployeeStatus(this.employeeStatus);
+        else
+            this.setEmployeeStatus(EmployeeStatus.UNEMPLOYED);
 
         return parent;
     }
@@ -215,12 +218,12 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     }
 
     public void setEmployeeStatus(EmployeeStatus status) {
-        // Change status only if the adapter is properly initialized:
-        if (this.adapter == null)
-            return;
-
         // Save the status:
         this.employeeStatus = status;
+
+        // Proceed only if the adapter is properly initialized:
+        if (this.adapter == null)
+            return;
 
         // Update the adapter:
         this.adapter.setIsManager(status == EmployeeStatus.MANAGER);
