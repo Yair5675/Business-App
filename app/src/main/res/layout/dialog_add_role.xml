@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_add_role_title"
+        android:gravity="center_horizontal"
+        android:textSize="32sp"
+        android:layout_marginTop="8dp"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dialogAddRoleTilRoleName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/dialog_add_role_add_role_hint"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/dialogAddRoleEtRoleName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <android.widget.Button
+        android:id="@+id/dialogAddRoleBtnSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        style="@style/ImprovedButtonAppearance"
+        android:text="@string/dialog_add_role_btn_submit_txt"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+
+        android:drawableStart="@drawable/confirm_icon_filled_white"
+        android:drawablePadding="8dp"
+        android:paddingHorizontal="10dp"
+        />
+</LinearLayout>
