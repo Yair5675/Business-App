@@ -1,4 +1,4 @@
-package com.example.finalproject.custom_views.adapters;
+package com.example.finalproject.adapters;
 
 import android.content.Context;
 

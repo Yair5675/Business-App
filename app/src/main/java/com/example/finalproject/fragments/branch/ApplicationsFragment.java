@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.custom_views.adapters.OnlineApplicationsAdapter;
+import com.example.finalproject.adapters.OnlineApplicationsAdapter;
 import com.example.finalproject.database.online.collections.Application;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.util.WrapperLinearLayoutManager;

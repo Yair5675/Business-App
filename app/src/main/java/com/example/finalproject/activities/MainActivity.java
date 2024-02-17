@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.LoginDialog;
-import com.example.finalproject.custom_views.adapters.ScreenSlideAdapter;
+import com.example.finalproject.adapters.ScreenSlideAdapter;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.User;
