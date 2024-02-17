@@ -186,4 +186,8 @@
     <string name="frag_branch_roles_no_roles_found_txt">No roles found</string>
     <string name="frag_branch_role_add_role_btn_txt">Add Role</string>
 
+
+    <!-- Strings belonging to the role row -->
+    <string name="row_role_sample_role_name">Role Name</string>
+
 </resources>
