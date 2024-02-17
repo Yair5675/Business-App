@@ -126,7 +126,9 @@ public class BranchActivity extends AppCompatActivity {
         // If the manager wants to update the branch:
         else if (ID == R.id.menuBranchItemEdit) {
             // Create the update form and set it in the input activity:
-            BusinessUpdateForm updateForm = new BusinessUpdateForm(this.currentBranch, getResources());
+            BusinessUpdateForm updateForm = new BusinessUpdateForm(
+                    this.currentBranch, this.currentUser, getResources()
+            );
             InputActivity.CurrentInput.setCurrentInputForm(updateForm);
 
             // Go to the input activity:

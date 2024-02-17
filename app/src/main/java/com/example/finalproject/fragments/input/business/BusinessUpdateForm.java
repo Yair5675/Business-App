@@ -3,6 +3,7 @@ package com.example.finalproject.fragments.input.business;
 import static com.example.finalproject.util.Constants.SIMILAR_BRANCH_FOUND_ERROR;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +12,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.finalproject.R;
+import com.example.finalproject.activities.BranchActivity;
 import com.example.finalproject.database.online.collections.Branch;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputForm;
 import com.example.finalproject.util.Result;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,6 +25,9 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.function.Consumer;
 
 public class BusinessUpdateForm extends InputForm {
+    // The currently connected user (needed when activation thee branch activity):
+    private final User user;
+
     // The branch which is being updated:
     private final Branch oldBranch;
 
@@ -31,7 +37,7 @@ public class BusinessUpdateForm extends InputForm {
     // Tag for debugging purposes:
     private static final String TAG = "BusinessUpdateForm";
 
-    public BusinessUpdateForm(@NonNull Branch branch, Resources res) {
+    public BusinessUpdateForm(@NonNull Branch branch, @NonNull User user, Resources res) {
         super(
                 // Set the title:
                 res.getString(R.string.act_business_input_title),
@@ -41,7 +47,8 @@ public class BusinessUpdateForm extends InputForm {
                 new BusinessInputFragment2(branch.getCountry(), branch)
         );
 
-        // Save the branch:
+        // Save the branch and the user:
+        this.user = user;
         this.oldBranch = branch;
 
         // Create a reference to the database:
@@ -68,6 +75,12 @@ public class BusinessUpdateForm extends InputForm {
                             .addOnSuccessListener(unused1 -> {
                                 // Alert the user:
                                 Toast.makeText(context, "Business updated successfully!", Toast.LENGTH_SHORT).show();
+
+                                // Go to the branch activity with the updated branch and the user:
+                                final Intent intent = new Intent(context, BranchActivity.class);
+                                intent.putExtra("user", this.user);
+                                intent.putExtra("branch", branch);
+                                context.startActivity(intent);
 
                                 // Activate the callback:
                                 onCompleteListener.accept(Result.success(null));
