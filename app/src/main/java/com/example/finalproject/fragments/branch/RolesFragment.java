@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.OnlineRolesAdapter;
+import com.example.finalproject.dialogs.AddRoleDialog;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -30,6 +31,9 @@ public class RolesFragment extends Fragment {
 
     // The adapter of the recycler view:
     private OnlineRolesAdapter adapter;
+
+    // The add role dialog:
+    private AddRoleDialog addRoleDialog;
 
     // The text view that appears if no role is found in the branch:
     private TextView tvRolesNotFound;
@@ -63,12 +67,16 @@ public class RolesFragment extends Fragment {
         // Initialize the recyclerView adapter:
         this.initAdapter();
 
+        // Initialize the add role dialog:
+        this.addRoleDialog = new AddRoleDialog(requireContext(), this.branchId);
+
         // Show the add role button only if the user is a manager:
         this.btnAddRole.setVisibility(this.isManager ? View.VISIBLE : View.GONE);
 
         // Initialize onClickListener for the add role button:
         this.btnAddRole.setOnClickListener(_v -> {
-            // TODO: Implement a dialog that asks for a role name
+            // Show the add role dialog:
+            this.addRoleDialog.show();
         });
 
         return parent;
