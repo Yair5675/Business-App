@@ -19,6 +19,11 @@ public class InputValidation {
     // The maximum length of a user's password:
     private static final byte MAX_PASSWORD_LENGTH = 22;
 
+    // The minimum length of a role name:
+    private static final byte MIN_ROLE_LENGTH = 2;
+    // The maximum length of a role name:
+    private static final byte MAX_ROLE_LENGTH = 15;
+
     /**
      * Checks if a given name is valid for a user according to various rules.
      * @param name A potential name of a user, will be checked to see if it's a suitable name.
@@ -95,6 +100,33 @@ public class InputValidation {
         return Result.success(null);
     }
 
+    public static Result<Void, String> validateRoleName(String roleName) {
+        // Check if the role name is empty:
+        if (roleName.isEmpty())
+            return Result.failure(Constants.MANDATORY_INPUT_ERROR);
+
+        // Check the length:
+        if (roleName.length() < MIN_ROLE_LENGTH)
+            return Result.failure("Role name too short");
+        else if (roleName.length() > MAX_ROLE_LENGTH)
+            return Result.failure("Role name too long");
+
+        // Only allow two words max:
+        final String[] words = roleName.split(" ");
+        if (words.length > 2)
+            return Result.failure("Only two words are allowed");
+
+        // Check that all words are in english:
+        for (String word : words) {
+            if (word.isEmpty())
+                return Result.failure("Consecutive spaces are not allowed");
+            else if (!isInEnglish(word))
+                return Result.failure("Must be in english");
+        }
+
+        return Result.success(null);
+    }
+
     public static Result<Void, String> validatePassword(String password) {
         // Checking if the password is empty:
         if (password.isEmpty())
@@ -147,71 +179,6 @@ public class InputValidation {
             );
         else
             return Result.success(null);
-    }
-
-    public static Result<Void, String> validatePhone(String phoneNumber) {
-        // Checking if the phone number is empty:
-        if (phoneNumber.isEmpty())
-            return Result.failure(Constants.MANDATORY_INPUT_ERROR);
-
-        // Phone number must be 10 characters long and start with "05". Additionally the phone
-        // number cannot start with "056" or "057":
-        else if (!phoneNumber.startsWith("05"))
-            return Result.failure("Phone must start with \"05\"");
-        else if (phoneNumber.startsWith("056") || phoneNumber.startsWith("057"))
-            return Result.failure(String.format("Invalid area code: 05%c", phoneNumber.charAt(2)));
-        // Check that the phone number is all digits:
-        else if (!isANumber(phoneNumber))
-            return Result.failure("Invalid phone number");
-        else if (phoneNumber.length() < 10)
-            return Result.failure("Phone number too short");
-        else if (phoneNumber.length() > 10)
-            return Result.failure("Phone number too long");
-        else
-            return Result.success(null);
-    }
-
-    public static Result<Void, String> validateAddress(String address) {
-        // Check that it isn't empty:
-        if (address.isEmpty())
-            return Result.failure(Constants.MANDATORY_INPUT_ERROR);
-
-        // Save a uniform error:
-        final String INVALID_STREET_NAME_MSG = "Invalid street name";
-
-        // Split the address into words:
-        final String[] words = address.split(" ");
-
-        // Make sure the first word is at least 2 characters long:
-        if (words[0].length() < 2)
-            return Result.failure(INVALID_STREET_NAME_MSG);
-
-        // Check that every word but the last is in english:
-        for (int i = 0; i < words.length - 1; i++) {
-            if (!isInEnglish(words[i]))
-                return Result.failure(INVALID_STREET_NAME_MSG);
-        }
-
-        // Check that the last word is a number:
-        if (isANumber(words[words.length - 1]))
-            return Result.success(null);
-
-        // If it isn't, check if it's a mix of letters and digits (in that case it's an invalid
-        // street name):
-        else if (words[words.length - 1].matches(".*\\d.*"))
-            return Result.failure(INVALID_STREET_NAME_MSG);
-
-        // If it doesn't contain any digits but does have letters, we are missing a house number:
-        else if (isInEnglish(words[words.length - 1]))
-            return Result.failure("Missing house number");
-
-        // If it's gibberish, it's once again invalid name:
-        else
-            return Result.failure(INVALID_STREET_NAME_MSG);
-    }
-
-    private static boolean isANumber(String input) {
-        return input.matches("^[0-9]+$");
     }
 
     private static boolean isInEnglish(String word) {
