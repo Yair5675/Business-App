@@ -262,6 +262,9 @@ public class BranchActivity extends AppCompatActivity {
 
         // Set the status in the employees fragment:
         this.employeesFragment.setEmployeeStatus(status);
+
+        // Update the menu:
+        supportInvalidateOptionsMenu();
     }
 
     private void initPagerAdapter() {
