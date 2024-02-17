@@ -21,6 +21,7 @@ import com.example.finalproject.adapters.ScreenSlideAdapter;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.dialogs.DeleteBranchDialog;
 import com.example.finalproject.fragments.branch.ApplicationsFragment;
 import com.example.finalproject.fragments.branch.EmployeesFragment;
 import com.example.finalproject.fragments.input.business.BusinessUpdateForm;
@@ -192,10 +193,24 @@ public class BranchActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+        // If the manager wants to delete the branch:
+        else if (ID == R.id.menuBranchItemDelete) {
+            // Create a delete dialog:
+            final DeleteBranchDialog deleteDialog = new DeleteBranchDialog(
+                    this, this.currentBranch.getPassword(), this::deleteCurrentBranch
+            );
+
+            // Show the dialog:
+            deleteDialog.show();
+        }
         // TODO: Implement delete and set shifts items too
 
         // If it's another item, use super call:
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteCurrentBranch() {
+        // TODO: Use cloud function here
     }
 
     private void initStatusListener() {
