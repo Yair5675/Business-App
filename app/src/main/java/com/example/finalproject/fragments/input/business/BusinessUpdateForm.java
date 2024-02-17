@@ -114,8 +114,10 @@ public class BusinessUpdateForm extends InputForm {
     ) {
         // Check for similar branches:
         this.dbRef.collection("branches")
+                .whereNotEqualTo("branchId", updatedBranch.getBranchId())
                 .whereEqualTo("companyName", updatedBranch.getCompanyName())
                 .whereEqualTo("fullAddress", updatedBranch.getFullAddress())
+                .limit(1)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // Check that there is no similar branch:
