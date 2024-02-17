@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
@@ -24,6 +25,9 @@ public class DeleteBranchDialog {
 
     // The true password of the branch:
     private final String realPassword;
+
+    // The progress bar shown while the callback is running:
+    private final ProgressBar pbLoading;
 
     // A callback that will be run if the user confirms the deletion:
     private final Runnable onConfirmCallback;
@@ -43,6 +47,9 @@ public class DeleteBranchDialog {
         this.dialog = new Dialog(context);
         this.dialog.setContentView(R.layout.dialog_delete_branch);
 
+        // Set the dialog to be non-cancelable:
+        this.dialog.setCancelable(false);
+
         // Save the real password:
         this.realPassword = realPassword;
 
@@ -59,6 +66,7 @@ public class DeleteBranchDialog {
 
         // Loading pointers to the views inside the dialog:
         this.tvWarning = this.dialog.findViewById(R.id.dialogDeleteBranchTvWarning);
+        this.pbLoading = this.dialog.findViewById(R.id.dialogDeleteBranchPbLoading);
         this.passwordLayout = this.dialog.findViewById(R.id.dialogDeleteBranchPasswordLayout);
         this.tilPassword = this.dialog.findViewById(R.id.dialogDeleteBranchTilPassword);
         this.etPassword = this.dialog.findViewById(R.id.dialogDeleteBranchEtPassword);
@@ -69,7 +77,16 @@ public class DeleteBranchDialog {
         this.btnCancel.setOnClickListener(_v -> this.dialog.dismiss());
     }
 
+    private void setProgressBarVisibility(boolean isVisible) {
+        this.pbLoading.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        this.btnConfirm.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+        this.btnCancel.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+    }
+
     private void setFirstLevel() {
+        // Hide the progress bar and show the buttons:
+        this.setProgressBarVisibility(false);
+
         // Show the warning text view and hide the password layout:
         this.tvWarning.setVisibility(View.VISIBLE);
         this.passwordLayout.setVisibility(View.GONE);
@@ -111,8 +128,14 @@ public class DeleteBranchDialog {
                 this.tilPassword.setError(Constants.MANDATORY_INPUT_ERROR);
             }
             else if (givenPassword.equals(this.realPassword)) {
-                this.dialog.dismiss();
+                // Show the progress bar and hide the buttons:
+                this.setProgressBarVisibility(true);
+
+                // Call the callback:
                 this.onConfirmCallback.run();
+
+                // Dismiss the dialog:
+                this.dialog.dismiss();
             }
             else {
                 this.tilPassword.setError("Wrong password given");
