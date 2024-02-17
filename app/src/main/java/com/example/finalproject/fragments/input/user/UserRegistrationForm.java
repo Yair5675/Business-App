@@ -1,6 +1,7 @@
 package com.example.finalproject.fragments.input.user;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.example.finalproject.activities.MainActivity;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.fragments.input.InputForm;
@@ -63,6 +65,10 @@ public class UserRegistrationForm extends InputForm {
 
             // Send a verification email:
             this.db.sendVerificationEmail();
+
+            // Go to the main activity:
+            final Intent intent = new Intent(context, MainActivity.class);
+            context.startActivity(intent);
 
             // Activate the callback:
             callback.accept(Result.success(null));
