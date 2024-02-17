@@ -17,14 +17,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class DeleteBranchDialog {
+    // The true password of the branch:
+    private String realPassword;
+
     // The dialog that the class represents:
     private final Dialog dialog;
 
     // The text view warning the user:
     private final TextView tvWarning;
-
-    // The true password of the branch:
-    private final String realPassword;
 
     // The progress bar shown while the callback is running:
     private final ProgressBar pbLoading;
@@ -77,6 +77,10 @@ public class DeleteBranchDialog {
         this.btnCancel.setOnClickListener(_v -> this.dialog.dismiss());
     }
 
+    public void setRealPassword(String realPassword) {
+        this.realPassword = realPassword;
+    }
+
     private void setProgressBarVisibility(boolean isVisible) {
         this.pbLoading.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         this.btnConfirm.setVisibility(isVisible ? View.GONE : View.VISIBLE);
@@ -107,6 +111,10 @@ public class DeleteBranchDialog {
         this.dialog.show();
     }
 
+    public void dismiss() {
+        this.dialog.dismiss();
+    }
+
     private void setSecondLevel() {
         // Hide the warning text view and show the password layout:
         this.tvWarning.setVisibility(View.GONE);
@@ -133,9 +141,6 @@ public class DeleteBranchDialog {
 
                 // Call the callback:
                 this.onConfirmCallback.run();
-
-                // Dismiss the dialog:
-                this.dialog.dismiss();
             }
             else {
                 this.tilPassword.setError("Wrong password given");

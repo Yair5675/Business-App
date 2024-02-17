@@ -41,6 +41,9 @@ public class BranchActivity extends AppCompatActivity {
     // A reference to the online database:
     private FirebaseFirestore dbRef;
 
+    // The delete branch dialog:
+    private DeleteBranchDialog deleteBranchDialog;
+
     // The employees fragment:
     private EmployeesFragment employeesFragment;
 
@@ -114,6 +117,11 @@ public class BranchActivity extends AppCompatActivity {
         // Set the title of the toolbar:
         this.tvToolbarTitle = findViewById(R.id.actBranchTvToolbarTitle);
         this.tvToolbarTitle.setText(this.currentBranch.getCompanyName());
+
+        // Create the dialog:
+        this.deleteBranchDialog = new DeleteBranchDialog(
+                this, this.currentBranch.getPassword(), this::deleteCurrentBranch
+        );
     }
 
     private void initBranchListener() {
@@ -153,6 +161,7 @@ public class BranchActivity extends AppCompatActivity {
         this.applicationsFragment.setBranch(branch);
         this.tvToolbarTitle.setText(branch.getCompanyName());
         this.tvTitle.setText(branch.getCompanyName());
+        this.deleteBranchDialog.setRealPassword(branch.getPassword());
     }
 
     @Override
@@ -196,13 +205,8 @@ public class BranchActivity extends AppCompatActivity {
         }
         // If the manager wants to delete the branch:
         else if (ID == R.id.menuBranchItemDelete) {
-            // Create a delete dialog:
-            final DeleteBranchDialog deleteDialog = new DeleteBranchDialog(
-                    this, this.currentBranch.getPassword(), this::deleteCurrentBranch
-            );
-
-            // Show the dialog:
-            deleteDialog.show();
+            // Show the delete dialog:
+            this.deleteBranchDialog.show();
         }
         // TODO: Implement delete and set shifts items too
 
@@ -224,6 +228,9 @@ public class BranchActivity extends AppCompatActivity {
                     // Alert the user and log the error:
                     Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Failed to delete branch", e);
+
+                    // Dismiss the dialog:
+                    this.deleteBranchDialog.dismiss();
                 });
     }
 
