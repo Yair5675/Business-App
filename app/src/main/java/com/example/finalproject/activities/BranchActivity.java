@@ -42,6 +42,9 @@ public class BranchActivity extends AppCompatActivity {
     // The employees fragment:
     private EmployeesFragment employeesFragment;
 
+    // The title of the toolbar:
+    private TextView tvToolbarTitle;
+
     // The applications fragment:
     private ApplicationsFragment applicationsFragment;
 
@@ -103,8 +106,8 @@ public class BranchActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Set the title of the toolbar:
-        final TextView tvTitle = findViewById(R.id.actBranchTvToolbarTitle);
-        tvTitle.setText(this.currentBranch.getCompanyName());
+        this.tvToolbarTitle = findViewById(R.id.actBranchTvToolbarTitle);
+        this.tvToolbarTitle.setText(this.currentBranch.getCompanyName());
     }
 
     private void initBranchListener() {
@@ -141,6 +144,8 @@ public class BranchActivity extends AppCompatActivity {
     private void setCurrentBranch(Branch branch) {
         this.currentBranch = branch;
         this.employeesFragment.setCurrentBranch(branch);
+        this.applicationsFragment.setBranch(branch);
+        this.tvToolbarTitle.setText(branch.getCompanyName());
     }
 
     @Override
