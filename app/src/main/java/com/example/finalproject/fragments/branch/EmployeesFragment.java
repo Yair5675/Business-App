@@ -215,6 +215,10 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     }
 
     public void setEmployeeStatus(EmployeeStatus status) {
+        // Change status only if the adapter is properly initialized:
+        if (this.adapter == null)
+            return;
+
         // Save the status:
         this.employeeStatus = status;
 
