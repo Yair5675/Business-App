@@ -71,6 +71,21 @@ public class CloudFunctionsHandler {
                 .addOnFailureListener(onFailureListener);
     }
 
+    public void deleteBranch(
+            String branchId,
+            Runnable onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        // Call the function with the branch ID:
+        final Map<String, String> data = new HashMap<>();
+        data.put("branchId", branchId);
+        this.functions
+                .getHttpsCallable("delete_branch")
+                .call(data)
+                .addOnSuccessListener(_r -> onSuccessListener.run())
+                .addOnFailureListener(onFailureListener);
+    }
+
     public void resolveApplication(
             String uid,
             Branch branch,
