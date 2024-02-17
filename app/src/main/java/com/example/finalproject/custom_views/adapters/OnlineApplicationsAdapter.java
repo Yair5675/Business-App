@@ -25,7 +25,7 @@ import java.util.Locale;
 
 public class OnlineApplicationsAdapter extends OnlineAdapter<Application, OnlineApplicationsAdapter.ApplicationVH> {
     // The current branch that the applications are referring to:
-    private final Branch currentBranch;
+    private Branch currentBranch;
 
     // A reference to the cloud functions handler:
     private final CloudFunctionsHandler functionsHandler;
@@ -40,6 +40,10 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
         super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.currentBranch = currentBranch;
         this.functionsHandler = CloudFunctionsHandler.getInstance();
+    }
+
+    public void setCurrentBranch(Branch currentBranch) {
+        this.currentBranch = currentBranch;
     }
 
     @NonNull
