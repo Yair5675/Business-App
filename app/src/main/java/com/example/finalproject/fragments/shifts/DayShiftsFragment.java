@@ -3,6 +3,7 @@ package com.example.finalproject.fragments.shifts;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -26,6 +27,9 @@ public class DayShiftsFragment extends Fragment {
 
     // The index of the day that the fragment sets shifts for (0 - Sunday):
     private int dayIndex;
+
+    // The employee view that was selected:
+    private @Nullable EmployeeView selectedEmployee;
 
     // The roles available in the branch:
     private List<String> roles;
@@ -81,6 +85,7 @@ public class DayShiftsFragment extends Fragment {
         // Create the employee views list:
         final List<EmployeeView> employeeViews = new LinkedList<>();
         for (Employee employee : employees) {
+            // Create the employee view from the employee:
             final EmployeeView employeeView = new EmployeeView(context);
             employeeView.setEmployee(employee);
             employeeViews.add(employeeView);
@@ -109,8 +114,22 @@ public class DayShiftsFragment extends Fragment {
         this.btnAddShift.setOnClickListener(_v -> this.addShift());
 
         // Reload the employee views to the employees layout:
-        for (EmployeeView employeeView : this.employeeViews)
+        for (EmployeeView employeeView : this.employeeViews) {
             this.employeesLayout.addView(employeeView);
+
+            // Set an onClickListener to each employee view:
+            employeeView.setOnClickListener(view -> {
+                if (view instanceof EmployeeView) {
+                    // Clear the background of the previous employee:
+                    if (this.selectedEmployee != null)
+                        this.selectedEmployee.setBackgroundResource(android.R.color.background_light);
+
+                    // Save the current employee view and set their background to blue:
+                    this.selectedEmployee = (EmployeeView) view;
+                    this.selectedEmployee.setBackgroundResource(R.color.row_highlight);
+                }
+            });
+        }
 
         // Reload the shift views to the shift layout:
         for (ShiftView shiftView : this.shiftViews)
