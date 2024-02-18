@@ -100,6 +100,10 @@ public class OnlineRolesAdapter extends OnlineAdapter<String, OnlineRolesAdapter
                     .addOnSuccessListener(unused -> {
                         // Alert the user:
                         Toast.makeText(context, "Role removed successfully", Toast.LENGTH_SHORT).show();
+
+                        // Show the remove button, hide the progress bar:
+                        this.pbLoading.setVisibility(View.GONE);
+                        this.imgRemove.setVisibility(View.VISIBLE);
                     })
                     .addOnFailureListener(e -> {
                         // Log the error and alert the user:
