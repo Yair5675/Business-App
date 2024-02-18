@@ -108,10 +108,13 @@ public class DayShiftsFragment extends Fragment {
         // Set an onClickListener for the button:
         this.btnAddShift.setOnClickListener(_v -> this.addShift());
 
-        // Add the created employee views to the employees layout:
+        // Reload the employee views to the employees layout:
         for (EmployeeView employeeView : this.employeeViews)
             this.employeesLayout.addView(employeeView);
 
+        // Reload the shift views to the shift layout:
+        for (ShiftView shiftView : this.shiftViews)
+            this.shiftsLayout.addView(shiftView);
         return parent;
     }
 
@@ -132,5 +135,14 @@ public class DayShiftsFragment extends Fragment {
             shiftView.setEndTime(startTime + sharedTime);
             startTime += sharedTime;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        // Clear the layouts before the view is destroyed:
+        this.employeesLayout.removeAllViews();
+        this.shiftsLayout.removeAllViews();
     }
 }
