@@ -62,6 +62,8 @@ public class EmployeeView extends LinearLayout {
         else if (!(obj instanceof EmployeeView))
             return false;
         // The employee view is equal if the employees represented are the same:
+        else if (this.employee == null)
+            return ((EmployeeView) obj).employee == null;
         else
             return this.employee.equals(((EmployeeView) obj).employee);
     }
