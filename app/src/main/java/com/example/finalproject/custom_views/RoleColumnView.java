@@ -12,6 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RoleColumnView extends LinearLayout {
+    // The context of the view:
+    private final Context context;
+
     // The name of the role of the current column:
     private String roleName;
 
@@ -30,6 +33,9 @@ public class RoleColumnView extends LinearLayout {
         // Inflate the XML file:
         inflate(context, R.layout.role_column_view, this);
 
+        // Save the context:
+        this.context = context;
+
         // Load the views:
         this.tvRoleName = findViewById(R.id.roleColumnViewTvRoleName);
         this.employeesLayout = findViewById(R.id.roleColumnViewEmployeesLayout);
@@ -38,7 +44,11 @@ public class RoleColumnView extends LinearLayout {
         this.employeeViews = new HashSet<>();
     }
 
-    public void addEmployeeView(EmployeeView employeeView) {
+    public void addEmployee(Employee employee) {
+        // Create an employee view:
+        final EmployeeView employeeView = new EmployeeView(this.context);
+        employeeView.setEmployee(employee);
+
         // Add the view to the list:
         if (this.employeeViews.add(employeeView)) {
             // If it's a new employee, add it to the column:
