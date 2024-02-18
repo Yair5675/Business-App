@@ -168,7 +168,7 @@ public class DayShiftsFragment extends Fragment {
             startTime += sharedTime;
 
             // Set the color:
-            currentShift.setBackgroundResource(i % 2 == 0 ? R.color.gray : R.color.white);
+            currentShift.setBackgroundResource(i % 2 == 0 ? R.color.light_gray : R.color.white);
         }
     }
 
