@@ -11,6 +11,8 @@ import com.example.finalproject.R;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.Employee;
 
+import java.util.Objects;
+
 public class EmployeeView extends LinearLayout {
     // The employee that this view shows:
     private Employee employee;
@@ -66,5 +68,10 @@ public class EmployeeView extends LinearLayout {
             return ((EmployeeView) obj).employee == null;
         else
             return this.employee.equals(((EmployeeView) obj).employee);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.employee);
     }
 }
