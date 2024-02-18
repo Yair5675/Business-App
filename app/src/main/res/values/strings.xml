@@ -205,4 +205,8 @@
     <!-- Strings belonging to the shift view: -->
     <string name="shift_view_tv_start_time_sample">Starting at: 8:00</string>
     <string name="shift_view_tv_end_time_sample">Ending at: 15:00</string>
+
+
+    <!-- Strings belonging to the day shifts fragment: -->
+    <string name="frag_day_shifts_btn_add_shift_txt">Add Shift</string>
 </resources>
