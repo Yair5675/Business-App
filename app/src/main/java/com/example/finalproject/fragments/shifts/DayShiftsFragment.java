@@ -119,15 +119,15 @@ public class DayShiftsFragment extends Fragment {
     }
 
     private void addShift() {
-        // Set the shifts in a way that each occupy the same time:
-        final int totalTime = this.branch.getClosingTime() - this.branch.getOpeningTime();
-        final int sharedTime = this.shiftViews.isEmpty() ? totalTime : totalTime / this.shiftViews.size();
-
         // Add the new shift to the layout:
         final ShiftView newShift = new ShiftView(requireContext());
         newShift.setRoles(this.roles);
         this.shiftViews.add(newShift);
         this.shiftsLayout.addView(newShift);
+
+        // Set the shifts in a way that each occupy the same time:
+        final int totalTime = this.branch.getClosingTime() - this.branch.getOpeningTime();
+        final int sharedTime = totalTime / this.shiftViews.size();
 
         // Reset all shifts' time:
         int startTime = this.branch.getOpeningTime();
