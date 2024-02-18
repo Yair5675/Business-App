@@ -151,6 +151,10 @@ public class DayShiftsFragment extends Fragment {
         this.shiftViews.add(newShift);
         this.shiftsLayout.addView(newShift);
 
+        // Set margins:
+        final int MARGINS = 10;
+        ((LinearLayout.LayoutParams) newShift.getLayoutParams()).setMargins(0, MARGINS, 0, MARGINS);
+
         // Set on role clicked listener:
         newShift.setOnRoleClickedListener(roleColumnView -> {
             // If the user selected an employee, add them to the role:
