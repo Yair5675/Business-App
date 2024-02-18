@@ -63,7 +63,11 @@ public class RoleColumnView extends LinearLayout {
     }
 
     public void setRole(String roleName) {
+        // Save the role:
         this.roleName = roleName;
+
+        // Set the role name:
+        this.tvRoleName.setText(this.roleName);
     }
 
     public List<Employee> getEmployees() {
