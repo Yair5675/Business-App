@@ -119,7 +119,7 @@ public class AddRoleDialog {
             if (this.tilRoleName.getError() != null)
                 return;
 
-            final String roleName = Util.getTextFromEt(this.etRoleName);
+            final String roleName = Util.fixNamingCapitalization(Util.getTextFromEt(this.etRoleName));
 
             // Show the progress bar and hide the submit button:
             this.pbLoading.setVisibility(View.VISIBLE);
