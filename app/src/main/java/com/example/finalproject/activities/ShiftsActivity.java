@@ -178,7 +178,10 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     private void initTabLayout() {
         new TabLayoutMediator(this.tabLayout, this.pager,
                 // Set to the day of the week:
-                ((tab, position) -> tab.setText(DayOfWeek.of(position + 1).getDisplayName(TextStyle.SHORT, Locale.US)))
+                ((tab, position) -> tab.setText(
+                        // Adjust for 1 meaning Monday in DayOfWeek:
+                        DayOfWeek.of(position == 0 ? 7 : position).getDisplayName(TextStyle.SHORT, Locale.US)
+                ))
         ).attach();
     }
 
