@@ -200,4 +200,9 @@
     <!-- Strings belonging to the shifts activity: -->
     <string name="act_shifts_sample_toolbar_title">Business name\'s shifts</string>
     <string name="act_shifts_sample_toolbar_subtitle">Sunday - 18/2/2024</string>
+
+
+    <!-- Strings belonging to the shift view: -->
+    <string name="shift_view_tv_start_time_sample">Starting at: 8:00</string>
+    <string name="shift_view_tv_end_time_sample">Ending at: 15:00</string>
 </resources>
