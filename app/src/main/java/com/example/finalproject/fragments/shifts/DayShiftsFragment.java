@@ -115,7 +115,14 @@ public class DayShiftsFragment extends Fragment {
         // Reload the shift views to the shift layout:
         for (ShiftView shiftView : this.shiftViews)
             this.shiftsLayout.addView(shiftView);
+
+        // Prevent the user from adding more shifts if the added number is the max number:
+        this.btnAddShift.setVisibility(this.canAddShifts() ? View.VISIBLE : View.GONE);
         return parent;
+    }
+
+    private boolean canAddShifts() {
+        return this.branch.getDailyShiftsNum().get(this.dayIndex) > this.shiftViews.size();
     }
 
     private void addShift() {
@@ -138,6 +145,9 @@ public class DayShiftsFragment extends Fragment {
     }
 
     private void refreshShifts() {
+        // Prevent the user from adding more shifts if the added number is the max number:
+        this.btnAddShift.setVisibility(this.canAddShifts() ? View.VISIBLE : View.GONE);
+
         // If there are no shifts, don't do anything:
         if (this.shiftViews.isEmpty())
             return;

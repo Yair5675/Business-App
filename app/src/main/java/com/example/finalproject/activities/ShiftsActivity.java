@@ -142,6 +142,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     }
 
     private void initDayShiftsFragments() {
+        // TODO: Don't create fragments for days that have 0 shifts in them as maximum
         this.fragments = new DayShiftsFragment[7];
         for (int i = 0; i < this.fragments.length; i++) {
             this.fragments[i] = DayShiftsFragment.newInstance(
