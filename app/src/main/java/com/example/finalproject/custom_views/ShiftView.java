@@ -83,7 +83,7 @@ public class ShiftView extends LinearLayout {
     public void setEndTime(int endTimeMinutes) {
         this.endTime = endTimeMinutes;
         this.tvEndTime.setText(String.format(Locale.getDefault(),
-                "Starting at: %02d:%02d", endTime / 60, endTime % 60)
+                "Ending at: %02d:%02d", endTime / 60, endTime % 60)
         );
     }
 }
