@@ -25,6 +25,7 @@ import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.dialogs.DeleteBranchDialog;
 import com.example.finalproject.fragments.branch.ApplicationsFragment;
 import com.example.finalproject.fragments.branch.EmployeesFragment;
+import com.example.finalproject.fragments.branch.RolesFragment;
 import com.example.finalproject.fragments.input.business.BusinessUpdateForm;
 import com.example.finalproject.util.EmployeeStatus;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,6 +33,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.Serializable;
 
 public class BranchActivity extends AppCompatActivity {
+    // The view pager that allows the user to swipe between fragments:
+    private ViewPager2 pager;
+
+    // The title of the activity:
+    private TextView tvTitle;
+
     // The current user connected to the app:
     private User currentUser;
 
@@ -41,26 +48,26 @@ public class BranchActivity extends AppCompatActivity {
     // A reference to the online database:
     private FirebaseFirestore dbRef;
 
-    // The delete branch dialog:
-    private DeleteBranchDialog deleteBranchDialog;
+    // The title of the toolbar:
+    private TextView tvToolbarTitle;
+
+    // The roles fragment:
+    private RolesFragment rolesFragment;
+
+    // The user's status in the branch:
+    private EmployeeStatus employeeStatus;
 
     // The employees fragment:
     private EmployeesFragment employeesFragment;
 
-    // The title of the activity:
-    private TextView tvTitle;
+    // The adapter responsible for the view pager:
+    private ScreenSlideAdapter screenSlideAdapter;
 
-    // The title of the toolbar:
-    private TextView tvToolbarTitle;
+    // The delete branch dialog:
+    private DeleteBranchDialog deleteBranchDialog;
 
     // The applications fragment:
     private ApplicationsFragment applicationsFragment;
-
-    // The view pager that allows the user to swipe between fragments:
-    private ViewPager2 pager;
-
-    // The user's status in the branch:
-    private EmployeeStatus employeeStatus;
 
     // Tag for debugging purposes:
     private static final String TAG = "BranchActivity";
@@ -85,6 +92,9 @@ public class BranchActivity extends AppCompatActivity {
 
         // Create the employees fragment:
         this.employeesFragment = new EmployeesFragment(this.currentUser, this.currentBranch);
+
+        // Create the roles fragment (initially not as a manager):
+        this.rolesFragment = new RolesFragment(this.currentBranch.getBranchId(), false);
 
         // Create the applications fragment:
         this.applicationsFragment = new ApplicationsFragment(this.currentBranch);
@@ -273,16 +283,21 @@ public class BranchActivity extends AppCompatActivity {
         // Save the current status:
         this.employeeStatus = status;
 
-        // Only allow the user to scroll between fragments if they are managers:
-        if (this.employeeStatus != EmployeeStatus.MANAGER) {
-            this.pager.setCurrentItem(0);
-            this.pager.setUserInputEnabled(false);
+        // If the employee is a manager, let them see all fragments:
+        if (this.employeeStatus == EmployeeStatus.MANAGER) {
+            this.screenSlideAdapter.addFragment(this.applicationsFragment);
         }
-        else
-            this.pager.setUserInputEnabled(true);
+        // If not, don't let them see the applications fragment:
+        else {
+            this.pager.setCurrentItem(0);
+            this.screenSlideAdapter.removeFragment(this.applicationsFragment);
+        }
 
         // Set the status in the employees fragment:
         this.employeesFragment.setEmployeeStatus(status);
+
+        // Change the isManager attribute in the roles fragment:
+        this.rolesFragment.setManager(status == EmployeeStatus.MANAGER);
 
         // Update the menu:
         supportInvalidateOptionsMenu();
@@ -290,12 +305,12 @@ public class BranchActivity extends AppCompatActivity {
 
     private void initPagerAdapter() {
         // Initialize the adapter and prevent the user from swiping at first:
-        ScreenSlideAdapter adapter = new ScreenSlideAdapter(this, this.getFragments());
-        this.pager.setAdapter(adapter);
+        this.screenSlideAdapter = new ScreenSlideAdapter(this, this.getFragments());
+        this.pager.setAdapter(this.screenSlideAdapter);
     }
 
     private Fragment[] getFragments() {
-        return new Fragment[] { this.employeesFragment, this.applicationsFragment };
+        return new Fragment[] { this.employeesFragment, this.rolesFragment, this.applicationsFragment };
     }
 
     private void loadUserFromIntent() {

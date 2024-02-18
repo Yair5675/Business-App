@@ -48,10 +48,14 @@ public class RolesFragment extends Fragment {
 
     public void setManager(boolean manager) {
         this.isManager = manager;
-        this.adapter.setManager(manager);
 
-        // Show the add role button only if the user is a manager:
-        this.btnAddRole.setVisibility(manager ? View.VISIBLE : View.GONE);
+        if (this.adapter != null && this.btnAddRole != null) {
+            // Update the adapter:
+            this.adapter.setManager(manager);
+
+            // Show the add role button only if the user is a manager:
+            this.btnAddRole.setVisibility(manager ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Nullable
