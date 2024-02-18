@@ -1,6 +1,7 @@
 package com.example.finalproject.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
@@ -9,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
@@ -178,7 +178,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     private void initTabLayout() {
         new TabLayoutMediator(this.tabLayout, this.pager,
                 // Set to the day of the week:
-                ((tab, position) -> tab.setText(DayOfWeek.of(position).getDisplayName(TextStyle.SHORT, Locale.US)))
+                ((tab, position) -> tab.setText(DayOfWeek.of(position + 1).getDisplayName(TextStyle.SHORT, Locale.US)))
         ).attach();
     }
 
