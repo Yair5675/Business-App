@@ -1,10 +1,11 @@
 package com.example.finalproject.custom_views;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.StorageUtil;
@@ -50,5 +51,18 @@ public class EmployeeView extends LinearLayout {
 
         // Set their image:
         StorageUtil.loadImgFromStorage(this.context, this.employee.getImagePath(), this.imgEmployee, R.drawable.guest);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null)
+            return false;
+        else if (this == obj)
+            return true;
+        else if (!(obj instanceof EmployeeView))
+            return false;
+        // The employee view is equal if the employees represented are the same:
+        else
+            return this.employee.equals(((EmployeeView) obj).employee);
     }
 }
