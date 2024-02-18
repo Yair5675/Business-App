@@ -151,6 +151,18 @@ public class DayShiftsFragment extends Fragment {
         this.shiftViews.add(newShift);
         this.shiftsLayout.addView(newShift);
 
+        // Set on role clicked listener:
+        newShift.setOnRoleClickedListener(roleColumnView -> {
+            // If the user selected an employee, add them to the role:
+            if (this.selectedEmployee != null) {
+                roleColumnView.addEmployee(this.selectedEmployee.getEmployee());
+
+                // Remove the selection:
+                this.selectedEmployee.setBackgroundResource(android.R.color.background_light);
+                this.selectedEmployee = null;
+            }
+        });
+
         // Set long click listener:
         newShift.setOnLongClickListener(shiftView -> {
             // Delete the shift view:
