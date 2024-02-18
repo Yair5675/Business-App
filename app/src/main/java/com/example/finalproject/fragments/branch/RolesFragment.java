@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.OnlineRolesAdapter;
 import com.example.finalproject.dialogs.AddRoleDialog;
+import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -67,6 +68,9 @@ public class RolesFragment extends Fragment {
         this.rvRoles = parent.findViewById(R.id.fragBranchRolesRvRoles);
         this.tvRolesNotFound = parent.findViewById(R.id.fragBranchRolesTvNoRolesFound);
         this.btnAddRole = parent.findViewById(R.id.fragBranchRolesBtnAddRole);
+
+        // Set a linear layout manager:
+        this.rvRoles.setLayoutManager(new WrapperLinearLayoutManager(requireContext()));
 
         // Initialize the recyclerView adapter:
         this.initAdapter();
