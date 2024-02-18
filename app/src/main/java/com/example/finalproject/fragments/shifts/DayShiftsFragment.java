@@ -47,6 +47,9 @@ public class DayShiftsFragment extends Fragment {
 
     public DayShiftsFragment() {
         // Required empty public constructor
+
+        // Initialize shifts list:
+        this.shiftViews = new LinkedList<>();
     }
 
     /**
