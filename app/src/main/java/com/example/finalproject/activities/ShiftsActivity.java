@@ -218,8 +218,8 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     public void onTabSelected(TabLayout.Tab tab) {
         // Set the toolbar:
         final LocalDate date = this.firstDayDate.plusDays(tab.getPosition());
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(tab.getText() + " d/M/y");
-        this.toolbar.setSubtitle(formatter.format(date));
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
+        this.toolbar.setSubtitle(tab.getText() + " " + formatter.format(date));
 
         // Move the view pager:
         this.pager.setCurrentItem(tab.getPosition());
