@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.example.finalproject.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ShiftView extends LinearLayout {
@@ -49,7 +50,7 @@ public class ShiftView extends LinearLayout {
         this.roleColumns.clear();
     }
 
-    public void setRoles(String ... roleNames) {
+    public void setRoles(List<String> roleNames) {
         // Clear previous roles:
         this.clearRoles();
 
