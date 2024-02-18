@@ -125,6 +125,7 @@ public class DayShiftsFragment extends Fragment {
 
         // Add the new shift to the layout:
         final ShiftView newShift = new ShiftView(requireContext());
+        newShift.setRoles(this.roles);
         this.shiftViews.add(newShift);
         this.shiftsLayout.addView(newShift);
 
