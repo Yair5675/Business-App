@@ -131,10 +131,17 @@ public class DayShiftsFragment extends Fragment {
 
         // Reset all shifts' time:
         int startTime = this.branch.getOpeningTime();
-        for (ShiftView shiftView : this.shiftViews) {
-            shiftView.setStartTime(startTime);
-            shiftView.setEndTime(startTime + sharedTime);
+        for (int i = 0; i < this.shiftViews.size(); i++) {
+            // Get the current shift:
+            final ShiftView currentShift = this.shiftViews.get(i);
+
+            // Set the shift's time:
+            currentShift.setStartTime(startTime);
+            currentShift.setEndTime(startTime + sharedTime);
             startTime += sharedTime;
+
+            // Set the color:
+            currentShift.setBackgroundResource(i % 2 == 0 ? R.color.gray : R.color.white);
         }
     }
 
