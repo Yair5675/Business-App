@@ -1,5 +1,7 @@
 package com.example.finalproject.database.online.collections;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 
 public class Employee {
@@ -105,5 +107,17 @@ public class Employee {
     public String jsonifyEmployee() {
         final Gson gson = new Gson();
         return gson.toJson(this);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null)
+            return false;
+        else if (this == obj)
+            return true;
+        else if (!(obj instanceof Employee))
+            return false;
+        else
+            return this.uid.equals(((Employee) obj).uid);
     }
 }
