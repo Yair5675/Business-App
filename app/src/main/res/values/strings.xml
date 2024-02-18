@@ -196,4 +196,8 @@
     <string name="dialog_add_role_add_role_hint">Role name</string>
     <string name="dialog_add_role_btn_submit_txt">Submit</string>
 
+
+    <!-- Strings belonging to the shifts activity: -->
+    <string name="act_shifts_sample_toolbar_title">Business name\'s shifts</string>
+    <string name="act_shifts_sample_toolbar_subtitle">Sunday - 18/2/2024</string>
 </resources>
