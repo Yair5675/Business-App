@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -279,20 +280,28 @@ public class BranchActivity extends AppCompatActivity {
                 });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void setEmployeeStatus(EmployeeStatus status) {
         // Save the current status:
         this.employeeStatus = status;
 
-        // If the employee is a manager, let them see all fragments:
+        // Clear fragments from the page adapter:
+        this.screenSlideAdapter.clearFragments();
+
+        // Add the fragments both managers and non-managers can see:
+        this.screenSlideAdapter.addFragment(this.employeesFragment);
+        this.screenSlideAdapter.addFragment(this.rolesFragment);
+
+        // If the employee is a manager, let them see the applications fragment:
         if (this.employeeStatus == EmployeeStatus.MANAGER) {
             this.screenSlideAdapter.addFragment(this.applicationsFragment);
         }
-        // If not, don't let them see the applications fragment:
-        else {
-            this.pager.setCurrentItem(0);
-            this.screenSlideAdapter.removeFragment(this.applicationsFragment);
-        }
 
+        // Notify the adapter:
+        this.screenSlideAdapter.notifyDataSetChanged();
+
+        // Go to the first fragment:
+        this.pager.setCurrentItem(0);
         // Set the status in the employees fragment:
         this.employeesFragment.setEmployeeStatus(status);
 

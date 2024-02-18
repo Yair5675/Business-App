@@ -35,21 +35,13 @@ public class ScreenSlideAdapter extends FragmentStateAdapter {
      */
     public void addFragment(Fragment fragment) {
         this.fragments.add(fragment);
-        this.notifyItemInserted(this.fragments.size() - 1);
     }
 
     /**
-     * Removes the given fragment from the adapter.
-     * @param fragment A fragment that will be removed from the adapter.
+     * Clears the fragments from the adapter.
      */
-    public void removeFragment(Fragment fragment) {
-        // Get the index of the fragment:
-        final int index = this.fragments.indexOf(fragment);
-
-        // Remove the fragment:
-        if (index != -1) {
-            this.fragments.remove(index);
-            this.notifyItemRemoved(index);
-        }
+    public void clearFragments() {
+        this.fragments.clear();
     }
+
 }
