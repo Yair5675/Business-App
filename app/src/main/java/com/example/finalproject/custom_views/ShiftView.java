@@ -9,6 +9,7 @@ import com.example.finalproject.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 public class ShiftView extends LinearLayout {
     // The context of the view:
@@ -48,6 +49,15 @@ public class ShiftView extends LinearLayout {
         for (RoleColumnView roleColumn : this.roleColumns)
             this.rolesLayout.removeView(roleColumn);
         this.roleColumns.clear();
+    }
+
+    public void setOnRoleClickedListener(Consumer<RoleColumnView> onRoleClickedListener) {
+        // Set the listener for all columns:
+        for (RoleColumnView roleColumn : this.roleColumns)
+            roleColumn.setOnClickListener(view -> {
+                if (view instanceof RoleColumnView)
+                    onRoleClickedListener.accept((RoleColumnView) view);
+            });
     }
 
     public void setRoles(List<String> roleNames) {
