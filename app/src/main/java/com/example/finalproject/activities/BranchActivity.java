@@ -32,6 +32,8 @@ import com.example.finalproject.util.EmployeeStatus;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 public class BranchActivity extends AppCompatActivity {
     // The view pager that allows the user to swipe between fragments:
@@ -210,7 +212,7 @@ public class BranchActivity extends AppCompatActivity {
             InputActivity.setCurrentInputForm(updateForm);
 
             // Go to the input activity:
-            Intent intent = new Intent(this, InputActivity.class);
+            final Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
             finish();
         }
@@ -219,7 +221,19 @@ public class BranchActivity extends AppCompatActivity {
             // Show the delete dialog:
             this.deleteBranchDialog.show();
         }
-        // TODO: Implement the set shifts item too
+        // If the manager wants to set the shifts:
+        else if (ID == R.id.menuBranchItemSetShifts) {
+            // Get next sunday (if today is a sunday, get today):
+            final LocalDate nextSunday = LocalDate.now().with(DayOfWeek.SUNDAY);
+
+            // Go to the shifts activity and pass it the branch and the sunday date:
+            final Intent intent = new Intent(this, ShiftsActivity.class);
+            intent.putExtra("branch", this.currentBranch)
+                    .putExtra("day", nextSunday.getDayOfMonth())
+                    .putExtra("month", nextSunday.getMonthValue())
+                    .putExtra("year", nextSunday.getYear());
+            startActivity(intent);
+        }
 
         // If it's another item, use super call:
         return super.onOptionsItemSelected(item);
