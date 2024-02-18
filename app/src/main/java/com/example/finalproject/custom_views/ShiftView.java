@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.finalproject.R;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class ShiftView extends LinearLayout {
@@ -21,6 +22,9 @@ public class ShiftView extends LinearLayout {
     // The text views that display the starting and ending time of the shift:
     private final TextView tvStartTime, tvEndTime;
 
+    // The list holding all role columns in the shift:
+    private final ArrayList<RoleColumnView> roleColumns;
+
     public ShiftView(Context context) {
         super(context);
 
@@ -35,7 +39,29 @@ public class ShiftView extends LinearLayout {
         this.tvStartTime = findViewById(R.id.shiftViewTvStart);
         this.tvEndTime = findViewById(R.id.shiftViewTvEnd);
 
-        // TODO: Create role columns
+        // Initialize the role columns list:
+        this.roleColumns = new ArrayList<>();
+    }
+
+    public void clearRoles() {
+        for (RoleColumnView roleColumn : this.roleColumns)
+            this.rolesLayout.removeView(roleColumn);
+        this.roleColumns.clear();
+    }
+
+    public void setRoles(String ... roleNames) {
+        // Clear previous roles:
+        this.clearRoles();
+
+        for (String roleName : roleNames) {
+            // Create a new role column:
+            final RoleColumnView roleColumn = new RoleColumnView(this.context);
+            roleColumn.setRole(roleName);
+
+            // Add them to the layout:
+            this.roleColumns.add(roleColumn);
+            this.rolesLayout.addView(roleColumn);
+        }
     }
 
     public int getStartTime() {
