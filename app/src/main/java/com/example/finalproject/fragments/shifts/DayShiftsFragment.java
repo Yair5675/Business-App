@@ -31,7 +31,7 @@ public class DayShiftsFragment extends Fragment {
     private List<String> roles;
 
     // The list that holds the shift views:
-    private List<ShiftView> shiftViews;
+    private final List<ShiftView> shiftViews;
 
     // The list that holds the employee views:
     private List<EmployeeView> employeeViews;
@@ -125,6 +125,23 @@ public class DayShiftsFragment extends Fragment {
         this.shiftViews.add(newShift);
         this.shiftsLayout.addView(newShift);
 
+        // Set long click listener:
+        newShift.setOnLongClickListener(shiftView -> {
+            // Delete the shift view:
+            if (shiftView instanceof ShiftView)
+                this.deleteShift((ShiftView) shiftView);
+            return true;
+        });
+
+        // Refresh the shifts:
+        this.refreshShifts();
+    }
+
+    private void refreshShifts() {
+        // If there are no shifts, don't do anything:
+        if (this.shiftViews.isEmpty())
+            return;
+
         // Set the shifts in a way that each occupy the same time:
         final int totalTime = this.branch.getClosingTime() - this.branch.getOpeningTime();
         final int sharedTime = totalTime / this.shiftViews.size();
@@ -143,6 +160,15 @@ public class DayShiftsFragment extends Fragment {
             // Set the color:
             currentShift.setBackgroundResource(i % 2 == 0 ? R.color.gray : R.color.white);
         }
+    }
+
+    public void deleteShift(ShiftView shiftView) {
+        // Remove the shift view from the layout:
+        this.shiftViews.remove(shiftView);
+        this.shiftsLayout.removeView(shiftView);
+
+        // Refresh the shifts:
+        this.refreshShifts();
     }
 
     @Override
