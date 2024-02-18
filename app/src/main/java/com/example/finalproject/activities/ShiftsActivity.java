@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
-    // A reference to the online database:
-    private FirebaseFirestore db;
 
     // The branch whose shifts are being set:
     private Branch branch;
@@ -78,6 +76,9 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         // Load the date from the intent:
         this.loadDateFromIntent();
 
+        // Load the roles from the intent:
+        this.loadRolesFromIntent();
+
         // Load the views:
         this.pbLoading = findViewById(R.id.actShiftsPbLoading);
         this.tabLayout = findViewById(R.id.actShiftsTabLayout);
@@ -92,23 +93,20 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
 
         // Load employees:
         this.loadEmployees(() -> {
-            // Load roles:
-            this.loadRoles(() -> {
-                // Initialize fragments:
-                this.initDayShiftsFragments();
+            // Initialize fragments:
+            this.initDayShiftsFragments();
 
-                // Initialize the adapter:
-                this.initPagerAdapter();
+            // Initialize the adapter:
+            this.initPagerAdapter();
 
-                // Initialize tab layout:
-                this.initTabLayout();
+            // Initialize tab layout:
+            this.initTabLayout();
 
-                // Initialize swipe listener:
-                this.initSwipeListener();
+            // Initialize swipe listener:
+            this.initSwipeListener();
 
-                // Stop loading:
-                this.setLoading(false);
-            });
+            // Stop loading:
+            this.setLoading(false);
         });
     }
 
@@ -119,8 +117,10 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     }
 
     private void loadEmployees(Runnable onSuccessRunnable) {
+        // A reference to the online database:
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         // Get all employees in the branch:
-        this.db = FirebaseFirestore.getInstance();
         db.collection(String.format("branches/%s/employees", this.branch.getBranchId())).get()
                 .addOnSuccessListener(queryDocuments -> {
                     // Convert the documents to Employee objects:
@@ -136,26 +136,6 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Couldn't load employees", e);
-                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    finish();
-                });
-    }
-
-    private void loadRoles(Runnable onSuccessRunnable) {
-        // Get all roles in the branch:
-        this.db.collection(String.format("branches/%s/roles", this.branch.getBranchId())).get()
-                .addOnSuccessListener(queryDocuments -> {
-                    // Get role name through the documents' ID:
-                    final List<String> roles = new LinkedList<>();
-                    for (QueryDocumentSnapshot document : queryDocuments)
-                        roles.add(document.getId());
-                    this.rolesList = roles;
-
-                    // Run the callback:
-                    onSuccessRunnable.run();
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Couldn't load roles", e);
                     Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     finish();
                 });
@@ -214,6 +194,13 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             final int month = intent.getIntExtra("month", 0);
             final int year = intent.getIntExtra("year", 0);
             this.firstDayDate = LocalDate.of(year, month, day);
+        }
+    }
+
+    private void loadRolesFromIntent() {
+        final Intent intent = getIntent();
+        if (intent != null) {
+            this.rolesList = intent.getStringArrayListExtra("roles");
         }
     }
 

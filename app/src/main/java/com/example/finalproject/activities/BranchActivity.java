@@ -29,11 +29,14 @@ import com.example.finalproject.fragments.branch.EmployeesFragment;
 import com.example.finalproject.fragments.branch.RolesFragment;
 import com.example.finalproject.fragments.input.business.BusinessUpdateForm;
 import com.example.finalproject.util.EmployeeStatus;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class BranchActivity extends AppCompatActivity {
     // The view pager that allows the user to swipe between fragments:
@@ -223,20 +226,50 @@ public class BranchActivity extends AppCompatActivity {
         }
         // If the manager wants to set the shifts:
         else if (ID == R.id.menuBranchItemSetShifts) {
-            // Get next sunday (if today is a sunday, get today):
-            final LocalDate nextSunday = LocalDate.now().with(DayOfWeek.SUNDAY);
 
-            // Go to the shifts activity and pass it the branch and the sunday date:
-            final Intent intent = new Intent(this, ShiftsActivity.class);
-            intent.putExtra("branch", this.currentBranch)
-                    .putExtra("day", nextSunday.getDayOfMonth())
-                    .putExtra("month", nextSunday.getMonthValue())
-                    .putExtra("year", nextSunday.getYear());
-            startActivity(intent);
+
+            // Get the roles in order to give them to the shifts activity:
+            this.loadRoles(roles -> {
+                // Check if the roles are empty:
+                if (roles.isEmpty()) {
+                    Toast.makeText(this, "You can't set shifts without defining roles", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // Get next sunday (if today is a sunday, get today):
+                final LocalDate nextSunday = LocalDate.now().with(DayOfWeek.SUNDAY);
+
+                // Go to the shifts activity and pass it the branch, sunday date and roles:
+                final Intent intent = new Intent(this, ShiftsActivity.class);
+                intent.putExtra("branch", this.currentBranch)
+                        .putExtra("day", nextSunday.getDayOfMonth())
+                        .putExtra("month", nextSunday.getMonthValue())
+                        .putExtra("year", nextSunday.getYear())
+                        .putExtra("roles", roles);
+                startActivity(intent);
+            });
         }
 
         // If it's another item, use super call:
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadRoles(OnSuccessListener<ArrayList<String>> onSuccessListener) {
+        // Get all roles in the branch:
+        this.dbRef.collection(String.format("branches/%s/roles", this.currentBranch.getBranchId())).get()
+                .addOnSuccessListener(queryDocuments -> {
+                    // Get role name through the documents' ID:
+                    final ArrayList<String> roles = new ArrayList<>(queryDocuments.size());
+                    for (QueryDocumentSnapshot document : queryDocuments)
+                        roles.add(document.getId());
+
+                    // Run the callback:
+                    onSuccessListener.onSuccess(roles);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Couldn't load roles", e);
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
     }
 
     private void deleteCurrentBranch() {
