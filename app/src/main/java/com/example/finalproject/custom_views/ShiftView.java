@@ -6,8 +6,10 @@ import android.widget.TextView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Employee;
+import com.example.finalproject.database.online.collections.Worker;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -112,5 +114,23 @@ public class ShiftView extends LinearLayout {
         this.tvEndTime.setText(String.format(Locale.getDefault(),
                 "Ending at: %02d:%02d", endTime / 60, endTime % 60)
         );
+    }
+
+    public static class PackagedShift {
+        // The date of the shift:
+        public final Date DATE;
+
+        // The starting and ending time of the shift in minutes since midnight:
+        public final int STARTING_TIME, ENDING_TIME;
+
+        // The list or workers in the shift:
+        public final List<Worker> workers;
+
+        public PackagedShift(Date DATE, int STARTING_TIME, int ENDING_TIME, List<Worker> workers) {
+            this.DATE = DATE;
+            this.STARTING_TIME = STARTING_TIME;
+            this.ENDING_TIME = ENDING_TIME;
+            this.workers = workers;
+        }
     }
 }
