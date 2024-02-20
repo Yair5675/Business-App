@@ -209,4 +209,5 @@
 
     <!-- Strings belonging to the day shifts fragment: -->
     <string name="frag_day_shifts_btn_add_shift_txt">Add Shift</string>
+    <string name="act_shifts_btn_save_txt">Save shifts</string>
 </resources>

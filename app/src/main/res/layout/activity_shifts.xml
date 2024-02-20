@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center_horizontal"
     tools:context=".activities.ShiftsActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -27,14 +28,30 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/actShiftsPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         />
 
     <ProgressBar
         android:id="@+id/actShiftsPbLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         />
+
+    <android.widget.Button
+        android:id="@+id/actShiftsBtnSaveShifts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        style="@style/ImprovedButtonAppearance"
+        android:text="@string/act_shifts_btn_save_txt"
+
+        android:drawableStart="@drawable/save_icon_white"
+        android:drawablePadding="8dp"
+        android:paddingHorizontal="10dp"
+
+        android:layout_marginVertical="16dp"
+        />
+
 
 </LinearLayout>

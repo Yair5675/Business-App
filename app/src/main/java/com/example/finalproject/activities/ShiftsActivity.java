@@ -88,6 +88,9 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         // Set the title for the toolbar:
         this.toolbar.setTitle(String.format(Locale.getDefault(), "%s's shifts", this.branch.getCompanyName()));
 
+        // Set the onClickListener for the save shifts button:
+        findViewById(R.id.actShiftsBtnSaveShifts).setOnClickListener(_v -> this.saveShifts());
+
         // Load until the employees and roles are loaded:
         this.setLoading(true);
 
@@ -142,7 +145,6 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     }
 
     private void initDayShiftsFragments() {
-        // TODO: Don't create fragments for days that have 0 shifts in them as maximum
         this.fragments = new DayShiftsFragment[7];
         for (int i = 0; i < this.fragments.length; i++) {
             this.fragments[i] = DayShiftsFragment.newInstance(
@@ -203,6 +205,10 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         if (intent != null) {
             this.rolesList = intent.getStringArrayListExtra("roles");
         }
+    }
+
+    private void saveShifts() {
+        // TODO: Save the shifts in the database or update existing shifts
     }
 
     @Override
