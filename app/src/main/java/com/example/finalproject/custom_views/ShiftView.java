@@ -8,8 +8,11 @@ import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Worker;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -114,6 +117,21 @@ public class ShiftView extends LinearLayout {
         this.tvEndTime.setText(String.format(Locale.getDefault(),
                 "Ending at: %02d:%02d", endTime / 60, endTime % 60)
         );
+    }
+
+    public PackagedShift getPackagedShift(LocalDate localDate) {
+        // Convert the LocalDate to date:
+        final Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        // Form the list of workers:
+        final List<Worker> workers = new LinkedList<>();
+        for (RoleColumnView roleColumn : this.roleColumns) {
+            for (Employee employee : roleColumn.getEmployees())
+                workers.add(new Worker(employee, roleColumn.getRole()));
+        }
+
+        // Return the packaged shift:
+        return new PackagedShift(date, this.startTime, this.endTime, workers);
     }
 
     public static class PackagedShift {
