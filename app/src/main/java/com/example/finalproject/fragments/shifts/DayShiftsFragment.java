@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments.shifts;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.custom_views.EmployeeView;
@@ -167,6 +169,9 @@ public class DayShiftsFragment extends Fragment {
             }
         });
 
+        // Set time picker dialogs when clicking on the shift view's text views:
+        this.initTimePickers(newShift);
+
         // Set long click listener:
         newShift.setOnLongClickListener(shiftView -> {
             // Delete the shift view:
@@ -177,6 +182,105 @@ public class DayShiftsFragment extends Fragment {
 
         // Refresh the shifts:
         this.refreshShifts();
+    }
+
+    private void initTimePickers(ShiftView shiftView) {
+        // Create the time picker dialogs:
+        final TimePickerDialog startingTimeDialog = new TimePickerDialog(
+                requireContext(),
+                (timePicker, hour, minute) -> this.setShiftStartTime(hour, minute, shiftView),
+                shiftView.getStartTime() / 60, shiftView.getStartTime() % 60, true
+        );
+        final TimePickerDialog endingTimeDialog = new TimePickerDialog (
+                requireContext(),
+                (timePicker, hour, minute) -> this.setShiftEndTime(hour, minute, shiftView),
+                shiftView.getEndTime() / 60, shiftView.getEndTime() % 60, true
+        );
+
+        // Activate them when clicking on the text views in the shift view:
+        shiftView.getTvStartTime().setOnClickListener(_v -> startingTimeDialog.show());
+        shiftView.getTvEndTime().setOnClickListener(_v -> endingTimeDialog.show());
+    }
+
+    private void setShiftEndTime(int hour, int minute, ShiftView shiftView) {
+        // Get the minimum out of the received time and the branch's closing time:
+        final int endTime = Math.min(60 * hour + minute, this.branch.getClosingTime());
+
+        // Check that the end time is after the start time:
+        if (endTime <= shiftView.getStartTime()) {
+            Toast.makeText(requireContext(), "Shift's end time must be after start time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get the index of the shiftView in the list:
+        final int shiftIdx = this.shiftViews.indexOf(shiftView);
+
+        // If it's not in the list end the function:
+        if (shiftIdx == -1) return;
+
+        // Change the shift's time:
+        shiftView.setEndTime(endTime);
+
+        // If it's the last shift, no more changes are needed:
+        if (shiftIdx != this.shiftViews.size() - 1) {
+            // Remove any overlapping with next shifts, and delete them if there isn't enough time:
+            int timeRemaining = endTime - this.shiftViews.get(shiftIdx + 1).getStartTime();
+            for (int i = shiftIdx + 1; i < this.shiftViews.size() && timeRemaining > 0; i++) {
+                final ShiftView currentShift = this.shiftViews.get(i);
+                final int totalTime = currentShift.getEndTime() - currentShift.getStartTime();
+                if (timeRemaining >= totalTime) {
+                    this.deleteShift(currentShift);
+                    timeRemaining -= totalTime;
+                    i--;  // An item was removed - adjust indices
+                }
+                else {
+                    // Set start time and update time picker:
+                    currentShift.setStartTime(currentShift.getStartTime() + timeRemaining);
+                    this.initTimePickers(currentShift);
+                    timeRemaining = 0;
+                }
+            }
+        }
+    }
+
+    private void setShiftStartTime(int hour, int minute, ShiftView shiftView) {
+        // Get the maximum out of the received time and the branch's opening time:
+        final int startTime = Math.max(60 * hour + minute, this.branch.getOpeningTime());
+
+        // Check that the start time is before the end time:
+        if (startTime >= shiftView.getEndTime()) {
+            Toast.makeText(requireContext(), "Shift's start time must be before end time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get the index of the shiftView in the list:
+        final int shiftIdx = this.shiftViews.indexOf(shiftView);
+
+        // If it's not in the list end the function:
+        if (shiftIdx == -1) return;
+
+        // Change the shift's time:
+        shiftView.setStartTime(startTime);
+
+        // If it's the first shift, no more changes are needed:
+        if (shiftIdx != 0) {
+            // Remove any overlapping with previous shifts, and delete them if there isn't enough time:
+            int timeRemaining = this.shiftViews.get(shiftIdx - 1).getEndTime() - startTime;
+            for (int i = shiftIdx - 1; i >= 0 && timeRemaining > 0; i--) {
+                final ShiftView currentShift = this.shiftViews.get(i);
+                final int totalTime = currentShift.getEndTime() - currentShift.getStartTime();
+                if (timeRemaining >= totalTime) {
+                    this.deleteShift(currentShift);
+                    timeRemaining -= totalTime;
+                }
+                else {
+                    // Set end time and update time picker:
+                    currentShift.setEndTime(currentShift.getEndTime() - timeRemaining);
+                    this.initTimePickers(currentShift);
+                    timeRemaining = 0;
+                }
+            }
+        }
     }
 
     private void refreshShifts() {
@@ -212,8 +316,8 @@ public class DayShiftsFragment extends Fragment {
         this.shiftViews.remove(shiftView);
         this.shiftsLayout.removeView(shiftView);
 
-        // Refresh the shifts:
-        this.refreshShifts();
+        // A shift was removed so a new one can be created:
+        this.btnAddShift.setVisibility(View.VISIBLE);
     }
 
     @Override

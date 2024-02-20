@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,6 +12,8 @@
         android:layout_height="wrap_content"
         android:text="@string/shift_view_tv_start_time_sample"
         android:textSize="20sp"
+        app:drawableEndCompat="@drawable/edit_icon_2"
+        android:drawablePadding="8dp"
         />
 
     <TextView
@@ -20,6 +23,8 @@
         android:text="@string/shift_view_tv_end_time_sample"
         android:textSize="20sp"
         android:layout_marginBottom="8dp"
+        app:drawableEndCompat="@drawable/edit_icon_2"
+        android:drawablePadding="8dp"
         />
 
     <HorizontalScrollView

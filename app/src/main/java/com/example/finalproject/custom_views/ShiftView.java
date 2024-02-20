@@ -83,6 +83,14 @@ public class ShiftView extends LinearLayout {
         return endTime;
     }
 
+    public TextView getTvStartTime() {
+        return tvStartTime;
+    }
+
+    public TextView getTvEndTime() {
+        return tvEndTime;
+    }
+
     public void setStartTime(int startTimeMinutes) {
         this.startTime = startTimeMinutes;
         this.tvStartTime.setText(String.format(Locale.getDefault(),
