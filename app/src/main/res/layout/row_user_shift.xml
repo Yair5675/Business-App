@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:orientation="vertical"
+    >
+    <TextView
+        android:id="@+id/rowUserShiftTvCompanyName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Company Name"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        />
+
+    <TextView
+        android:id="@+id/rowUserShiftTvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="At: 10/10/1010"
+        android:textSize="18sp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/rowUserShiftTvStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="From: 9:00"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/rowUserShiftTvEnd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="To: 22:30"
+            android:textSize="18sp"
+            />
+    </LinearLayout>
+
+</LinearLayout>
