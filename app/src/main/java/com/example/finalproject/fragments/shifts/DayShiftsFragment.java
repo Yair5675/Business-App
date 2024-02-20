@@ -20,6 +20,7 @@ import com.example.finalproject.custom_views.ShiftView;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class DayShiftsFragment extends Fragment {
 
     // The index of the day that the fragment sets shifts for (0 - Sunday):
     private int dayIndex;
+
+    // The date of the shift fragment:
+    private LocalDate date;
 
     // The employee view that was selected:
     private @Nullable EmployeeView selectedEmployee;
@@ -63,13 +67,16 @@ public class DayShiftsFragment extends Fragment {
      * @return A new instance of fragment DayShiftsFragment.
      */
     public static DayShiftsFragment newInstance(
-            Context context, int dayIndex, Branch branch, List<Employee> employees, List<String> roles
+            Context context, int dayIndex, LocalDate date, Branch branch, List<Employee> employees, List<String> roles
     ) {
         // Create the fragment instance:
         final DayShiftsFragment fragment = new DayShiftsFragment();
 
         // Set the roles in the branch:
         fragment.roles = roles;
+
+        // Set the date:
+        fragment.date = date;
 
         // Set the branch:
         fragment.branch = branch;

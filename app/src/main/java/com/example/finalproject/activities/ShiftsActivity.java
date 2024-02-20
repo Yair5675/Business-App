@@ -148,7 +148,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         this.fragments = new DayShiftsFragment[7];
         for (int i = 0; i < this.fragments.length; i++) {
             this.fragments[i] = DayShiftsFragment.newInstance(
-                    this, i, this.branch, this.employeeList, this.rolesList
+                    this, i, this.firstDayDate.plusDays(i), this.branch, this.employeeList, this.rolesList
             );
         }
     }
