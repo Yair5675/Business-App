@@ -308,6 +308,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         shift.setDate(packagedShift.DATE);
         shift.setStartingTime(packagedShift.STARTING_TIME);
         shift.setEndingTime(packagedShift.ENDING_TIME);
+        shift.setCompanyName(this.branch.getCompanyName());
 
         // Create a new batch:
         final WriteBatch batch = this.db.batch();
@@ -325,7 +326,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
 
             // Set the shift for the worker:
             DocumentReference shiftNotificationRef = this.db.document(String.format(
-                    "users/%s/workplaces/%s/shifts/%s", worker.getUid(), this.branch.getBranchId(), shift.getShiftId()
+                    "users/%s/workplaces/%s/user_shifts/%s", worker.getUid(), this.branch.getBranchId(), shift.getShiftId()
             ));
             batch.set(shiftNotificationRef, shift, SetOptions.merge());
         }

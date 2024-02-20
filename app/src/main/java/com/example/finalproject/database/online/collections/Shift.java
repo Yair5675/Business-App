@@ -9,6 +9,9 @@ public class Shift {
     // The date of the shift:
     private Date date;
 
+    // The name of the branch that the shift is at:
+    private String companyName;
+
     // The starting and ending time (in minutes):
     private int startingTime, endingTime;
 
@@ -45,5 +48,13 @@ public class Shift {
 
     public void setEndingTime(int endingTime) {
         this.endingTime = endingTime;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 }
