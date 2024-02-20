@@ -5,6 +5,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.database.online.collections.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,14 @@ public class ShiftView extends LinearLayout {
                 if (view instanceof RoleColumnView)
                     onRoleClickedListener.accept((RoleColumnView) view);
             });
+    }
+
+    public boolean containsEmployee(Employee employee) {
+        for (RoleColumnView roleColumn : this.roleColumns) {
+            if (roleColumn.containsEmployee(employee))
+                return true;
+        }
+        return false;
     }
 
     public void setRoles(List<String> roleNames) {

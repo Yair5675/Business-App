@@ -161,7 +161,12 @@ public class DayShiftsFragment extends Fragment {
         newShift.setOnRoleClickedListener(roleColumnView -> {
             // If the user selected an employee, add them to the role:
             if (this.selectedEmployee != null) {
-                roleColumnView.addEmployee(this.selectedEmployee.getEmployee());
+                // Check if the employee appears in the shift:
+                if (newShift.containsEmployee(this.selectedEmployee.getEmployee()))
+                    Toast.makeText(requireContext(), "Employee already works in that shift", Toast.LENGTH_SHORT).show();
+                // If not add them:
+                else
+                    roleColumnView.addEmployee(this.selectedEmployee.getEmployee());
 
                 // Remove the selection:
                 this.selectedEmployee.setBackgroundResource(android.R.color.background_light);

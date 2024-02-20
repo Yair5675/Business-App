@@ -62,6 +62,14 @@ public class RoleColumnView extends LinearLayout {
         }
     }
 
+    public boolean containsEmployee(Employee employee) {
+        for (EmployeeView employeeView : this.employeeViews) {
+            if (employeeView.getEmployee().equals(employee))
+                return true;
+        }
+        return false;
+    }
+
     public void removeEmployeeView(EmployeeView employeeView) {
         // Remove the view from the list:
         if (this.employeeViews.remove(employeeView))
