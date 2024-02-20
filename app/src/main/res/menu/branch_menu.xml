@@ -11,10 +11,6 @@
         android:icon="@drawable/delete_icon"
         app:showAsAction="ifRoom"
         />
-    <item android:id="@+id/menuBranchItemSeeShifts"
-        android:title="@string/branch_menu_item_see_shifts"
-        app:showAsAction="never"
-        />
     <item android:id="@+id/menuBranchItemSetShifts"
         android:title="@string/branch_menu_item_set_future_shifts"
         app:showAsAction="never"
