@@ -4,7 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import androidx.exifinterface.media.ExifInterface;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -199,7 +202,7 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
 
             return true;
         } catch (IOException e) {
-            Log.e("UserInputFragment3 - loadBitmapFromUri", e.toString());
+            Log.e(TAG, "Couldn't load bitmap from URI", e);
             return false;
         }
     }
@@ -226,11 +229,55 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
     private void handleCameraPhoto() {
         // Load bitmap right away because the URI is already set:
         if (this.loadBitmapFromUri()) {
+            // Fix the camera rotation:
+            this.fixCameraRotation();
+
             // Set it as the image of the user if it was loaded properly:
             Util.setCircularImage(this.requireContext(), this.imgUser, this.bitmapPhoto);
         }
         else
             Toast.makeText(requireContext(), "Could not load the picture", Toast.LENGTH_SHORT).show();
+    }
+
+    private void fixCameraRotation() {
+        try {
+            // Get the rotation that was applied:
+            final String path = this.getRealPathFromURI();
+            if (path == null) {
+                Log.e(TAG, "Couldn't fix camera rotation, uri path is null");
+                return;
+            }
+            ExifInterface exif = new ExifInterface(path);
+
+            int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (rotation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    this.bitmapPhoto = Util.rotateBitmap(this.bitmapPhoto, 90);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    this.bitmapPhoto = Util.rotateBitmap(this.bitmapPhoto, 180);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    this.bitmapPhoto = Util.rotateBitmap(this.bitmapPhoto, 270);
+                    break;
+            }
+
+        } catch (IOException e) {
+            Log.e(TAG, "Couldn't fix rotated bitmap", e);
+        }
+    }
+
+    private String getRealPathFromURI() {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = requireContext().getContentResolver().query(this.uriPhoto, projection, null, null, null);
+        if (cursor != null) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+            return filePath;
+        }
+        return null;
     }
 
     @Override

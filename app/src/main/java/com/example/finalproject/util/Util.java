@@ -3,6 +3,7 @@ package com.example.finalproject.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Environment;
 import android.text.Editable;
 import android.view.View;
@@ -190,6 +191,20 @@ public class Util {
 
         // Create the date and return it:
         return Date.from(calendar.toInstant());
+    }
+
+    /**
+     * Rotates a bitmap clockwise by a certain amount of degrees.
+     * @param bitmap A bitmap before rotation.
+     * @param degrees The rotation that will be applied to the bitmap clockwise.
+     * @return A new bitmap similar to the received bitmap but rotated clockwise.
+     */
+    public static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        final Bitmap rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        bitmap.recycle();
+        return rotated;
     }
 
 
