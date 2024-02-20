@@ -167,7 +167,6 @@
     <!-- Strings belonging to the branch menu: -->
     <string name="branch_menu_item_edit">Edit Branch</string>
     <string name="branch_menu_item_delete">Delete Branch</string>
-    <string name="branch_menu_item_see_shifts">See shifts</string>
     <string name="branch_menu_item_set_future_shifts">Set Future Shifts</string>
 
 
@@ -211,4 +210,9 @@
     <!-- Strings belonging to the day shifts fragment: -->
     <string name="frag_day_shifts_btn_add_shift_txt">Add Shift</string>
     <string name="act_shifts_btn_save_txt">Save shifts</string>
+
+
+    <!-- Strings belonging to the main shifts fragment: -->
+    <string name="frag_main_shifts_title"><b>Your Shifts:</b></string>
+    <string name="frag_main_shifts_no_shifts_message">You have no shifts</string>
 </resources>
