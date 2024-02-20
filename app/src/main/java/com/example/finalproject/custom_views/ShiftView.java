@@ -7,14 +7,15 @@ import android.widget.TextView;
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Worker;
+import com.example.finalproject.util.Util;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ShiftView extends LinearLayout {
@@ -120,9 +121,6 @@ public class ShiftView extends LinearLayout {
     }
 
     public PackagedShift getPackagedShift(LocalDate localDate) {
-        // Convert the LocalDate to date:
-        final Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
         // Form the list of workers:
         final List<Worker> workers = new LinkedList<>();
         for (RoleColumnView roleColumn : this.roleColumns) {
@@ -131,7 +129,7 @@ public class ShiftView extends LinearLayout {
         }
 
         // Return the packaged shift:
-        return new PackagedShift(date, this.startTime, this.endTime, workers);
+        return new PackagedShift(Util.getDateFromLocalDate(localDate), this.startTime, this.endTime, workers);
     }
 
     public static class PackagedShift {
@@ -142,13 +140,21 @@ public class ShiftView extends LinearLayout {
         public final int STARTING_TIME, ENDING_TIME;
 
         // The list or workers in the shift:
-        public final List<Worker> workers;
+        public final List<Worker> WORKERS;
 
         public PackagedShift(Date DATE, int STARTING_TIME, int ENDING_TIME, List<Worker> workers) {
             this.DATE = DATE;
             this.STARTING_TIME = STARTING_TIME;
             this.ENDING_TIME = ENDING_TIME;
-            this.workers = workers;
+            this.WORKERS = workers;
+        }
+
+        /**
+         * Generates a unique ID for the shift by hashing its date, starting time and ending time.
+         * @return A unique ID based on the shift's time.
+         */
+        public String generateShiftId() {
+            return Integer.toString(Objects.hash(DATE, STARTING_TIME, ENDING_TIME));
         }
     }
 }
