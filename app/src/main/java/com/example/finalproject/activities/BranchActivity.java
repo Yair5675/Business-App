@@ -192,6 +192,7 @@ public class BranchActivity extends AppCompatActivity {
         menu.findItem(R.id.menuBranchItemEdit).setVisible(isManager);
         menu.findItem(R.id.menuBranchItemDelete).setVisible(isManager);
         menu.findItem(R.id.menuBranchItemSetShifts).setVisible(isManager);
+        menu.findItem(R.id.menuBranchItemSeeShifts).setVisible(this.employeeStatus != EmployeeStatus.UNEMPLOYED);
 
         return true;
     }
@@ -224,10 +225,8 @@ public class BranchActivity extends AppCompatActivity {
             // Show the delete dialog:
             this.deleteBranchDialog.show();
         }
-        // If the manager wants to set the shifts:
+        // If the manager wants to set the future shifts:
         else if (ID == R.id.menuBranchItemSetShifts) {
-
-
             // Get the roles in order to give them to the shifts activity:
             this.loadRoles(roles -> {
                 // Check if the roles are empty:
@@ -244,6 +243,25 @@ public class BranchActivity extends AppCompatActivity {
                         .putExtra("day", nextSunday.getDayOfMonth())
                         .putExtra("month", nextSunday.getMonthValue())
                         .putExtra("year", nextSunday.getYear())
+                        .putExtra("roles", roles);
+                startActivity(intent);
+            });
+        }
+        // If the user wants to see the shifts:
+        else if (ID == R.id.menuBranchItemSeeShifts) {
+            // Get the roles in order to give them to the shifts activity:
+            this.loadRoles(roles -> {
+                // Get previous sunday (if today is a sunday, get today):
+                LocalDate today = LocalDate.now(), lastSunday = today.with(DayOfWeek.SUNDAY);
+                if (today.getDayOfWeek() != DayOfWeek.SUNDAY)
+                    lastSunday.minusWeeks(1);
+
+                // Go to the shifts activity and pass it the branch, sunday date and roles:
+                final Intent intent = new Intent(this, ShiftsActivity.class);
+                intent.putExtra("branch", this.currentBranch)
+                        .putExtra("day", lastSunday.getDayOfMonth())
+                        .putExtra("month", lastSunday.getMonthValue())
+                        .putExtra("year", lastSunday.getYear())
                         .putExtra("roles", roles);
                 startActivity(intent);
             });
