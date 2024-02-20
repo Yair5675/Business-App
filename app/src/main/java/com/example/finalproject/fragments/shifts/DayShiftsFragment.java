@@ -332,6 +332,15 @@ public class DayShiftsFragment extends Fragment {
         this.btnAddShift.setVisibility(View.VISIBLE);
     }
 
+    public List<ShiftView.PackagedShift> getPackagedShifts() {
+        // Form the packaged shifts list and return it:
+        final List<ShiftView.PackagedShift> packagedShifts = new LinkedList<>();
+        for (ShiftView shiftView : this.shiftViews) {
+            packagedShifts.add(shiftView.getPackagedShift(this.date));
+        }
+        return packagedShifts;
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
