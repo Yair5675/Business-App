@@ -196,7 +196,7 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
 
             // Compare it to the original image (in a thread for performance issues):
             if (this.orgPhoto != null) {
-                Thread thread = new Thread(() -> this.isImageChanged = this.orgPhoto.sameAs(this.bitmapPhoto));
+                Thread thread = new Thread(() -> this.isImageChanged = !this.orgPhoto.sameAs(this.bitmapPhoto));
                 thread.start();
             }
 
