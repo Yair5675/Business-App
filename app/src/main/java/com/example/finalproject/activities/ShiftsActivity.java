@@ -18,6 +18,7 @@ import com.example.finalproject.custom_views.ShiftView;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
+import com.example.finalproject.database.online.collections.UserShift;
 import com.example.finalproject.database.online.collections.Worker;
 import com.example.finalproject.fragments.shifts.DayShiftsFragment;
 import com.example.finalproject.util.Util;
@@ -325,10 +326,16 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             batch.set(workerRef, worker, SetOptions.merge());
 
             // Set the shift for the worker:
+            final UserShift userShift = new UserShift();
+            userShift.setUid(worker.getUid());
+            userShift.setDate(shift.getDate());
+            userShift.setStartingTime(shift.getStartingTime());
+            userShift.setEndingTime(shift.getEndingTime());
+            userShift.setRoleName(worker.getRoleName());
             DocumentReference shiftNotificationRef = this.db.document(String.format(
                     "users/%s/workplaces/%s/user_shifts/%s", worker.getUid(), this.branch.getBranchId(), shift.getShiftId()
             ));
-            batch.set(shiftNotificationRef, shift, SetOptions.merge());
+            batch.set(shiftNotificationRef, userShift, SetOptions.merge());
         }
 
         // Commit the branch:
