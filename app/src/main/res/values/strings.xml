@@ -65,6 +65,17 @@
     <!-- Strings belonging to the about dialog: -->
     <string name="dialog_about_title"><b>About Us</b></string>
     <string name="dialog_about_text">
+        Welcome to Shift-Flow!\n\n
+        This app is dedicated to organizing and managing shifts and businesses.\n\n
+        After you register in the app, you can browse businesses from all around the world and apply
+         to them.\n
+        After a manager from the branch will accept you, you will be updated about your shifts in
+         the home page. A manager can also promote or demote you, depending on your current status.\n
+        Additionally, the manager can also fire you.\n\n
+        You can also create your own branch with the menu icon that looks like a house with a plus.\n
+        As a manager, you can accept applications from other employees, promote or demote them, and
+         also fire them. You can also create and remove roles for your employees, and create shifts
+         with your employees.\n\n
         This beautiful app was created, designed, and coded by the amazing individual Yair Ziv. Yair
         Ziv is a student in twelfth grade in Alliance, and is learning how to make mobile apps.
         \n\nThis is his final project for the year, and he hopes you\'ll enjoy it!

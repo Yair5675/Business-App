@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
 import com.example.finalproject.custom_views.ShiftView;
+import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
@@ -28,7 +29,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -259,19 +259,14 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-        // TODO: Replace it with a cloud function and delete workers in sub-collection too
-        // Use a collection group query to delete all shifts:
-        this.db.collectionGroup("shifts")
-                .whereEqualTo("date", Util.getDateFromLocalDate(localDate))
-                .get()
-                .addOnSuccessListener(documents -> {
-                    // Delete them all:
-                    final WriteBatch batch = this.db.batch();
-                    for (DocumentSnapshot document : documents)
-                        batch.delete(document.getReference());
-                    batch.commit().addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
-                })
-                .addOnFailureListener(onFailureListener);
+        // Get the cloud functions handler and call the function:
+        final CloudFunctionsHandler functionsHandler = CloudFunctionsHandler.getInstance();
+        functionsHandler.deleteAllShifts(
+                localDate,
+                this.branch.getBranchId(),
+                () -> onSuccessListener.onSuccess(null),
+                onFailureListener
+        );
     }
 
     private void saveShiftsRecursive(List<ShiftView.PackagedShift> packagedShifts, int index) {
