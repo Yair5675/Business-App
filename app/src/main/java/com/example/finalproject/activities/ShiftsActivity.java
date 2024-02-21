@@ -332,6 +332,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             userShift.setStartingTime(shift.getStartingTime());
             userShift.setEndingTime(shift.getEndingTime());
             userShift.setRoleName(worker.getRoleName());
+            userShift.setCompanyName(this.branch.getCompanyName());
             DocumentReference shiftNotificationRef = this.db.document(String.format(
                     "users/%s/workplaces/%s/user_shifts/%s", worker.getUid(), this.branch.getBranchId(), shift.getShiftId()
             ));

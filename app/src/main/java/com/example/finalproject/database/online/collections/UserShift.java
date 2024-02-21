@@ -9,6 +9,9 @@ public class UserShift {
     // The role of the user:
     private String roleName;
 
+    // The name of the company of the shift:
+    private String companyName;
+
     // The date of the shift:
     private Date date;
 
@@ -57,5 +60,13 @@ public class UserShift {
 
     public void setEndingTime(int endingTime) {
         this.endingTime = endingTime;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 }
