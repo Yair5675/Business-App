@@ -21,6 +21,7 @@ import com.example.finalproject.database.online.collections.Shift;
 import com.example.finalproject.database.online.collections.UserShift;
 import com.example.finalproject.database.online.collections.Worker;
 import com.example.finalproject.fragments.shifts.DayShiftsFragment;
+import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,8 +37,8 @@ import com.google.firebase.firestore.WriteBatch;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -106,8 +107,10 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         this.pager = findViewById(R.id.actShiftsPager);
         this.btnSaveShifts = findViewById(R.id.actShiftsBtnSaveShifts);
 
-        // Set the title for the toolbar:
+        // Set the title and subtitle for the toolbar:
         this.toolbar.setTitle(String.format(Locale.getDefault(), "%s's shifts", this.branch.getCompanyName()));
+        final Date date = Util.getDateFromLocalDate(this.firstDayDate);
+        this.toolbar.setSubtitle("Sun " + Constants.DATE_FORMAT.format(date));
 
         // Set the onClickListener for the save shifts button:
         this.btnSaveShifts.setOnClickListener(_v -> this.saveShifts());
@@ -348,8 +351,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     public void onTabSelected(TabLayout.Tab tab) {
         // Set the toolbar:
         final LocalDate date = this.firstDayDate.plusDays(tab.getPosition());
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
-        this.toolbar.setSubtitle(tab.getText() + " " + formatter.format(date));
+        this.toolbar.setSubtitle(tab.getText() + " " + Constants.DATE_FORMAT.format(Util.getDateFromLocalDate(date)));
 
         // Move the view pager:
         this.pager.setCurrentItem(tab.getPosition());

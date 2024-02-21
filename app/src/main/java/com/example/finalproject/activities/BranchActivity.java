@@ -234,7 +234,9 @@ public class BranchActivity extends AppCompatActivity {
                     return;
                 }
                 // Get next sunday (if today is a sunday, get today):
-                final LocalDate nextSunday = LocalDate.now().with(DayOfWeek.SUNDAY);
+                LocalDate nextSunday = LocalDate.now().with(DayOfWeek.SUNDAY);
+                if (nextSunday.isBefore(LocalDate.now()))
+                    nextSunday = nextSunday.plusWeeks(1);
 
                 // Go to the shifts activity and pass it the branch, sunday date and roles:
                 final Intent intent = new Intent(this, ShiftsActivity.class);
