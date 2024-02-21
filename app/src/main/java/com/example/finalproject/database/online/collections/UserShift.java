@@ -6,6 +6,9 @@ public class UserShift {
     // The user's ID:
     private String uid;
 
+    // The branch's ID:
+    private String branchId;
+
     // The role of the user:
     private String roleName;
 
@@ -68,5 +71,13 @@ public class UserShift {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
     }
 }
