@@ -23,6 +23,9 @@ import com.google.firebase.firestore.Query;
 import java.io.Serializable;
 
 public class UsersActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+    // The currently connected user:
+    private User user;
+
     // A reference to the online database:
     private OnlineDatabase db;
 
@@ -55,10 +58,10 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
         this.initOnBackPressedCallback();
 
         // Get the current user:
-        final User currentUser = this.loadUserFromIntent();
+        this.user = this.loadUserFromIntent();
 
         // If the user is null, go back to the main activity:
-        if (currentUser == null) {
+        if (this.user == null) {
             final Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -66,14 +69,14 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
         }
 
         // If he isn't an admin, hide the search view:
-        svUsers.setVisibility(currentUser.isAdmin() ? View.VISIBLE : View.GONE);
+        svUsers.setVisibility(this.user.isAdmin() ? View.VISIBLE : View.GONE);
 
         // Initialize the "No users found" textView and make it disappear:
         this.tvNoUsersFound = findViewById(R.id.actUsersTvUserNotFound);
         this.tvNoUsersFound.setVisibility(View.GONE);
 
         // Initialize the online adapter:
-        this.initAdapter(currentUser);
+        this.initAdapter();
     }
 
     private @Nullable User loadUserFromIntent() {
@@ -105,12 +108,12 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
         getOnBackPressedDispatcher().addCallback(callback);
     }
 
-    private void initAdapter(User currentUser) {
+    private void initAdapter() {
         // If the user is an admin:
         FirestoreRecyclerOptions.Builder<User> builder = new FirestoreRecyclerOptions.Builder<User>()
                 .setLifecycleOwner(this);
         Query query;
-        if (currentUser.isAdmin())
+        if (this.user.isAdmin())
             // Use a simple query to get the first 50 users:
             query = this.db.getFirestoreReference()
                     .collection("users")
@@ -120,7 +123,7 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
             // Only get the current user:
             query = this.db.getFirestoreReference()
                     .collection("users")
-                    .whereEqualTo("uid", currentUser.getUid())
+                    .whereEqualTo("uid", this.user.getUid())
                     .limit(1);
 
         FirestoreRecyclerOptions<User> options = builder.setQuery(query, User.class).build();
@@ -164,6 +167,27 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        // If the text is empty, show all users:
+        if (newText.isEmpty()) {
+            FirestoreRecyclerOptions.Builder<User> builder = new FirestoreRecyclerOptions.Builder<User>()
+                    .setLifecycleOwner(this);
+            Query query;
+            if (this.user.isAdmin())
+                // Use a simple query to get the first 50 users:
+                query = this.db.getFirestoreReference()
+                        .collection("users")
+                        .orderBy("birthdate", Query.Direction.DESCENDING)
+                        .limit(50);
+            else
+                // Only get the current user:
+                query = this.db.getFirestoreReference()
+                        .collection("users")
+                        .whereEqualTo("uid", this.user.getUid())
+                        .limit(1);
+
+            FirestoreRecyclerOptions<User> options = builder.setQuery(query, User.class).build();
+            this.onlineAdapter.updateOptions(options);
+        }
         return false;
     }
 }
