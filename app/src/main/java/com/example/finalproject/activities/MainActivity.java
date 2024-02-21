@@ -26,6 +26,7 @@ import com.example.finalproject.fragments.input.business.BusinessRegistrationFor
 import com.example.finalproject.fragments.main.BranchesFragment;
 import com.example.finalproject.fragments.main.PersonalFragment;
 import com.example.finalproject.fragments.input.user.UserRegistrationForm;
+import com.example.finalproject.fragments.main.ShiftsFragment;
 
 import java.util.Locale;
 
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO: Update the text view that says "Good morning" to "Good evening" or other time greetings
 
+    // The adapter for the view pager:
+    private ScreenSlideAdapter adapter;
+
     // The view pager that allows the user to swipe between fragments:
     private ViewPager2 pager;
 
@@ -49,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
     // A reference to the branches fragment:
     private BranchesFragment branchesFragment;
+
+    // A reference to the shifts fragment:
+    private ShiftsFragment shiftsFragment;
 
     // The connected user:
     private User connectedUser;
@@ -76,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
         // Initialize the branches fragment:
         this.branchesFragment = new BranchesFragment();
 
+        // Initialize the shifts fragment:
+        this.shiftsFragment = ShiftsFragment.newInstance(null);
+
         // Initialize the view pager:
         this.pager = findViewById(R.id.actMainPager);
         this.initPagerAdapter();
@@ -102,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         // Update the fragments:
         this.personalFragment.setConnectedUser(user);
         this.branchesFragment.setUser(user);
+        this.shiftsFragment.setUser(user);
 
         // Update the user's image:
         StorageUtil.loadUserImgFromStorage(this, user, this.imgUser, R.drawable.guest);
@@ -142,14 +153,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initPagerAdapter() {
         // Initialize the adapter and prevent the user from swiping at first:
-        ScreenSlideAdapter adapter = new ScreenSlideAdapter(this, this.getFragments());
-        this.pager.setAdapter(adapter);
+        this.adapter = new ScreenSlideAdapter(this, this.getFragments());
+        this.pager.setAdapter(this.adapter);
         this.pager.setUserInputEnabled(false);
         this.pager.setCurrentItem(getPersonalFragmentIndex());
     }
 
     private Fragment[] getFragments() {
-        return new Fragment[] { this.personalFragment, this.branchesFragment };
+        return new Fragment[] { this.personalFragment, this.branchesFragment, this.shiftsFragment };
     }
 
     private int getPersonalFragmentIndex() {

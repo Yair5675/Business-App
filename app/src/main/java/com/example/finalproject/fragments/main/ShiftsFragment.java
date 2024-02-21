@@ -54,9 +54,14 @@ public class ShiftsFragment extends Fragment {
         this.tvNoShifts = parent.findViewById(R.id.fragMainShiftsTvNoShifts);
 
         // Initialize the adapter:
-        this.initAdapter();
+        if (user != null)
+            this.initAdapter();
 
         return parent;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     private void initAdapter() {
