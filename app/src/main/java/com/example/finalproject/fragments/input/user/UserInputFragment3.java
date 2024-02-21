@@ -31,6 +31,7 @@ import com.example.finalproject.fragments.input.InputFragment;
 import com.example.finalproject.util.Permissions;
 import com.example.finalproject.util.Util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 
@@ -294,12 +295,30 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
     public Bundle getInputs() {
         // Return the bitmap photo in a bundle:
         final Bundle bundle = new Bundle();
-        bundle.putByteArray(PHOTO_KEY, Util.toByteArray(this.bitmapPhoto));
+
+        // Compress the photo:
+        bundle.putByteArray(PHOTO_KEY, this.getCompressedByteArray());
 
         // Also signal if the image was changed or not:
         if (this.orgPhoto != null)
             bundle.putBoolean(IS_IMAGE_CHANGED_KEY, this.isImageChanged);
         return bundle;
+    }
+
+    private byte[] getCompressedByteArray() {
+        // Compress the photo:
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.bitmapPhoto.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+        final byte[] bytes = baos.toByteArray();
+
+        // Close the byte array output stream:
+        try {
+            baos.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Couldn't close byte array output stream", e);
+        }
+
+        return bytes;
     }
 
 }
