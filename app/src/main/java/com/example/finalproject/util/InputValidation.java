@@ -99,27 +99,67 @@ public class InputValidation {
     }
 
     public static Result<Void, String> validateEmail(String email) {
+        // https://knowledge.validity.com/hc/en-us/articles/220560587-What-are-the-rules-for-email-address-syntax
         // Checking if the email is empty:
         if (email.isEmpty())
             return Result.failure(Constants.MANDATORY_INPUT_ERROR);
+        // Check for @:
+        else if (!email.contains("@"))
+            return Result.failure("Missing @");
+        // Check for more than one @:
+        else if (email.indexOf('@') != email.lastIndexOf('@'))
+            return Result.failure("Multiple @ are not allowed");
 
-        // Checking that the email ends with '@gmail.com':
-        else if(!email.endsWith("@gmail.com"))
-            return Result.failure("Must end with '@gmail.com'");
+        // Validate recipient name:
+        final String recipient = email.substring(0, email.indexOf('@'));
+        final Result<Void, String> recipientResult = validateRecipientName(recipient);
+        if (recipientResult.isErr())
+            return recipientResult;
 
-        // Checking there are only English characters and numbers in the email:
-        final String uniquePart = email.substring(0, email.lastIndexOf('@'));
+        // Validate domain name:
+        final String domain = email.substring(email.indexOf('@') + 1);
+        if (domain.isEmpty())
+            return Result.failure("Missing domain");
+        else if (!domain.contains("."))
+            return Result.failure("Missing top level domain");
+        else if (domain.contains(".."))
+            return Result.failure("Double dots are invalid");
 
-        // Checking the part before the '@' is not empty:
-        if (uniquePart.isEmpty())
-            return Result.failure("Invalid email");
+        // Validate top domain:
+        final String topDomain = domain.substring(domain.lastIndexOf('.') + 1);
+        if (topDomain.isEmpty())
+            return Result.failure("Missing top level domain");
+        else if (!isInEnglish(topDomain))
+            return Result.failure("Top domain must only contain letters");
 
-        for (int i = 0; i < uniquePart.length(); i++) {
-            final char current = uniquePart.charAt(i);
+        // Validate bottom domain:
+        final String bottomDomain = domain.substring(0, domain.lastIndexOf('.'));
+        if (bottomDomain.isEmpty())
+            return Result.failure("Missing bottom domain");
+        for (char c : bottomDomain.toCharArray()) {
+            if (!isInEnglish(Character.toString(c)) && c != '.')
+                return Result.failure(String.format("Invalid character: %c", c));
+        }
 
-            // If it's not an english char nor number:
-            if (('A' > current || current > 'Z') && ('a' > current || current > 'z') && ('0' > current || current > '9'))
-                return Result.failure("Must contain only English characters and numbers");
+        return Result.success(null);
+    }
+
+    private static Result<Void, String> validateRecipientName(String recipient) {
+        if (recipient.isEmpty())
+            return Result.failure("Recipient name is empty");
+
+        else if (!isInEnglish(Character.toString(recipient.charAt(0))))
+            return Result.failure("Must start with an english character");
+
+        else if (recipient.length() > 20)
+            return Result.failure("Recipient name too long");
+
+        final String allowedCharacters = "!#$%&'*+-/=?^_`{|}()._";
+        for (char c : recipient.toCharArray()) {
+            if (!isInEnglish(Character.toString(c)) &&
+                !Character.isDigit(c) &&
+                !allowedCharacters.contains(Character.toString(c)))
+                return Result.failure(String.format("Invalid character: %c", c));
         }
 
         return Result.success(null);
