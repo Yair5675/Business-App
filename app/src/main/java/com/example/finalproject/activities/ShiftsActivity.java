@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
 import com.example.finalproject.custom_views.ShiftView;
-import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
@@ -29,6 +28,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -233,40 +233,51 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         this.pbLoading.setVisibility(View.VISIBLE);
         this.btnSaveShifts.setVisibility(View.GONE);
 
-        // Go over every shifts fragment:
-        for (int i = 0; i < this.fragments.length; i++) {
-            // Get the shifts summary:
-            final List<ShiftView.PackagedShift> packagedShifts = this.fragments[i].getPackagedShifts();
+        // Delete all shifts:
+        this.deleteAllShifts(unused -> {
+            // Go over every shifts fragment:
+            for (DayShiftsFragment fragment : this.fragments) {
+                // Get the shifts summary:
+                final List<ShiftView.PackagedShift> packagedShifts = fragment.getPackagedShifts();
 
-            // Delete all shifts for this day:
-            this.deleteAllShifts(
-                    this.firstDayDate.plusDays(i),
-                    // Save the new ones if the operation was successful:
-                    unused -> this.saveShiftsRecursive(packagedShifts, 0),
-                    e -> {
-                        // Log the error and alert the user:
-                        Log.e(TAG, "Failed to delete shifts", e);
-                        Toast.makeText(this, "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
-                        this.btnSaveShifts.setVisibility(View.VISIBLE);
-                        this.pbLoading.setVisibility(View.GONE);
-                    }
-            );
-        }
+                // Save them:
+                this.saveShiftsRecursive(packagedShifts, 0);
+            }
+        }, e -> {
+            // Log the error and alert the user:
+            Log.e(TAG, "Failed to delete shifts", e);
+            Toast.makeText(this, "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
+            this.btnSaveShifts.setVisibility(View.VISIBLE);
+            this.pbLoading.setVisibility(View.GONE);
+        });
+
     }
 
     private void deleteAllShifts(
-            LocalDate localDate,
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-        // Get the cloud functions handler and call the function:
-        final CloudFunctionsHandler functionsHandler = CloudFunctionsHandler.getInstance();
-        functionsHandler.deleteAllShifts(
-                localDate,
-                this.branch.getBranchId(),
-                () -> onSuccessListener.onSuccess(null),
-                onFailureListener
-        );
+       deleteAllShifts(0, onSuccessListener, onFailureListener);
+    }
+
+    private void deleteAllShifts(int index, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        if (index == 7)
+            onSuccessListener.onSuccess(null);
+
+        final Date date = Util.getDateFromLocalDate(this.firstDayDate.plusDays(index));
+        // Get all shifts from the branch at the date:
+        this.db
+                .collection(String.format("branches/%s/shifts", this.branch.getBranchId()))
+                .whereEqualTo("date", date)
+                .get()
+                .addOnSuccessListener(shiftDocs -> {
+                    // Create a write batch:
+                    final WriteBatch batch = this.db.batch();
+                    for (DocumentSnapshot shiftDoc : shiftDocs)
+                        batch.delete(shiftDoc.getReference());
+                    batch.commit().addOnSuccessListener(unused -> deleteAllShifts(index + 1, onSuccessListener, onFailureListener)).addOnFailureListener(onFailureListener);
+                })
+                .addOnFailureListener(onFailureListener);
     }
 
     private void saveShiftsRecursive(List<ShiftView.PackagedShift> packagedShifts, int index) {
