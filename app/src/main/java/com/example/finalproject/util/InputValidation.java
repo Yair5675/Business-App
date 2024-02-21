@@ -66,11 +66,36 @@ public class InputValidation {
         else if (lastName.length() > MAX_SURNAME_LENGTH)
             return Result.failure("Surname too long");
 
-        // Checking that every character is in English:
-        if (isInEnglish(lastName))
-            return Result.success(null);
-        else
-            return Result.failure("Must be in English");
+        // Split to words:
+        final String[] words = lastName.split(" ");
+
+        // Check the length:
+        if (words.length > 2)
+            return Result.failure("Only 2 words are allowed");
+
+        // Validate each word:
+        for (int i = 0; i < words.length; i++) {
+            final String word = words[i];
+            // Check the length of the word:
+            if (word.length() < MIN_SURNAME_LENGTH) {
+                if (word.length() == 1 && Character.isAlphabetic(word.charAt(0)))
+                    return Result.failure("An initial ends with a dot");
+                return Result.failure(String.format("%s word is too short", i == 0 ? "First" : "Second"));
+            }
+
+            // Check that the word is in english:
+            if (!isInEnglish(word)) {
+                // Check if that's an initial:
+                if (Character.isAlphabetic(word.charAt(0))) {
+                    if (i != 0 || words.length == 1)
+                        return Result.failure("Initial must be before a surname");
+                }
+                else
+                    return Result.failure("Must be in English");
+            }
+        }
+
+        return Result.success(null);
     }
 
     public static Result<Void, String> validateEmail(String email) {
