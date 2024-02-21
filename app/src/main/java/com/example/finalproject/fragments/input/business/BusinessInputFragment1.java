@@ -187,7 +187,7 @@ public class BusinessInputFragment1 extends InputFragment {
     private void addValidationFunctions() {
         // TODO: Create a custom validation function for the company name
         // Add validation functions for all inputs:
-        this.validationFunctions.put(this.etCompanyName, InputValidation::validateFirstName);
+        this.validationFunctions.put(this.etCompanyName, InputValidation::validateCompanyName);
         this.validationFunctions.put(this.etBranchPassword, InputValidation::validatePassword);
         this.validationFunctions.put(this.etOpeningTime, timePicked -> {
             if (timePicked.isEmpty())

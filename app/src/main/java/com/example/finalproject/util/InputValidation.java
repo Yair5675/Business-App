@@ -209,4 +209,43 @@ public class InputValidation {
     private static boolean isInEnglish(String word) {
         return word.matches("^[a-zA-Z]+$");
     }
+
+    public static Result<Void, String> validateCompanyName(String companyName) {
+        // https://learn.microsoft.com/en-us/partner-center/validate-names-addresses
+        if (companyName.isEmpty())
+            return Result.failure(Constants.MANDATORY_INPUT_ERROR);
+        else if (companyName.length() < 2)
+            return Result.failure("Company name too short");
+        else if (companyName.length() > 30)
+            return Result.failure("Company name too long");
+        else if(companyName.contains("  "))
+            return Result.failure("Double spaces are not allowed");
+        else if (companyName.charAt(0) == ' ' || companyName.charAt(companyName.length() - 1) == ' ')
+            return Result.failure("Can't end or start with a space");
+
+        final String[] words = companyName.split(" ");
+        for (String word : words) {
+            final Result<Void, String> wordResult = validateCompanyWord(word);
+            if (wordResult.isErr())
+                return wordResult;
+        }
+
+        return Result.success(null);
+    }
+
+    private static Result<Void, String> validateCompanyWord(String word) {
+        // Don't allow a single char:
+        if (word.length() == 1)
+            return Result.failure("Each word must have more than one character");
+
+        // Check allowed characters:
+        final String allowedChars = "~-=#.%+-:^[$&]@*()/|`<!:(>?){،{}'⟨;⟩'\"+";
+        for (char c : word.toCharArray()) {
+            if (!allowedChars.contains(Character.toString(c)) && !isInEnglish(String.valueOf(c)) && !Character.isDigit(c))
+                return Result.failure(String.format("Character %c is not allowed", c));
+        }
+
+        return Result.success(null);
+    }
+
 }
