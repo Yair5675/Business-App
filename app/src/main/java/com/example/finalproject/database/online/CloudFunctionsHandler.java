@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.functions.FirebaseFunctions;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,6 +82,27 @@ public class CloudFunctionsHandler {
         data.put("branchId", branchId);
         this.functions
                 .getHttpsCallable("delete_branch")
+                .call(data)
+                .addOnSuccessListener(_r -> onSuccessListener.run())
+                .addOnFailureListener(onFailureListener);
+    }
+
+    public void deleteAllShifts(
+            LocalDate date,
+            String branchId,
+            Runnable onSuccessListener,
+            OnFailureListener onFailureListener
+    ) {
+        // Load the parameters:
+        final Map<String, Object> data = new HashMap<>();
+        data.put("day", date.getDayOfMonth());
+        data.put("month", date.getMonthValue());
+        data.put("year", date.getYear());
+        data.put("branchId", branchId);
+
+        // Call the function:
+        this.functions
+                .getHttpsCallable("delete_all_shifts")
                 .call(data)
                 .addOnSuccessListener(_r -> onSuccessListener.run())
                 .addOnFailureListener(onFailureListener);
