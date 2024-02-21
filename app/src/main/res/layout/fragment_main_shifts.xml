@@ -27,6 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/frag_main_shifts_no_shifts_message"
+        android:textSize="25sp"
         android:visibility="gone"
         />
 
