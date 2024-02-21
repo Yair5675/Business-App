@@ -6,6 +6,9 @@ public class Shift {
     // The shift's ID:
     private String shiftId;
 
+    // The ID of the branch that the shift belongs to:
+    private String branchId;
+
     // The date of the shift:
     private Date date;
 
@@ -52,6 +55,14 @@ public class Shift {
 
     public String getCompanyName() {
         return companyName;
+    }
+
+    public String getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
     }
 
     public void setCompanyName(String companyName) {

@@ -310,6 +310,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         shift.setStartingTime(packagedShift.STARTING_TIME);
         shift.setEndingTime(packagedShift.ENDING_TIME);
         shift.setCompanyName(this.branch.getCompanyName());
+        shift.setBranchId(this.branch.getBranchId());
 
         // Create a new batch:
         final WriteBatch batch = this.db.batch();
