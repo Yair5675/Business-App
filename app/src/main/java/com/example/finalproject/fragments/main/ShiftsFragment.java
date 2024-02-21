@@ -14,6 +14,7 @@ import com.example.finalproject.R;
 import com.example.finalproject.adapters.OnlineUserShiftsAdapter;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.UserShift;
+import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -52,6 +53,9 @@ public class ShiftsFragment extends Fragment {
         // Load the views:
         this.rvUserShifts = parent.findViewById(R.id.fragMainShiftsRvShifts);
         this.tvNoShifts = parent.findViewById(R.id.fragMainShiftsTvNoShifts);
+
+        // Set linear layout manager:
+        this.rvUserShifts.setLayoutManager(new WrapperLinearLayoutManager(requireContext()));
 
         // Initialize the adapter:
         if (user != null)
