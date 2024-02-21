@@ -17,11 +17,16 @@ import com.example.finalproject.R;
 import com.example.finalproject.adapters.OnlineBranchesAdapter;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.util.Util;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
-public class BranchesFragment extends Fragment {
+public class BranchesFragment extends Fragment implements SearchView.OnQueryTextListener {
+    // A reference to the database:
+    private FirebaseFirestore dbRef;
+
     // The connected user:
     private User connectedUser;
 
@@ -37,8 +42,6 @@ public class BranchesFragment extends Fragment {
     // The search view that allows the user to search for a specific business:
     private SearchView svBranches;
 
-    // TODO: Implement search view
-
     // The checkbox that allows the user to search for businesses in their city only:
     private CheckedTextView checkboxMyCity;
 
@@ -49,9 +52,13 @@ public class BranchesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View parent = inflater.inflate(R.layout.fragment_main_branches, container, false);
 
+        // Initialize the database reference:
+        this.dbRef = FirebaseFirestore.getInstance();
+
         // Load the views:
         this.rvBranches = parent.findViewById(R.id.fragMainBranchesRvBranches);
         this.svBranches = parent.findViewById(R.id.fragMainBranchesSvBusinesses);
+        this.svBranches.setOnQueryTextListener(this);
         this.checkboxMyCity = parent.findViewById(R.id.fragMainBranchesMyCityCheckBox);
         this.tvBusinessNotFound = parent.findViewById(R.id.fragMainBranchesTvNoBusinessFound);
 
@@ -68,13 +75,10 @@ public class BranchesFragment extends Fragment {
     }
 
     private void initAdapter() {
-        // Get a reference to the database:
-        final FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
-
         // Create the recyclerView's options:
         FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
                 .setLifecycleOwner(this)
-                .setQuery(dbRef.collection("branches"), Branch.class)
+                .setQuery(this.dbRef.collection("branches"), Branch.class)
                 .build();
 
         // Create the adapter and set the options:
@@ -105,4 +109,45 @@ public class BranchesFragment extends Fragment {
             this.adapter.setUser(connectedUser);
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String branchName) {
+        // If the branch name is empty, show all branches:
+        if (branchName.isEmpty()) {
+            final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
+                    .setLifecycleOwner(this)
+                    .setQuery(this.dbRef.collection("branches"), Branch.class)
+                    .build();
+            this.adapter.updateOptions(options);
+            return true;
+        }
+
+        branchName = Util.fixNamingCapitalization(branchName);
+
+        // Perform a like query:
+        final Query query = this.dbRef
+                .collection("branches")
+                .whereGreaterThanOrEqualTo("companyName", branchName)
+                .whereLessThan("companyName", branchName + "\uf8ff")
+                .orderBy("city");
+        final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
+                .setLifecycleOwner(this)
+                .setQuery(query, Branch.class)
+                .build();
+        this.adapter.updateOptions(options);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        // If the branch name is empty, show all branches:
+        if (newText.isEmpty()) {
+            final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
+                    .setLifecycleOwner(this)
+                    .setQuery(this.dbRef.collection("branches"), Branch.class)
+                    .build();
+            this.adapter.updateOptions(options);
+            return true;
+        }
+        return false;
+    }
 }
