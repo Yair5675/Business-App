@@ -30,12 +30,14 @@
             android:layout_weight="1"
             app:iconifiedByDefault="false"
             />
+        <!-- TODO: Implement the checkbox later -->
         <CheckedTextView
             android:id="@+id/fragMainBranchesMyCityCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/frag_main_branches_my_city_checkbox_txt"
             android:gravity="center"
+            android:visibility="gone"
             android:layout_marginHorizontal="4dp"
             android:checkMark="?android:attr/listChoiceIndicatorMultiple"
             />
