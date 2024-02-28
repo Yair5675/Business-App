@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="8dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/act_shifts_sample_toolbar_subtitle"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:layout_marginVertical="8dp"
+        />
+
+    <!--
+    Horizontal recycler view that holds employee views:
+    -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragShiftsInputRvEmployees"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="4dp"
+        android:background="?android:attr/listDivider" />
+
+    <!--
+    Vertical recycler view to hold shift views:
+    -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragShiftsInputRvShifts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+</LinearLayout>
