@@ -23,7 +23,6 @@ import com.example.finalproject.util.Result;
 import com.example.finalproject.util.Util;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Timestamp;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -141,8 +140,14 @@ public class UserInputFragment1 extends InputFragment {
         this.initFocusChangingListeners();
 
         // Check if a user was given, and if so load the info from them:
-        if (this.user != null)
+        if (this.user != null) {
             this.loadInputsFromUser(this.user);
+
+            // Don't show the email layout:
+            this.tilEmail.setVisibility(View.GONE);
+        }
+        else
+            this.tilEmail.setVisibility(View.VISIBLE);
 
         this.clearErrors();
         return parent;
@@ -206,15 +211,25 @@ public class UserInputFragment1 extends InputFragment {
     }
 
     private EditText[] getEditTexts() {
-        return new EditText[] {
-                this.etName, this.etSurname, this.etEmail, this.etPassword
-        };
+        if (this.user == null)
+            return new EditText[] {
+                    this.etName, this.etSurname, this.etEmail, this.etPassword
+            };
+        else
+            return new EditText[] {
+                    this.etName, this.etSurname, this.etPassword
+            };
     }
 
     private TextInputLayout[] getInputLayouts() {
-        return new TextInputLayout[] {
-                this.tilName, this.tilSurname, this.tilEmail, this.tilPassword
-        };
+        if (this.user == null)
+            return new TextInputLayout[] {
+                    this.tilName, this.tilSurname, this.tilEmail, this.tilPassword
+            };
+        else
+            return new TextInputLayout[] {
+                    this.tilName, this.tilSurname, this.tilPassword
+            };
     }
 
     private void loadInputFieldsTextWatchers() {
