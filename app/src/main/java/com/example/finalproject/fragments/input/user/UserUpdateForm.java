@@ -73,16 +73,16 @@ public class UserUpdateForm extends InputForm {
         OnSuccessListener<Void> successListener = getOnSuccessListener(context, onCompleteListener);
         OnFailureListener failureListener = getOnFailureListener(context, onCompleteListener);
         // Re-authenticate the user:
-        reauthenticateUser(unused -> {
+        reauthenticateUser(user -> {
 
             // Set the new information in the user's object (except for the new email):
             this.loadInfoFromFragments();
 
             // Validate user connectivity:
-            if (this.isUserConnectivityValid()) {
+            if (this.isUserConnectivityValid(user)) {
 
                 // Update the user's authentication details first:
-                this.updateAuthDetails(unused1 -> {
+                this.updateAuthDetails(user, unused1 -> {
 
                     // Update the user's image second:
                     this.updateUserImage(unused2 -> {
@@ -99,44 +99,46 @@ public class UserUpdateForm extends InputForm {
         });
     }
 
-    private void updateAuthDetails(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+    private void updateAuthDetails(
+            FirebaseUser user, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener
+    ) {
         // Check if the user changed their email:
         if (!this.newUser.getEmail().equals(this.oldUser.getEmail()))
-            this.updateUserEmail(unused -> {
+            this.updateUserEmail(user, unused -> {
                 // Check if the user changed their password:
                 if (!this.newUser.getPassword().equals(this.oldUser.getPassword()))
-                    updateUserPassword(onSuccessListener, onFailureListener);
+                    updateUserPassword(user, onSuccessListener, onFailureListener);
             }, onFailureListener);
         // Check if the user changed their password:
         else if (!this.newUser.getPassword().equals(this.oldUser.getPassword()))
-            this.updateUserPassword(onSuccessListener, onFailureListener);
+            this.updateUserPassword(user, onSuccessListener, onFailureListener);
         // If nothing was changed, simply activate the on success listener:
         else
             onSuccessListener.onSuccess(null);
     }
 
-    private void updateUserEmail(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+    private void updateUserEmail(FirebaseUser user, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         // Update the email and send a verification email and update the user's email:
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null)
             user.verifyBeforeUpdateEmail(this.newUser.getEmail())
                     .addOnSuccessListener(onSuccessListener)
                     .addOnFailureListener(onFailureListener);
+        else
+            onFailureListener.onFailure(new Exception("User is null"));
     }
 
-    private void updateUserPassword(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
-        // Get the current user:
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+    private void updateUserPassword(FirebaseUser user, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         // Update the password:
         if (user != null)
             user.updatePassword(this.newUser.getPassword())
                     .addOnSuccessListener(onSuccessListener)
                     .addOnFailureListener(onFailureListener);
+        else
+            onFailureListener.onFailure(new Exception("User is null"));
     }
 
     private void reauthenticateUser(
-            OnSuccessListener<Void> onSuccessListener,
+            OnSuccessListener<FirebaseUser> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
         // Get the current user:
@@ -146,9 +148,11 @@ public class UserUpdateForm extends InputForm {
                     this.oldUser.getEmail(), this.oldUser.getPassword()
             );
             user.reauthenticate(credential)
-                    .addOnSuccessListener(onSuccessListener)
+                    .addOnSuccessListener(unused -> onSuccessListener.onSuccess(user))
                     .addOnFailureListener(onFailureListener);
         }
+        else
+            onFailureListener.onFailure(new Exception("User is null"));
     }
 
     private void updateUserImage(OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
@@ -198,13 +202,8 @@ public class UserUpdateForm extends InputForm {
                 .addOnFailureListener(onFailureListener);
     }
 
-    private boolean isUserConnectivityValid() {
-        // Get a reference to firebase authentication:
-        final FirebaseAuth auth = FirebaseAuth.getInstance();
-
-        // Make sure the updated user is the connected user:
-        FirebaseUser connectedUser = auth.getCurrentUser();
-        return connectedUser != null && connectedUser.getUid().equals(this.oldUser.getUid());
+    private boolean isUserConnectivityValid(FirebaseUser user) {
+        return user != null && user.getUid().equals(this.oldUser.getUid());
     }
 
     private static OnSuccessListener<Void> getOnSuccessListener(
