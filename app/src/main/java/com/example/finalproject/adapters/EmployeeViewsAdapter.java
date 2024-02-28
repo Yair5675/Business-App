@@ -72,6 +72,16 @@ public class EmployeeViewsAdapter extends RecyclerView.Adapter<EmployeeViewsAdap
         return this.employees.get(index);
     }
 
+    public void addEmployee(Employee employee) {
+        this.employees.add(employee);
+        this.notifyItemInserted(this.getItemCount() - 1);
+    }
+
+    public void removeEmployee(int index) {
+        this.employees.remove(index);
+        this.notifyItemRemoved(index);
+    }
+
     @Override
     public int getItemCount() {
         return this.employees.size();
