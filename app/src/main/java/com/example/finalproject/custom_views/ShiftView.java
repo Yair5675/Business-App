@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ShiftView extends LinearLayout {
@@ -149,12 +148,5 @@ public class ShiftView extends LinearLayout {
             this.WORKERS = workers;
         }
 
-        /**
-         * Generates a unique ID for the shift by hashing its date, starting time and ending time.
-         * @return A unique ID based on the shift's time.
-         */
-        public String generateShiftId() {
-            return Integer.toString(Objects.hash(DATE, STARTING_TIME, ENDING_TIME));
-        }
     }
 }

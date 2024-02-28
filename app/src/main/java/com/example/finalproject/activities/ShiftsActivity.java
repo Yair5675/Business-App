@@ -314,7 +314,6 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     ) {
         // Create the shift object from the packaged shift:
         final Shift shift = new Shift();
-        shift.setShiftId(packagedShift.generateShiftId());
         shift.setDate(packagedShift.DATE);
         shift.setStartingTime(packagedShift.STARTING_TIME);
         shift.setEndingTime(packagedShift.ENDING_TIME);
@@ -324,10 +323,11 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         // Create a new batch:
         final WriteBatch batch = this.db.batch();
 
-        // Save the shift object in the database:
-        final DocumentReference shiftRef = this.db.document(String.format(
-                "branches/%s/shifts/%s", this.branch.getBranchId(), shift.getShiftId()
-        ));
+        // Save the shift object in the database with an auto-generated ID:
+        final DocumentReference shiftRef = this.db.collection(String.format(
+                "branches/%s/shifts", this.branch.getBranchId()
+        )).document();
+        shift.setShiftId(shiftRef.getId());
         batch.set(shiftRef, shift, SetOptions.merge());
 
         // Set the workers in the database:
