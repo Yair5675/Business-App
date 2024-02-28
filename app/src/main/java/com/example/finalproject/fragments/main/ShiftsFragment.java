@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.adapters.OnlineUserShiftsAdapter;
+import com.example.finalproject.adapters.online.OnlineUserShiftsAdapter;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.UserShift;
 import com.example.finalproject.util.WrapperLinearLayoutManager;

@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.adapters.OnlineUsersAdapter;
+import com.example.finalproject.adapters.online.OnlineUsersAdapter;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Util;

@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.adapters.OnlineRolesAdapter;
+import com.example.finalproject.adapters.online.OnlineRolesAdapter;
 import com.example.finalproject.dialogs.AddRoleDialog;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
