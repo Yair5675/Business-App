@@ -1,15 +1,21 @@
 package com.example.finalproject.custom_views;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.finalproject.R;
+import com.example.finalproject.adapters.EmployeeViewsAdapter;
 import com.example.finalproject.database.online.collections.Employee;
 
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class RoleColumnView extends LinearLayout {
     // The context of the view:
@@ -21,11 +27,14 @@ public class RoleColumnView extends LinearLayout {
     // The text view that holds the role name:
     private final TextView tvRoleName;
 
-    // The layout that holds the employee views:
-    private final LinearLayout employeesLayout;
+    // The recycler view that holds employees:
+    private final RecyclerView rvEmployees;
+
+    // The adapter of the recyclerView:
+    private EmployeeViewsAdapter adapter;
 
     // A list of the employee views in the column:
-    private final HashSet<EmployeeView> employeeViews;
+    private final ArrayList<Employee> employees;
 
     public RoleColumnView(Context context) {
         super(context);
@@ -38,42 +47,41 @@ public class RoleColumnView extends LinearLayout {
 
         // Load the views:
         this.tvRoleName = findViewById(R.id.roleColumnViewTvRoleName);
-        this.employeesLayout = findViewById(R.id.roleColumnViewEmployeesLayout);
+        this.rvEmployees = findViewById(R.id.roleColumnViewRvEmployees);
 
         // Initialize the employee list:
-        this.employeeViews = new HashSet<>();
+        this.employees = new ArrayList<>();
+
+        // Initialize the adapter:
+        this.adapter = new EmployeeViewsAdapter(this.context, this.employees, null);
+
+        // Set the adapter and a linear layout manager:
+        this.rvEmployees.setAdapter(this.adapter);
+        this.rvEmployees.setLayoutManager(new LinearLayoutManager(this.context));
     }
 
     public void addEmployee(Employee employee) {
-        // Create an employee view:
-        final EmployeeView employeeView = new EmployeeView(this.context);
-        employeeView.setEmployee(employee);
-
-        // Add the view to the list:
-        if (this.employeeViews.add(employeeView)) {
-            // If it's a new employee, add it to the column:
-            this.employeesLayout.addView(employeeView);
-
-            // Set the onClickListener of the view - if it's touched it is removed:
-            employeeView.setOnClickListener(view -> {
-                if (view instanceof EmployeeView)
-                    this.removeEmployeeView((EmployeeView) view);
-            });
-        }
+        // Add a new employee to the adapter:
+        this.adapter.addEmployee(employee);
     }
 
     public boolean containsEmployee(Employee employee) {
-        for (EmployeeView employeeView : this.employeeViews) {
-            if (employeeView.getEmployee().equals(employee))
+        for (Employee e : this.employees)
+            if (e.equals(employee))
                 return true;
-        }
         return false;
     }
 
-    public void removeEmployeeView(EmployeeView employeeView) {
-        // Remove the view from the list:
-        if (this.employeeViews.remove(employeeView))
-            this.employeesLayout.removeView(employeeView);
+    public void setOnEmployeeClickedListener(@Nullable BiConsumer<View, Integer> onEmployeeClickedListener) {
+        this.adapter = new EmployeeViewsAdapter(this.context, this.employees, onEmployeeClickedListener);
+        this.rvEmployees.setAdapter(this.adapter);
+    }
+
+    public void removeEmployee(Employee employee) {
+        // Get the index of the employee view:
+        final int index = this.employees.indexOf(employee);
+        if (index >= 0 && index < this.employees.size())
+            this.adapter.removeEmployee(index);
     }
 
     public String getRole() {
@@ -89,9 +97,6 @@ public class RoleColumnView extends LinearLayout {
     }
 
     public List<Employee> getEmployees() {
-        final LinkedList<Employee> employees = new LinkedList<>();
-        for (EmployeeView employeeView : this.employeeViews)
-            employees.add(employeeView.getEmployee());
-        return employees;
+        return this.employees;
     }
 }
