@@ -12,6 +12,9 @@ public class User implements Serializable {
     // The user ID (generated from authentication):
     private String uid;
 
+    // Whether the user is the app's admin or not:
+    private boolean isAdmin;
+
     // The name and surname of the user:
     private String name, surname, fullName;
 
@@ -37,6 +40,7 @@ public class User implements Serializable {
     // A copy constructor:
     public User(@NonNull User other) {
         this.uid = other.uid;
+        this.isAdmin = other.isAdmin;
         this.name = other.name;
         this.surname = other.surname;
         this.fullName = other.fullName;
@@ -51,7 +55,11 @@ public class User implements Serializable {
     }
 
     public boolean isAdmin() {
-        return this.phoneNumber != null && this.phoneNumber.equals(BuildConfig.ADMIN_PHONE_NUMBER);
+        return this.isAdmin;
+    }
+
+    private void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     // Getters (a requirement) and setters supporting the builder pattern:
@@ -126,6 +134,9 @@ public class User implements Serializable {
 
     public User setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+
+        // Update the is admin attribute:
+        this.setAdmin(this.phoneNumber != null && this.phoneNumber.equals(BuildConfig.ADMIN_PHONE_NUMBER));
         return this;
     }
 
@@ -133,9 +144,8 @@ public class User implements Serializable {
         return this.birthdate;
     }
 
-    public User setBirthdate(Date birthdate) {
+    public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
-        return this;
     }
 
     public String getCity() {
@@ -169,9 +179,8 @@ public class User implements Serializable {
         return imagePath;
     }
 
-    public User setImagePath(String imagePath) {
+    public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
-        return this;
     }
 
     public String jsonifyUser() {
