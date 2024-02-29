@@ -27,6 +27,9 @@ public class Branch implements Serializable {
     // The opening and closing time:
     private int openingTime, closingTime;
 
+    // The number of pending applications in the database:
+    private int pendingApplications;
+
     // The number of shifts every day (starting at Sunday as the first index):
     private List<Integer> dailyShiftsNum;
 
@@ -113,6 +116,14 @@ public class Branch implements Serializable {
 
     public void setClosingTime(int closingTime) {
         this.closingTime = closingTime;
+    }
+
+    public int getPendingApplications() {
+        return pendingApplications;
+    }
+
+    public void setPendingApplications(int pendingApplications) {
+        this.pendingApplications = pendingApplications;
     }
 
     public List<Integer> getDailyShiftsNum() {
