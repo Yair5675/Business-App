@@ -9,6 +9,9 @@ public class Branch implements Serializable {
     // The branch ID:
     private String branchId;
 
+    // Whether the branch is active or not (if not, no new shifts/employees can be added to it):
+    private boolean isActive;
+
     // The company name:
     private String companyName;
 
@@ -28,12 +31,9 @@ public class Branch implements Serializable {
     private List<Integer> dailyShiftsNum;
 
     // Empty constructor. Requirement of firebase:
-    public Branch() {
-
-    }
+    public Branch() {}
 
     // Getters and setters:
-
 
     public String getBranchId() {
         return branchId;
@@ -41,6 +41,14 @@ public class Branch implements Serializable {
 
     public void setBranchId(String branchId) {
         this.branchId = branchId;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public String getCompanyName() {
