@@ -11,13 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.adapters.online.OnlineUserShiftsAdapter;
 import com.example.finalproject.database.online.collections.User;
-import com.example.finalproject.database.online.collections.UserShift;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 public class ShiftsFragment extends Fragment {
     // The user whose shifts are displayed:
@@ -69,33 +64,6 @@ public class ShiftsFragment extends Fragment {
     }
 
     private void initAdapter() {
-        // Get a reference to the database:
-        final FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
-
-        // Create the recyclerView's options:
-        final Query query = dbRef
-                .collectionGroup("user_shifts")
-                .whereEqualTo("uid", this.user.getUid());
-        FirestoreRecyclerOptions<UserShift> options = new FirestoreRecyclerOptions.Builder<UserShift>()
-                .setLifecycleOwner(this)
-                .setQuery(query, UserShift.class)
-                .build();
-
-        // Create the adapter and set the options:
-        final OnlineUserShiftsAdapter adapter = new OnlineUserShiftsAdapter(
-                requireContext(),
-                () -> {
-                    this.rvUserShifts.setVisibility(View.GONE);
-                    this.tvNoShifts.setVisibility(View.VISIBLE);
-                },
-                () -> {
-                    this.rvUserShifts.setVisibility(View.VISIBLE);
-                    this.tvNoShifts.setVisibility(View.GONE);
-                },
-                options
-        );
-
-        // Set the adapter for the recycler view:
-        this.rvUserShifts.setAdapter(adapter);
+        // TODO: Set an adapter that handles normal shifts, not the deprecated user shifts
     }
 }
