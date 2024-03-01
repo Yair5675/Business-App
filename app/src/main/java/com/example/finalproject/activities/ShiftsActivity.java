@@ -312,9 +312,9 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
+        // TODO: Change the way shifts are saved according to the new design
         // Create the shift object from the packaged shift:
         final Shift shift = new Shift();
-        shift.setDate(packagedShift.DATE);
         shift.setStartingTime(packagedShift.STARTING_TIME);
         shift.setEndingTime(packagedShift.ENDING_TIME);
         shift.setCompanyName(this.branch.getCompanyName());
@@ -338,7 +338,6 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             // Set the shift for the worker:
             final UserShift userShift = new UserShift();
             userShift.setUid(worker.getUid());
-            userShift.setDate(shift.getDate());
             userShift.setStartingTime(shift.getStartingTime());
             userShift.setEndingTime(shift.getEndingTime());
             userShift.setRoleName(worker.getRoleName());

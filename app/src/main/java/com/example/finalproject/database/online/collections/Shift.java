@@ -3,25 +3,28 @@ package com.example.finalproject.database.online.collections;
 import java.util.Date;
 
 public class Shift {
-    // TODO: Change almost EVERYTHING per the new database design
-    // The shift's ID:
+    // The ID of the shift:
     private String shiftId;
 
-    // The ID of the branch that the shift belongs to:
-    private String branchId;
+    // The ID of the user that works in the shift and the branch they are working at:
+    private String uid, branchId;
 
-    // The date of the shift:
-    private Date date;
-
-    // The name of the branch that the shift is at:
+    // The name of the company of the branch:
     private String companyName;
 
-    // The starting and ending time (in minutes):
+    // The role of the employee in the shift:
+    private String role;
+
+    // The date of the shift:
+    private Date shiftDate;
+
+    // The starting time and ending time of the shift (in minutes since midnight):
     private int startingTime, endingTime;
 
-    public Shift() {
-    }
+    // Empty constructor, per firestore's requirements
+    public Shift() {}
 
+    // Getters and setters:
     public String getShiftId() {
         return shiftId;
     }
@@ -30,12 +33,44 @@ public class Shift {
         this.shiftId = shiftId;
     }
 
-    public Date getDate() {
-        return date;
+    public String getUid() {
+        return uid;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Date getShiftDate() {
+        return shiftDate;
+    }
+
+    public void setShiftDate(Date shiftDate) {
+        this.shiftDate = shiftDate;
     }
 
     public int getStartingTime() {
@@ -52,21 +87,5 @@ public class Shift {
 
     public void setEndingTime(int endingTime) {
         this.endingTime = endingTime;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public String getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(String branchId) {
-        this.branchId = branchId;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
     }
 }
