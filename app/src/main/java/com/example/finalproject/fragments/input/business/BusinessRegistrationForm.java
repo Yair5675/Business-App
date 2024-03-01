@@ -151,7 +151,7 @@ public class BusinessRegistrationForm extends InputForm {
 
     private void loadBranchObject() {
         this.branch = new Branch();
-        // TODO: Set active to true initially
+        branch.setActive(true);
         branch.setCompanyName(this.companyName);
         branch.setPassword(this.branchPassword);
         branch.setCountry(this.country);
