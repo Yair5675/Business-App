@@ -3,10 +3,11 @@ package com.example.finalproject.database.online.collections;
 import com.google.gson.Gson;
 
 public class Workplace {
-    // TODO: Delete the class, per the new database design
-
     // The branch's ID:
     private String branchId;
+
+    // Whether the branch is active or not (if not, no new shifts/employees can be added to it):
+    private boolean isActive;
 
     // Whether or not the user is a manager at the branch:
     private boolean isManager;
@@ -23,6 +24,13 @@ public class Workplace {
     }
 
     // Getters and setters:
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 
     public String getBranchId() {
         return branchId;
