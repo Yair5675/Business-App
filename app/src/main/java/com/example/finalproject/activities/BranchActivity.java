@@ -121,8 +121,6 @@ public class BranchActivity extends AppCompatActivity {
         // Listen to the current user's status in the current branch:
         this.initStatusListener();
 
-        // TODO: Explicitly return to the main activity (due to calls to "finish" in previous
-        //  activities, it may seem like the app crashed)
         // Load the back button callback:
         this.loadBackButtonCallback();
 
@@ -406,6 +404,9 @@ public class BranchActivity extends AppCompatActivity {
         final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                // Go back to the main activity:
+                final Intent intent = new Intent(BranchActivity.this, MainActivity.class);
+                startActivity(intent);
                 finish();
             }
         };
