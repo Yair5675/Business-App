@@ -5,10 +5,9 @@ import com.google.firebase.firestore.ServerTimestamp;
 import java.util.Date;
 
 public class Application {
-    // TODO: Change names according to updated database design
-    // A timestamp indicating when the application was sent:
+    // A timestamp indicating when the application was submitted:
     @ServerTimestamp
-    private Date timestamp;
+    private Date submittedAt;
 
     // The ID and full name of the user applying to the branch:
     private String uid, userFullName;
@@ -24,12 +23,12 @@ public class Application {
         this.userImagePath = userImagePath;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
+    public Date getSubmittedAt() {
+        return submittedAt;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setSubmittedAt(Date submittedAt) {
+        this.submittedAt = submittedAt;
     }
 
     public String getUid() {
