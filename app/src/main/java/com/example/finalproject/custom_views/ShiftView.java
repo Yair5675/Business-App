@@ -6,13 +6,10 @@ import android.widget.TextView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Employee;
-import com.example.finalproject.database.online.collections.Worker;
-import com.example.finalproject.util.Util;
+import com.example.finalproject.database.online.collections.Shift;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -119,34 +116,10 @@ public class ShiftView extends LinearLayout {
         );
     }
 
-    public PackagedShift getPackagedShift(LocalDate localDate) {
-        // Form the list of workers:
-        final List<Worker> workers = new LinkedList<>();
-        for (RoleColumnView roleColumn : this.roleColumns) {
-            for (Employee employee : roleColumn.getEmployees())
-                workers.add(new Worker(employee, roleColumn.getRole()));
-        }
-
-        // Return the packaged shift:
-        return new PackagedShift(Util.getDateFromLocalDate(localDate), this.startTime, this.endTime, workers);
+    public List<Shift> getShifts(LocalDate localDate) {
+        // TODO: Return all shifts instead
+        return null;
     }
 
-    public static class PackagedShift {
-        // The date of the shift:
-        public final Date DATE;
-
-        // The starting and ending time of the shift in minutes since midnight:
-        public final int STARTING_TIME, ENDING_TIME;
-
-        // The list or workers in the shift:
-        public final List<Worker> WORKERS;
-
-        public PackagedShift(Date DATE, int STARTING_TIME, int ENDING_TIME, List<Worker> workers) {
-            this.DATE = DATE;
-            this.STARTING_TIME = STARTING_TIME;
-            this.ENDING_TIME = ENDING_TIME;
-            this.WORKERS = workers;
-        }
-
-    }
+    // TODO: Delete this class and instead return a list of shifts
 }

@@ -19,6 +19,7 @@ import com.example.finalproject.custom_views.EmployeeView;
 import com.example.finalproject.custom_views.ShiftView;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
+import com.example.finalproject.database.online.collections.Shift;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -332,13 +333,13 @@ public class DayShiftsFragment extends Fragment {
         this.btnAddShift.setVisibility(View.VISIBLE);
     }
 
-    public List<ShiftView.PackagedShift> getPackagedShifts() {
+    public List<Shift> getPackagedShifts() {
         // Form the packaged shifts list and return it:
-        final List<ShiftView.PackagedShift> packagedShifts = new LinkedList<>();
+        final List<Shift> shifts = new LinkedList<>();
         for (ShiftView shiftView : this.shiftViews) {
-            packagedShifts.add(shiftView.getPackagedShift(this.date));
+            shifts.addAll(shiftView.getShifts(this.date));
         }
-        return packagedShifts;
+        return shifts;
     }
 
     @Override

@@ -14,11 +14,9 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
-import com.example.finalproject.custom_views.ShiftView;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
-import com.example.finalproject.database.online.collections.Worker;
 import com.example.finalproject.fragments.shifts.DayShiftsFragment;
 import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.Util;
@@ -30,7 +28,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
@@ -237,7 +234,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             // Go over every shifts fragment:
             for (DayShiftsFragment fragment : this.fragments) {
                 // Get the shifts summary:
-                final List<ShiftView.PackagedShift> packagedShifts = fragment.getPackagedShifts();
+                final List<Shift> packagedShifts = fragment.getPackagedShifts();
 
                 // Save them:
                 this.saveShiftsRecursive(packagedShifts, 0);
@@ -279,64 +276,31 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                 .addOnFailureListener(onFailureListener);
     }
 
-    private void saveShiftsRecursive(List<ShiftView.PackagedShift> packagedShifts, int index) {
+    private void saveShiftsRecursive(List<Shift> shifts, int index) {
         // Check that all shifts were saved:
-        if (index >= packagedShifts.size()) {
+        if (index >= shifts.size()) {
             Toast.makeText(this, "All shifts were saved successfully!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         // Skip over shifts without employees:
-        final ShiftView.PackagedShift currentShift = packagedShifts.get(index);
-        if (currentShift.WORKERS.isEmpty())
-            saveShiftsRecursive(packagedShifts, index + 1);
-        else
-            // Save the current shift:
-            this.saveShift(
-                    currentShift,
-                    unused -> saveShiftsRecursive(packagedShifts, index + 1),
-                    e -> {
-                        // Log the error and alert the user:
-                        Log.e(TAG, "Failed to save shift", e);
-                        Toast.makeText(this, "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
-                        this.btnSaveShifts.setVisibility(View.VISIBLE);
-                        this.pbLoading.setVisibility(View.GONE);
-                    }
-            );
+        final Shift currentShift = shifts.get(index);
+        // TODO: Save all shifts recursively
     }
 
     private void saveShift(
-            ShiftView.PackagedShift packagedShift,
+            Shift shift,
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
         // TODO: Change the way shifts are saved according to the new design
-        // Create the shift object from the packaged shift:
-        final Shift shift = new Shift();
-        shift.setStartingTime(packagedShift.STARTING_TIME);
-        shift.setEndingTime(packagedShift.ENDING_TIME);
-        shift.setCompanyName(this.branch.getCompanyName());
-        shift.setBranchId(this.branch.getBranchId());
-
-        // Create a new batch:
-        final WriteBatch batch = this.db.batch();
-
         // Save the shift object in the database with an auto-generated ID:
         final DocumentReference shiftRef = this.db.collection(String.format(
                 "branches/%s/shifts", this.branch.getBranchId()
         )).document();
         shift.setShiftId(shiftRef.getId());
-        batch.set(shiftRef, shift, SetOptions.merge());
-
-        // Set the workers in the database:
-        for (Worker worker : packagedShift.WORKERS) {
-            DocumentReference workerRef = shiftRef.collection("workers").document(worker.getUid());
-            batch.set(workerRef, worker, SetOptions.merge());
-        }
-
-        // Commit the branch:
-        batch.commit().addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
+        shiftRef.set(shift);
     }
 
     @Override
