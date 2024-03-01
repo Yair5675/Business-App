@@ -3,6 +3,7 @@ package com.example.finalproject.database.online.collections;
 import java.util.Date;
 
 public class Shift {
+    // TODO: Change almost EVERYTHING per the new database design
     // The shift's ID:
     private String shiftId;
 

@@ -5,6 +5,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 import java.util.Date;
 
 public class Application {
+    // TODO: Change names according to updated database design
     // A timestamp indicating when the application was sent:
     @ServerTimestamp
     private Date timestamp;

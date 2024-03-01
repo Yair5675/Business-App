@@ -1,6 +1,8 @@
 package com.example.finalproject.database.online.collections;
 
 public class Worker {
+    // TODO: Delete the class, per the new database design
+
     // The uid of the worker:
     private String uid;
 

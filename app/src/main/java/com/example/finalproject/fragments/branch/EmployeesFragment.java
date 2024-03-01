@@ -129,6 +129,9 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     }
 
     private void applyToBranch() {
+        // TODO: If the branch is deactivated don't allow anyone to apply to the branch
+        // TODO: When applying, don't forget to increment the amount of pending applications in the
+        //  branch (use the built in incrementing transaction of firestore).
         // Hide the apply button and show the progress bar:
         this.pbLoading.setVisibility(View.VISIBLE);
         this.btnApply.setVisibility(View.GONE);
@@ -185,6 +188,8 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     }
 
     private void leaveBranch() {
+        // TODO: Change the restriction - don't allow employees to leave if they are the only
+        //  remaining MANAGER, not the only remaining employee
         // Show the progress bar and make the "leave branch" button disappear:
         this.pbLoading.setVisibility(View.VISIBLE);
         this.btnLeave.setVisibility(View.GONE);

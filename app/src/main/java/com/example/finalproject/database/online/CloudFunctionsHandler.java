@@ -11,6 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CloudFunctionsHandler {
+    // TODO: Change some functions here (and in the python files) because of the new branches
+    //  deletion system
+
+    // TODO: I am not sure but maybe roles aren't deleted when deleting a branch? Anyhow check that
+    //  and fix it will you lad?
     // A reference to firebase functions:
     private final FirebaseFunctions functions;
 

@@ -79,6 +79,7 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
         this.functionsHandler.resolveApplication(
                 application.getUid(),
                 this.currentBranch,
+                // TODO: When rejecting/accepting, decrement the pending applications in the branch
                 accepted,
                 false, // TODO: Change that later
                 () -> {

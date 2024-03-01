@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ShiftsHandler {
+    // TODO: After changing the shifts collection, check if this class is needed. If it is, pass it
+    //  to the shifts activity when entering it
     // The ID of the branch:
     private final String branchId;
 

@@ -3,6 +3,7 @@ package com.example.finalproject.database.online.collections;
 import java.util.Date;
 
 public class UserShift {
+    // TODO: Delete the class, per the new database design
     // The user's ID:
     private String uid;
 

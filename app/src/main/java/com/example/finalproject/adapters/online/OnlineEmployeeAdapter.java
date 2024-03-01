@@ -32,6 +32,9 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
     // Whether the user viewing the employees is a manager or not:
     private boolean isManager;
 
+    // TODO: When clicking on an employee, add an option to see all of their shifts for the specific
+    //  branch. Create a separate activity (or choose another method for displaying them)
+
     // Employee actions for the menu:
     private final EmployeeActions employeeActions;
 

@@ -3,6 +3,8 @@ package com.example.finalproject.database.online.collections;
 import com.google.gson.Gson;
 
 public class Workplace {
+    // TODO: Delete the class, per the new database design
+
     // The branch's ID:
     private String branchId;
 

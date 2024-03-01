@@ -76,6 +76,8 @@ public class RolesFragment extends Fragment {
         this.initAdapter();
 
         // Initialize the add role dialog:
+        // TODO: If the branch is deactivated don't allow users to view the add role dialog. In
+        //   fact, consider not showing this fragment at all
         this.addRoleDialog = new AddRoleDialog(requireContext(), this.branchId);
 
         // Show the add role button only if the user is a manager:

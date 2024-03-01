@@ -40,8 +40,14 @@ public class MainActivity extends AppCompatActivity {
     // The text view greeting the user:
     private TextView tvUserGreeting;
 
+    // TODO: Create a fragment that shows the user's workplaces specifically, including deactivated
+    //  ones
+
     // TODO: Update the text view that says "Good morning" to "Good evening" or other time greetings
 
+
+    // TODO: Add another activity that receives a user and a branch they work at, and presents the
+    //  entire shifts history of the user in this branch.
     // The adapter for the view pager:
     private ScreenSlideAdapter adapter;
 
@@ -62,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
     // The login dialog (reusable):
     private LoginDialog loginDialog;
+
+    // TODO: If the back button is pressed, add a dialog that asks the user if they're sure they
+    //  want to leave the app
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

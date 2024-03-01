@@ -22,7 +22,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 public class UsersHandler {
-
+    // TODO: For the love of god dismantle this class and cast it to the shadow realm
     public static final String TAG = "UsersHandler";
 
     /**

@@ -98,6 +98,8 @@ public class InputValidation {
         return Result.success(null);
     }
 
+    // TODO: Fix function, it for some reason allows a dot after the @. Consider forcing the email
+    //  to have an english character after the @
     public static Result<Void, String> validateEmail(String email) {
         // https://knowledge.validity.com/hc/en-us/articles/220560587-What-are-the-rules-for-email-address-syntax
         // Checking if the email is empty:

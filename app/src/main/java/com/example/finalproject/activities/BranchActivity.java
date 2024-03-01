@@ -83,6 +83,9 @@ public class BranchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_branch);
 
+        // TODO: Using the branch's "pending application" attribute, show an indicator to the
+        //  managers about pending applications. Consider a red circle with a number in it
+
         // Initialize the database reference:
         this.dbRef = FirebaseFirestore.getInstance();
 
@@ -118,6 +121,8 @@ public class BranchActivity extends AppCompatActivity {
         // Listen to the current user's status in the current branch:
         this.initStatusListener();
 
+        // TODO: Explicitly return to the main activity (due to calls to "finish" in previous
+        //  activities, it may seem like the app crashed)
         // Load the back button callback:
         this.loadBackButtonCallback();
 
@@ -221,6 +226,8 @@ public class BranchActivity extends AppCompatActivity {
         // If the manager wants to delete the branch:
         else if (ID == R.id.menuBranchItemDelete) {
             // Show the delete dialog:
+            // TODO: Don't actually delete the branch. Instead, set its "active" attribute to false
+            //  and prevent anyone from adding employees or shifts to it.
             this.deleteBranchDialog.show();
         }
         // If the manager wants to set the future shifts:

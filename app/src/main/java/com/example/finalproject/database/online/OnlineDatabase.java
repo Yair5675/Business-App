@@ -1,15 +1,8 @@
 package com.example.finalproject.database.online;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.ImageView;
 
-import androidx.annotation.DrawableRes;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.handlers.UsersHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +15,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class OnlineDatabase {
+    // TODO: For the love of god dismantle this class and cast it to the shadow realm
+
     // A reference to the actual database:
     private final FirebaseFirestore db;
 
