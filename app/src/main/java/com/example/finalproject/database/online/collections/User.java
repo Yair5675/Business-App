@@ -34,6 +34,21 @@ public class User implements Serializable {
     private static final int MIN_AGE = 16;
     private static final int MAX_AGE = 80;
 
+    // Constants that show the attribute names in the database, instead of hardcoding them:
+    public static final String UID = "uid";
+    public static final String ADMIN = "admin";
+    public static final String PASSWORD = "password";
+    public static final String ADDRESS = "address";
+    public static final String CITY = "city";
+    public static final String COUNTRY = "country";
+    public static final String NAME = "name";
+    public static final String SURNAME = "surname";
+    public static final String FULL_NAME = "fullName";
+    public static final String BIRTHDATE = "birthdate";
+    public static final String IMAGE_PATH = "imagePath";
+    public static final String EMAIL = "email";
+    public static final String PHONE_NUMBER = "phoneNumber";
+
     // An empty constructor (requirement for firestore):
     public User() {}
 

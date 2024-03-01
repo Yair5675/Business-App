@@ -15,6 +15,12 @@ public class Application {
     // The path to the user's image in the storage:
     private String userImagePath;
 
+    // Constants that show the attribute names in the database, instead of hardcoding them:
+    public static final String UID = User.UID;
+    public static final String USER_FULL_NAME = "userFullName";
+    public static final String USER_IMAGE_PATH = "userImagePath";
+    public static final String SUBMITTED_AT = "submittedAt";
+
     public Application() {}
 
     public Application(String uid, String userFullName, String userImagePath) {

@@ -17,6 +17,14 @@ public class Employee {
     // The path to the user's image in firebase storage:
     private String imagePath;
 
+    // Constants that show the attribute names in the database, instead of hardcoding them:
+    public static final String UID = User.UID;
+    public static final String IS_MANAGER = "manager";
+    public static final String NAME = User.NAME;
+    public static final String SURNAME = User.SURNAME;
+    public static final String FULL_NAME = User.FULL_NAME;
+    public static final String IMAGE_PATH = User.IMAGE_PATH;
+
     // Empty constructor (firestore requirement):
     public Employee() {
 

@@ -18,6 +18,15 @@ public class Workplace {
     // The country, city and address of the branch:
     private String country, city, address;
 
+    // Constants that show the attribute names in the database, instead of hardcoding them:
+    public static final String BRANCH_ID = Branch.BRANCH_ID;
+    public static final String IS_ACTIVE = Branch.IS_ACTIVE;
+    public static final String IS_MANAGER = Employee.IS_MANAGER;
+    public static final String COMPANY_NAME = Branch.COMPANY_NAME;
+    public static final String ADDRESS = Branch.ADDRESS;
+    public static final String CITY = Branch.CITY;
+    public static final String COUNTRY = Branch.COUNTRY;
+
     // Empty constructor, firestore requirement:
     public Workplace() {
 

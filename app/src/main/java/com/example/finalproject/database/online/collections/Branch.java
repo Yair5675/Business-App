@@ -33,6 +33,20 @@ public class Branch implements Serializable {
     // The number of shifts every day (starting at Sunday as the first index):
     private List<Integer> dailyShiftsNum;
 
+    // Constants that show the attribute names in the database, instead of hardcoding them:
+    public static final String BRANCH_ID = "branchId";
+    public static final String PASSWORD = "password";
+    public static final String COMPANY_NAME = "companyName";
+    public static final String PENDING_APPLICATIONS = "pendingApplications";
+    public static final String IS_ACTIVE = "active";
+    public static final String ADDRESS = "address";
+    public static final String CITY = "city";
+    public static final String COUNTRY = "country";
+    public static final String FULL_ADDRESS = "fullAddress";
+    public static final String OPENING_TIME = "openingTime";
+    public static final String CLOSING_TIME = "closingTime";
+    public static final String DAILY_SHIFTS_NUM = "dailyShiftsNum";
+
     // Empty constructor. Requirement of firebase:
     public Branch() {}
 

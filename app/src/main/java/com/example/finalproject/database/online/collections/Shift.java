@@ -13,13 +13,23 @@ public class Shift {
     private String companyName;
 
     // The role of the employee in the shift:
-    private String role;
+    private String roleName;
 
     // The date of the shift:
     private Date shiftDate;
 
     // The starting time and ending time of the shift (in minutes since midnight):
     private int startingTime, endingTime;
+
+    // Constants that show the attribute names in the database, instead of hardcoding them:
+    public static final String SHIFT_ID = "shiftId";
+    public static final String UID = User.UID;
+    public static final String BRANCH_ID = Branch.BRANCH_ID;
+    public static final String COMPANY_NAME = Branch.COMPANY_NAME;
+    public static final String ROLE_NAME = "roleName";
+    public static final String SHIFT_DATE = "shiftDate";
+    public static final String STARTING_TIME = "startingTime";
+    public static final String ENDING_TIME = "endingTime";
 
     // Empty constructor, per firestore's requirements
     public Shift() {}
@@ -57,12 +67,12 @@ public class Shift {
         this.companyName = companyName;
     }
 
-    public String getRole() {
-        return role;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     public Date getShiftDate() {
