@@ -19,19 +19,22 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
-import com.example.finalproject.database.online.CloudFunctionsHandler;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.database.online.collections.Workplace;
 import com.example.finalproject.dialogs.DeleteBranchDialog;
 import com.example.finalproject.fragments.branch.ApplicationsFragment;
 import com.example.finalproject.fragments.branch.EmployeesFragment;
 import com.example.finalproject.fragments.branch.RolesFragment;
 import com.example.finalproject.fragments.input.business.BusinessUpdateForm;
 import com.example.finalproject.util.EmployeeStatus;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
@@ -224,8 +227,7 @@ public class BranchActivity extends AppCompatActivity {
         // If the manager wants to delete the branch:
         else if (ID == R.id.menuBranchItemDelete) {
             // Show the delete dialog:
-            // TODO: Don't actually delete the branch. Instead, set its "active" attribute to false
-            //  and prevent anyone from adding employees or shifts to it.
+            // TODO: Prevent anyone from adding employees or shifts to a de-activated branch
             this.deleteBranchDialog.show();
         }
         // If the manager wants to set the future shifts:
@@ -277,23 +279,34 @@ public class BranchActivity extends AppCompatActivity {
     }
 
     private void deleteCurrentBranch() {
-        Log.i(TAG, "delete");
-        // Call the delete branch cloud function:
-        final CloudFunctionsHandler functionsHandler = CloudFunctionsHandler.getInstance();
-        functionsHandler.deleteBranch(
-                this.currentBranch.getBranchId(),
-                () -> {
-                    // Alert the user and go to the previous activity:
-                    Toast.makeText(this, "Successfully deleted branch", Toast.LENGTH_SHORT).show();
-                    finish();
-                }, e -> {
-                    // Alert the user and log the error:
-                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Failed to delete branch", e);
+        // Define listeners for success and failure:
+        final OnSuccessListener<Void> onSuccessListener = unused -> {
+            // Alert the user and dismiss the dialog:
+            Toast.makeText(this, "Successfully deleted branch", Toast.LENGTH_SHORT).show();
+            this.deleteBranchDialog.dismiss();
+        };
+        final OnFailureListener onFailureListener = e -> {
+            // Alert the user and log the error:
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Failed to delete branch", e);
 
-                    // Dismiss the dialog:
-                    this.deleteBranchDialog.dismiss();
-                });
+            // Dismiss the dialog:
+            this.deleteBranchDialog.dismiss();
+        };
+        // Create a batch write and update both the branch and any workplaces of it:
+        this.dbRef.collectionGroup("workplaces")
+                .whereEqualTo(Workplace.BRANCH_ID, this.currentBranch.getBranchId()).get()
+                .addOnSuccessListener(documents -> {
+                    // Create a batch and set the active attribute to false in branch and its
+                    // workplaces:
+                    final WriteBatch batch = this.dbRef.batch();
+                    batch.update(this.currentBranch.getReference(), Branch.IS_ACTIVE, false);
+                    for (DocumentSnapshot workplaceDoc : documents) {
+                        batch.update(workplaceDoc.getReference(), Workplace.IS_ACTIVE, false);
+                    }
+                    batch.commit().addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
+                })
+                .addOnFailureListener(onFailureListener);
     }
 
     private void initStatusListener() {
