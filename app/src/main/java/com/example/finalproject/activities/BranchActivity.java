@@ -157,12 +157,16 @@ public class BranchActivity extends AppCompatActivity {
 
                         // Go back to the main activity:
                         Toast.makeText(this, "Couldn't load branch", Toast.LENGTH_SHORT).show();
+                        final Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
                         finish();
                     }
 
                     // Check if the branch was deleted:
                     else if (branchDocument == null || !branchDocument.exists()) {
                         Toast.makeText(this, "The branch was deleted", Toast.LENGTH_SHORT).show();
+                        final Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
                         finish();
                     }
 
@@ -178,12 +182,30 @@ public class BranchActivity extends AppCompatActivity {
     }
 
     private void setCurrentBranch(Branch branch) {
+        // Save the branch:
         this.currentBranch = branch;
+
+        // Give the branch to the fragments:
         this.employeesFragment.setCurrentBranch(branch);
         this.applicationsFragment.setBranch(branch);
+
+        // Update the toolbar and title:
         this.tvToolbarTitle.setText(branch.getCompanyName());
         this.tvTitle.setText(branch.getCompanyName());
+
+        // Update password for the delete dialog:
         this.deleteBranchDialog.setRealPassword(branch.getPassword());
+
+        // Update the menu:
+        supportInvalidateOptionsMenu();
+
+        // If the branch isn't active, show the employees fragment only:
+        if (!this.currentBranch.isActive()) {
+            this.pager.setCurrentItem(0);
+            this.pager.setUserInputEnabled(false);
+        }
+        else
+            this.pager.setUserInputEnabled(true);
     }
 
     @Override
@@ -193,11 +215,11 @@ public class BranchActivity extends AppCompatActivity {
         // Inflate the branch menu XML file:
         getMenuInflater().inflate(R.menu.branch_menu, menu);
 
-        // Show The items only if the current user is a manager:
-        final boolean isManager = this.employeeStatus == EmployeeStatus.MANAGER;
-        menu.findItem(R.id.menuBranchItemEdit).setVisible(isManager);
-        menu.findItem(R.id.menuBranchItemDelete).setVisible(isManager);
-        menu.findItem(R.id.menuBranchItemSetShifts).setVisible(isManager);
+        // Show The items only if the current user is a manager and the branch is active:
+        final boolean showMenu = this.employeeStatus == EmployeeStatus.MANAGER && this.currentBranch.isActive();
+        menu.findItem(R.id.menuBranchItemEdit).setVisible(showMenu);
+        menu.findItem(R.id.menuBranchItemDelete).setVisible(showMenu);
+        menu.findItem(R.id.menuBranchItemSetShifts).setVisible(showMenu);
 
         return true;
     }
@@ -227,7 +249,6 @@ public class BranchActivity extends AppCompatActivity {
         // If the manager wants to delete the branch:
         else if (ID == R.id.menuBranchItemDelete) {
             // Show the delete dialog:
-            // TODO: Prevent anyone from adding employees or shifts to a de-activated branch
             this.deleteBranchDialog.show();
         }
         // If the manager wants to set the future shifts:
