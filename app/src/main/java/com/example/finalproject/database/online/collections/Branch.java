@@ -1,5 +1,7 @@
 package com.example.finalproject.database.online.collections;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -146,6 +148,18 @@ public class Branch implements Serializable {
 
     public void setDailyShiftsNum(List<Integer> dailyShiftsNum) {
         this.dailyShiftsNum = dailyShiftsNum;
+    }
+
+    /**
+     * Returns a reference in the database to the location of the current branch. Use this method
+     * only if the branch ID was set.
+     * @return A reference to the branch in the database.
+     */
+    public DocumentReference getReference() {
+        return FirebaseFirestore.getInstance()
+                .collection("branches")
+                .document(this.branchId)
+                ;
     }
 
     public String jsonifyBranch() {
