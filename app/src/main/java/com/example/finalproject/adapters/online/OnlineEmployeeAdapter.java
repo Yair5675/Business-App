@@ -70,6 +70,15 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
         this.notifyDataSetChanged();
     }
 
+    public int getManagersCount() {
+        int count = 0;
+        for (int i = 0; i < this.getItemCount(); i++) {
+            if (this.getItem(i).isManager())
+                count++;
+        }
+        return count;
+    }
+
     @Override
     protected void onBindViewHolder(@NonNull EmployeeVH holder, int position, @NonNull Employee employee) {
         // Change the background color if it's the current user:

@@ -187,20 +187,18 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     }
 
     private void leaveBranch() {
-        // TODO: Change the restriction - don't allow employees to leave if they are the only
-        //  remaining MANAGER, not the only remaining employee
         // Show the progress bar and make the "leave branch" button disappear:
         this.pbLoading.setVisibility(View.VISIBLE);
         this.btnLeave.setVisibility(View.GONE);
 
         // Prevent the user from leaving if they are the only employee:
-        if (this.adapter.getItemCount() == 1) {
+        if (this.employeeStatus == EmployeeStatus.MANAGER && this.adapter.getManagersCount() == 1) {
             // Make the progress bar disappear and the "leave branch" button re-appear:
             this.pbLoading.setVisibility(View.GONE);
             this.btnLeave.setVisibility(View.VISIBLE);
 
             // Alert the user:
-            Toast.makeText(requireContext(), "You can't leave! You're the last one standing", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "You can't leave! You're the last manager standing", Toast.LENGTH_SHORT).show();
             return;
         }
 
