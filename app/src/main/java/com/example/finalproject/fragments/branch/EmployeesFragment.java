@@ -129,7 +129,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     }
 
     private void applyToBranch() {
-        // TODO: If the branch is deactivated don't allow anyone to apply to the branch
         // TODO: When applying, don't forget to increment the amount of pending applications in the
         //  branch (use the built in incrementing transaction of firestore).
         // Hide the apply button and show the progress bar:
@@ -270,6 +269,7 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Create and set the adapter for the recycler view:
         this.adapter = new OnlineEmployeeAdapter(
                 this.employeeStatus == EmployeeStatus.MANAGER,
+                true,
                 this.currentUser.getUid(),
                 requireContext(),
                 () -> {
@@ -315,6 +315,9 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         final int visibility = this.currentBranch.isActive() ? View.VISIBLE : View.GONE;
         this.btnApply.setVisibility(visibility);
         this.btnLeave.setVisibility(visibility);
+
+        // If the branch isn't active, don't allow anyone to promote/demote/fire anyone else:
+        this.adapter.setShowEmployeeMenu(this.currentBranch.isActive());
     }
 
     private boolean isBranchOpen() {

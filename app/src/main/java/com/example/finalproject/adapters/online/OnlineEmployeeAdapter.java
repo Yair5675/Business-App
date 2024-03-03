@@ -26,6 +26,9 @@ import com.example.finalproject.util.EmployeeActions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmployeeAdapter.EmployeeVH> {
+    // A flag indicating that the employee options menu should appear for managers:
+    private boolean showEmployeeMenu;
+
     // The current user's ID:
     private final String currentUserId;
 
@@ -42,16 +45,23 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
     private final Context context;
 
     public OnlineEmployeeAdapter(
-            boolean isManager, String currentUserId, Context context,
+            boolean isManager, boolean showEmployeeMenu, String currentUserId, Context context,
             Runnable onEmptyCallback, Runnable onNotEmptyCallback,
             EmployeeActions employeeActions,
             @NonNull FirestoreRecyclerOptions<Employee> options
     ) {
         super(context, onEmptyCallback, onNotEmptyCallback, options);
+        this.showEmployeeMenu = showEmployeeMenu;
         this.isManager = isManager;
         this.currentUserId = currentUserId;
         this.employeeActions = employeeActions;
         this.context = context;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setShowEmployeeMenu(boolean showEmployeeMenu) {
+        this.showEmployeeMenu = showEmployeeMenu;
+        this.notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -86,6 +96,13 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
         final boolean isCurrentUser = this.currentUserId.equals(employee.getUid());
         holder.imgMore.setVisibility(this.isManager && !isCurrentUser ? View.VISIBLE : View.GONE);
 
+        // Show the menu only if the "showEmployeeMenu" flag is true:
+        if (this.showEmployeeMenu)
+            holder.imgMore.setOnClickListener((_v) -> holder.popupMenu.show());
+        else
+            holder.imgMore.setOnClickListener(null);
+
+
         // Show menu items according to certain conditions:
         holder.menuItemPromote.setVisible(this.isManager && !employee.isManager());
         holder.menuItemDemote.setVisible(this.isManager && employee.isManager());
@@ -101,6 +118,9 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
     }
 
     public class EmployeeVH extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener {
+        // The popup menu that will appear when an employee is clicked:
+        private final PopupMenu popupMenu;
+
         // The layout of the row:
         private final LinearLayout rowLayout;
 
@@ -130,7 +150,7 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
             this.imgMore = itemView.findViewById(R.id.rowEmployeeImgMore);
 
             // Create popup menu:
-            final PopupMenu popupMenu = new PopupMenu(context, this.imgMore, Gravity.END);
+            this.popupMenu = new PopupMenu(context, this.imgMore, Gravity.END);
             popupMenu.inflate(R.menu.employee_menu);
             popupMenu.setOnMenuItemClickListener(this);
 
