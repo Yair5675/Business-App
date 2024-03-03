@@ -28,9 +28,11 @@ import com.example.finalproject.util.EmployeeStatus;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -129,8 +131,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     }
 
     private void applyToBranch() {
-        // TODO: When applying, don't forget to increment the amount of pending applications in the
-        //  branch (use the built in incrementing transaction of firestore).
         // Hide the apply button and show the progress bar:
         this.pbLoading.setVisibility(View.VISIBLE);
         this.btnApply.setVisibility(View.GONE);
@@ -138,37 +138,44 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Get a reference to the database:
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        // Set the application object in the document:
+        final WriteBatch batch = db.batch();
+
         // Create a new application object:
         final Application application = new Application(
                 this.currentUser.getUid(), this.currentUser.getFullName(), this.currentUser.getImagePath()
         );
 
         // Create an empty notification document with its ID equal to the current user's ID:
-        DocumentReference notificationRef = db
-                .collection("branches")
-                .document(this.currentBranch.getBranchId())
+        DocumentReference notificationRef = this.currentBranch
+                .getReference()
                 .collection("applications")
                 .document(this.currentUser.getUid());
 
-        // Set the application object in the document:
-        notificationRef.set(application, SetOptions.merge())
-                .addOnCompleteListener(task -> {
-                    // Show the apply button again and hide the progress bar:
-                    this.btnApply.setVisibility(View.VISIBLE);
-                    this.pbLoading.setVisibility(View.GONE);
+        batch.set(notificationRef, application, SetOptions.merge());
 
-                    if (task.isSuccessful()) {
-                        // If the task is successful, alert the user:
-                        Toast.makeText(requireContext(), "Successfully applied to the branch!", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        // Log the error:
-                        Log.e(TAG, "Failed to apply to branch", task.getException());
+        // Add to the branch's pending applications attribute:
+        batch.update(this.currentBranch.getReference(), Branch.PENDING_APPLICATIONS, FieldValue.increment(1));
 
-                        // Alert the user:
-                        Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        // Commit the branch:
+        batch.commit().addOnSuccessListener(unused -> {
+            // Show the apply button again and hide the progress bar:
+            this.btnApply.setVisibility(View.VISIBLE);
+            this.pbLoading.setVisibility(View.GONE);
+
+            // Alert the user:
+            Toast.makeText(requireContext(), "Successfully applied to the branch!", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e -> {
+            // Show the apply button again and hide the progress bar:
+            this.btnApply.setVisibility(View.VISIBLE);
+            this.pbLoading.setVisibility(View.GONE);
+
+            // Log the error:
+            Log.e(TAG, "Failed to apply to branch", e);
+
+            // Alert the user:
+            Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+        });
     }
 
     // Tag for debugging purposes:
