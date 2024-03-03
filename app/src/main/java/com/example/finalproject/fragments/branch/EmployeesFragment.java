@@ -310,6 +310,11 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
 
         // Set the address:
         this.tvAddress.setText(this.currentBranch.getFullAddress());
+
+        // If the branch isn't active, don't allow users to apply/leave it:
+        final int visibility = this.currentBranch.isActive() ? View.VISIBLE : View.GONE;
+        this.btnApply.setVisibility(visibility);
+        this.btnLeave.setVisibility(visibility);
     }
 
     private boolean isBranchOpen() {
