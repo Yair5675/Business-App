@@ -24,10 +24,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
@@ -229,6 +231,19 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         this.pbLoading.setVisibility(View.VISIBLE);
         this.btnSaveShifts.setVisibility(View.GONE);
 
+        // Configure callbacks:
+        OnSuccessListener<Void> onSuccessListener = unused -> {
+            Toast.makeText(this, "All shifts were saved successfully!", Toast.LENGTH_SHORT).show();
+            finish();
+        };
+        OnFailureListener onFailureListener = e -> {
+            // Log the error and alert the user:
+            Log.e(TAG, "Failed to delete shifts", e);
+            Toast.makeText(this, "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
+            this.btnSaveShifts.setVisibility(View.VISIBLE);
+            this.pbLoading.setVisibility(View.GONE);
+        };
+
         // Delete all shifts:
         this.deleteAllShifts(unused -> {
             // Go over every shifts fragment:
@@ -237,15 +252,9 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                 final List<Shift> packagedShifts = fragment.getPackagedShifts();
 
                 // Save them:
-                this.saveShiftsRecursive(packagedShifts, 0);
+                this.saveShifts(packagedShifts, onSuccessListener, onFailureListener);
             }
-        }, e -> {
-            // Log the error and alert the user:
-            Log.e(TAG, "Failed to delete shifts", e);
-            Toast.makeText(this, "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
-            this.btnSaveShifts.setVisibility(View.VISIBLE);
-            this.pbLoading.setVisibility(View.GONE);
-        });
+        }, onFailureListener);
 
     }
 
@@ -257,6 +266,8 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     }
 
     private void deleteAllShifts(int index, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        // TODO: Change the way that shifts are deleted. Think about receiving the shifts that are
+        //  already in the database using the shifts handler
         if (index == 7)
             onSuccessListener.onSuccess(null);
 
@@ -276,30 +287,28 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                 .addOnFailureListener(onFailureListener);
     }
 
-    private void saveShiftsRecursive(List<Shift> shifts, int index) {
-        // Check that all shifts were saved:
-        if (index >= shifts.size()) {
-            Toast.makeText(this, "All shifts were saved successfully!", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        // Skip over shifts without employees:
-        final Shift currentShift = shifts.get(index);
-        // TODO: Save all shifts recursively
-    }
-
-    private void saveShift(
-            Shift shift,
-            OnSuccessListener<Void> onSuccessListener,
+    private void saveShifts(
+            List<Shift> shifts, OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-        // Save the shift object in the database with an auto-generated ID:
-        final DocumentReference shiftRef = this.db.collection("shifts").document();
-        shift.setShiftId(shiftRef.getId());
-        shiftRef.set(shift)
-                .addOnSuccessListener(onSuccessListener)
-                .addOnFailureListener(onFailureListener);
+        // Go over the shifts and save them as a batch:
+        final WriteBatch batch = this.db.batch();
+        final CollectionReference shiftsRef = this.db.collection("shifts");
+        for (Shift shift : shifts) {
+            // Check if there is a pre-existing ID:
+            final DocumentReference shiftRef;
+            if (shift.getShiftId() == null) {
+                shiftRef = shiftsRef.document();
+                shift.setShiftId(shiftRef.getId());
+            }
+            else
+                shiftRef = shiftsRef.document(shift.getShiftId());
+
+            batch.set(shiftRef, shift, SetOptions.merge());
+        }
+
+        // Commit the batch:
+        batch.commit().addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }
 
     @Override
