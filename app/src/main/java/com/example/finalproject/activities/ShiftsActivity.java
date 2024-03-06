@@ -294,13 +294,12 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-        // TODO: Change the way shifts are saved according to the new design
         // Save the shift object in the database with an auto-generated ID:
-        final DocumentReference shiftRef = this.db.collection(String.format(
-                "branches/%s/shifts", this.branch.getBranchId()
-        )).document();
+        final DocumentReference shiftRef = this.db.collection("shifts").document();
         shift.setShiftId(shiftRef.getId());
-        shiftRef.set(shift);
+        shiftRef.set(shift)
+                .addOnSuccessListener(onSuccessListener)
+                .addOnFailureListener(onFailureListener);
     }
 
     @Override
