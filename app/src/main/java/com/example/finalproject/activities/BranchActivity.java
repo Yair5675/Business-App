@@ -216,10 +216,12 @@ public class BranchActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.branch_menu, menu);
 
         // Show The items only if the current user is a manager and the branch is active:
-        final boolean showMenu = this.employeeStatus == EmployeeStatus.MANAGER && this.currentBranch.isActive();
-        menu.findItem(R.id.menuBranchItemEdit).setVisible(showMenu);
-        menu.findItem(R.id.menuBranchItemDelete).setVisible(showMenu);
-        menu.findItem(R.id.menuBranchItemSetShifts).setVisible(showMenu);
+        final boolean showForManager = this.employeeStatus == EmployeeStatus.MANAGER && this.currentBranch.isActive();
+        final boolean showForEmployee = this.employeeStatus != EmployeeStatus.UNEMPLOYED && this.currentBranch.isActive();
+        menu.findItem(R.id.menuBranchItemEdit).setVisible(showForManager);
+        menu.findItem(R.id.menuBranchItemDelete).setVisible(showForManager);
+        menu.findItem(R.id.menuBranchItemSeeCurrentShifts).setVisible(showForEmployee);
+        menu.findItem(R.id.menuBranchItemSetShifts).setVisible(showForManager);
 
         return true;
     }

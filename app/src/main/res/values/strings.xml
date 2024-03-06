@@ -178,6 +178,7 @@
     <!-- Strings belonging to the branch menu: -->
     <string name="branch_menu_item_edit">Edit Branch</string>
     <string name="branch_menu_item_delete">Delete Branch</string>
+    <string name="branch_menu_item_see_current_shifts">See this week\'s shifts</string>
     <string name="branch_menu_item_set_future_shifts">Set Future Shifts</string>
 
 
