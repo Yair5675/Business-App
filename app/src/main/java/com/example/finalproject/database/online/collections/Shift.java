@@ -1,8 +1,12 @@
 package com.example.finalproject.database.online.collections;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Date;
 
-public class Shift {
+public class Shift implements Externalizable {
     // The ID of the shift:
     private String shiftId;
 
@@ -97,5 +101,31 @@ public class Shift {
 
     public void setEndingTime(int endingTime) {
         this.endingTime = endingTime;
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws ClassNotFoundException, IOException {
+        // Read the attributes according to the order they were saved:
+        this.shiftId = (String) in.readObject();
+        this.uid = (String) in.readObject();
+        this.branchId = (String) in.readObject();
+        this.companyName = (String) in.readObject();
+        this.roleName = (String) in.readObject();
+        this.shiftDate = new Date(in.readLong());
+        this.startingTime = in.readInt();
+        this.endingTime = in.readInt();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        // Save the attributes (in a specific order):
+        out.writeChars(this.shiftId);
+        out.writeChars(this.uid);
+        out.writeChars(this.branchId);
+        out.writeChars(this.companyName);
+        out.writeChars(this.roleName);
+        out.writeLong(this.shiftDate.getTime());
+        out.writeInt(this.startingTime);
+        out.writeInt(this.endingTime);
     }
 }
