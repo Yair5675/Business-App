@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Branch;
@@ -29,8 +30,8 @@ public class ShiftsFragment extends Fragment {
     // The button that adds another shift:
     private Button btnAddShift;
 
-    // The recycler view that shows all shift views:
-    private RecyclerView rvShifts;
+    // The layout that holds all shift views:
+    private LinearLayout shiftsLayout;
 
     // The fragment initialization parameter keys:
     private static final String DATE_KEY = "date";
@@ -75,11 +76,11 @@ public class ShiftsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment:
-        final View parent = inflater.inflate(R.layout.fragment_shifts, container, false);
+        final View parent = inflater.inflate(R.layout.fragment_shifts_shifts, container, false);
 
         // Load the views of the fragment:
-        this.rvShifts = parent.findViewById(R.id.fragShiftsRvShifts);
-        this.btnAddShift = parent.findViewById(R.id.fragShiftsBtnAddShift);
+        this.shiftsLayout = parent.findViewById(R.id.fragDayShiftsShiftsLayout);
+        this.btnAddShift = parent.findViewById(R.id.fragShiftsShiftsBtnAddShift);
 
         return parent;
     }

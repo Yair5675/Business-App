@@ -8,19 +8,27 @@
     android:paddingHorizontal="16dp"
     tools:context=".fragments.shifts.ShiftsFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragShiftsRvShifts"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        />
+        >
+        <LinearLayout
+            android:id="@+id/fragShiftsShiftsShiftsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            />
+    </ScrollView>
 
     <android.widget.Button
-        android:id="@+id/fragShiftsBtnAddShift"
+        android:id="@+id/fragShiftsShiftsBtnAddShift"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/improved_btn_background"
+        style="@style/ImprovedButtonAppearance"
         android:layout_margin="10dp"
+        android:text="@string/frag_day_shifts_btn_add_shift_txt"
         />
 
 </LinearLayout>
