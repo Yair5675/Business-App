@@ -13,6 +13,9 @@ public class Shift implements Externalizable {
     // The ID of the user that works in the shift and the branch they are working at:
     private String uid, branchId;
 
+    // The full name of the employee that works the shift:
+    private String userFullName;
+
     // The name of the company of the branch:
     private String companyName;
 
@@ -29,6 +32,7 @@ public class Shift implements Externalizable {
     public static final String SHIFT_ID = "shiftId";
     public static final String UID = User.UID;
     public static final String BRANCH_ID = Branch.BRANCH_ID;
+    public static final String USER_FULL_NAME = "userFullName";
     public static final String COMPANY_NAME = Branch.COMPANY_NAME;
     public static final String ROLE_NAME = "roleName";
     public static final String SHIFT_DATE = "shiftDate";
@@ -61,6 +65,14 @@ public class Shift implements Externalizable {
 
     public void setBranchId(String branchId) {
         this.branchId = branchId;
+    }
+
+    public String getUserFullName() {
+        return userFullName;
+    }
+
+    public void setUserFullName(String userFullName) {
+        this.userFullName = userFullName;
     }
 
     public String getCompanyName() {
