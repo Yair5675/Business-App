@@ -1,7 +1,6 @@
 package com.example.finalproject.custom_views;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -72,7 +71,7 @@ public class RoleColumnView extends LinearLayout {
         return false;
     }
 
-    public void setOnEmployeeClickedListener(@Nullable BiConsumer<View, Integer> onEmployeeClickedListener) {
+    public void setOnEmployeeClickedListener(@Nullable BiConsumer<EmployeeView, Integer> onEmployeeClickedListener) {
         this.adapter = new EmployeeViewsAdapter(this.context, this.employees, onEmployeeClickedListener);
         this.rvEmployees.setAdapter(this.adapter);
     }

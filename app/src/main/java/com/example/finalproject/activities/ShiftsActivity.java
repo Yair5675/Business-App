@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.EmployeeViewsAdapter;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
-import com.example.finalproject.custom_views.EmployeeView;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
@@ -152,10 +151,9 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         final EmployeeViewsAdapter adapter = new EmployeeViewsAdapter(
                 this, this.employeeList,
                 (employeeView, position) -> {
-                    if (employeeView instanceof EmployeeView)
-                        // Set the employee as the selected employee in all fragments:
-                        for (DayShiftsFragment fragment : this.fragments)
-                            fragment.onEmployeeViewSelected((EmployeeView) employeeView);
+                    // Set the employee as the selected employee in all fragments:
+                    for (DayShiftsFragment fragment : this.fragments)
+                        fragment.onEmployeeViewSelected(employeeView);
                 });
         rvEmployees.setAdapter(adapter);
 

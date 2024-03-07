@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.custom_views.EmployeeView;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.Employee;
 
@@ -27,11 +28,11 @@ public class EmployeeViewsAdapter extends RecyclerView.Adapter<EmployeeViewsAdap
 
     // A callback that will be activated once an employee is clicked. The callback receives the view
     // that was clicked and its index in the list:
-    private final @Nullable BiConsumer<View, Integer> onEmployeeClickedListener;
+    private final @Nullable BiConsumer<EmployeeView, Integer> onEmployeeClickedListener;
 
     public EmployeeViewsAdapter(
             Context context, List<Employee> employees,
-            @Nullable BiConsumer<View, Integer> onEmployeeClickedListener
+            @Nullable BiConsumer<EmployeeView, Integer> onEmployeeClickedListener
     ) {
         // Load parameters:
         this.context = context;
@@ -64,7 +65,10 @@ public class EmployeeViewsAdapter extends RecyclerView.Adapter<EmployeeViewsAdap
         if (this.onEmployeeClickedListener != null)
             holder.itemView.setOnClickListener(
                     // Call with the current view and position:
-                    view -> this.onEmployeeClickedListener.accept(view, position)
+                    view -> {
+                        if (view instanceof EmployeeView)
+                            this.onEmployeeClickedListener.accept((EmployeeView) view, position);
+                    }
             );
     }
 
