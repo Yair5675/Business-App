@@ -5,8 +5,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
+import com.example.finalproject.util.Util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -116,10 +118,22 @@ public class ShiftView extends LinearLayout {
         );
     }
 
-    public List<Shift> getShifts(LocalDate localDate) {
-        // TODO: Return all shifts instead
-        return null;
-    }
+    public List<Shift> getShifts(LocalDate localDate, Branch branch) {
+        // Initialize a list to hold all the shifts:
+        final List<Shift> shifts = new ArrayList<>(this.roleColumns.size() * 2);
 
-    // TODO: Delete this class and instead return a list of shifts
+        // Add a shift for every employee in every role:
+        for (RoleColumnView roleColumn : this.roleColumns) {
+            for (Employee employee : roleColumn.getEmployees()) {
+                final Shift shift = new Shift(
+                        employee.getUid(), branch.getBranchId(), employee.getFullName(),
+                        branch.getCompanyName(), roleColumn.getRole(),
+                        Util.getDateFromLocalDate(localDate), this.startTime, this.endTime
+                );
+                shifts.add(shift);
+            }
+        }
+
+        return shifts;
+    }
 }

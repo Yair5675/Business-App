@@ -320,7 +320,7 @@ public class DayShiftsFragment extends Fragment {
         // Form the packaged shifts list and return it:
         final List<Shift> shifts = new LinkedList<>();
         for (ShiftView shiftView : this.shiftViews) {
-            shifts.addAll(shiftView.getShifts(this.date));
+            shifts.addAll(shiftView.getShifts(this.date, this.branch));
         }
         return shifts;
     }
