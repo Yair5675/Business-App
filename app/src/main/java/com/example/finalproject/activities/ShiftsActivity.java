@@ -36,6 +36,7 @@ import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     private ScreenSlideAdapter pagerAdapter;
 
     // A list of roles in the branch:
-    private List<String> rolesList;
+    private ArrayList<String> rolesList;
 
     // A list of employees in the branch:
     private List<Employee> employeeList;

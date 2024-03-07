@@ -21,7 +21,9 @@ import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,8 +31,8 @@ public class DayShiftsFragment extends Fragment {
     // The branch whose shifts are set:
     private Branch branch;
 
-    // The index of the day that the fragment sets shifts for (0 - Sunday):
-    private int dayIndex;
+    // The maximum amount of shifts in the day:
+    private int maxShifts;
 
     // The date of the shift fragment:
     private LocalDate date;
@@ -39,11 +41,14 @@ public class DayShiftsFragment extends Fragment {
     private @Nullable EmployeeView selectedEmployee;
 
     // The roles available in the branch:
-    private List<String> roles;
+    private ArrayList<String> roles;
 
     // The list that holds the shift views:
     private final List<ShiftView> shiftViews;
 
+    // TODO: Replace this, the activity will handle employee view. However, create a function that
+    //  accepts an employee view called "onEmployeeViewSelected" that will allow the activity to
+    //  communicate with this fragment
     // The list that holds the employee views:
     private List<EmployeeView> employeeViews;
 
@@ -55,6 +60,12 @@ public class DayShiftsFragment extends Fragment {
 
     // The button that adds a new shift:
     private Button btnAddShift;
+
+    // The fragment initialization parameter keys:
+    private static final String DATE_KEY = "date";
+    private static final String BRANCH_KEY = "branch";
+    private static final String MAX_SHIFTS_KEY = "maxShifts";
+    private static final String ROLES_KEY = "roles";
 
     public DayShiftsFragment() {
         // Required empty public constructor
@@ -68,22 +79,18 @@ public class DayShiftsFragment extends Fragment {
      * @return A new instance of fragment DayShiftsFragment.
      */
     public static DayShiftsFragment newInstance(
-            Context context, int dayIndex, LocalDate date, Branch branch, List<Employee> employees, List<String> roles
+            Context context, int maxShifts, LocalDate date, Branch branch, List<Employee> employees, ArrayList<String> roles
     ) {
         // Create the fragment instance:
         final DayShiftsFragment fragment = new DayShiftsFragment();
 
-        // Set the roles in the branch:
-        fragment.roles = roles;
-
-        // Set the date:
-        fragment.date = date;
-
-        // Set the branch:
-        fragment.branch = branch;
-
-        // Set day index:
-        fragment.dayIndex = dayIndex;
+        // Enter the parameters into a bundle and set it as the fragment's arguments:
+        final Bundle args = new Bundle();
+        args.putInt(MAX_SHIFTS_KEY, maxShifts);
+        args.putSerializable(DATE_KEY, date);
+        args.putSerializable(BRANCH_KEY, branch);
+        args.putStringArrayList(ROLES_KEY, roles);
+        fragment.setArguments(args);
 
         // Set the employee views in the fragment:
         fragment.employeeViews = createEmployeeViews(context, employees);
@@ -107,6 +114,18 @@ public class DayShiftsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Load the arguments:
+        final Bundle args = getArguments();
+        if (args != null) {
+            final Serializable dateSer = args.getSerializable(DATE_KEY), branchSer = args.getSerializable(BRANCH_KEY);
+            if (dateSer instanceof LocalDate)
+                this.date = (LocalDate) dateSer;
+            if (branchSer instanceof Branch)
+                this.branch = (Branch) branchSer;
+            this.maxShifts = args.getInt(MAX_SHIFTS_KEY, 3);
+            this.roles = args.getStringArrayList(ROLES_KEY);
+        }
     }
 
     @Override
@@ -151,7 +170,7 @@ public class DayShiftsFragment extends Fragment {
     }
 
     private boolean canAddShifts() {
-        return this.branch.getDailyShiftsNum().get(this.dayIndex) > this.shiftViews.size();
+        return this.maxShifts > this.shiftViews.size();
     }
 
     private void addShift() {
