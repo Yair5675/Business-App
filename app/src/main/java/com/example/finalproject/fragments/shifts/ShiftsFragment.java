@@ -16,6 +16,7 @@ import com.example.finalproject.database.online.collections.Branch;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class ShiftsFragment extends Fragment {
     // The date of all shifts in this fragment:
@@ -30,6 +31,9 @@ public class ShiftsFragment extends Fragment {
     // The button that adds another shift:
     private Button btnAddShift;
 
+    // The roles in the branch:
+    private ArrayList<String> roles;
+
     // The layout that holds all shift views:
     private LinearLayout shiftsLayout;
 
@@ -37,12 +41,13 @@ public class ShiftsFragment extends Fragment {
     private static final String DATE_KEY = "date";
     private static final String BRANCH_KEY = "branch";
     private static final String MAX_SHIFTS_KEY = "maxShifts";
+    private static final String ROLES_KEY = "roles";
 
     public ShiftsFragment() {
         // Required empty public constructor
     }
 
-    public static ShiftsFragment newInstance(LocalDate date, Branch branch, int maxShifts) {
+    public static ShiftsFragment newInstance(LocalDate date, Branch branch, int maxShifts, ArrayList<String> roles) {
         // Create the new fragment:
         ShiftsFragment fragment = new ShiftsFragment();
 
@@ -51,6 +56,7 @@ public class ShiftsFragment extends Fragment {
         args.putSerializable(DATE_KEY, date);
         args.putSerializable(BRANCH_KEY, branch);
         args.putInt(MAX_SHIFTS_KEY, maxShifts);
+        args.putStringArrayList(ROLES_KEY, roles);
 
         fragment.setArguments(args);
         return fragment;
@@ -69,6 +75,7 @@ public class ShiftsFragment extends Fragment {
             if (branchSer instanceof Branch)
                 this.branch = (Branch) branchSer;
             this.maxShifts = arguments.getInt(MAX_SHIFTS_KEY, 3);
+            this.roles = arguments.getStringArrayList(ROLES_KEY);
         }
     }
 
@@ -79,7 +86,7 @@ public class ShiftsFragment extends Fragment {
         final View parent = inflater.inflate(R.layout.fragment_shifts_shifts, container, false);
 
         // Load the views of the fragment:
-        this.shiftsLayout = parent.findViewById(R.id.fragDayShiftsShiftsLayout);
+        this.shiftsLayout = parent.findViewById(R.id.fragShiftsShiftsShiftsLayout);
         this.btnAddShift = parent.findViewById(R.id.fragShiftsShiftsBtnAddShift);
 
         return parent;
