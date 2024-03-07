@@ -90,8 +90,11 @@ public class Util {
         for (int i = 0; i < words.length; i++) {
             if (!words[i].isEmpty()) {
                 words[i] = words[i].toLowerCase();
+
+                // Capitalize the first character only if it's a letter:
                 final char first = (char) (words[i].charAt(0) - 32);
-                words[i] = first + words[i].substring(1);
+                if (Character.isLetter(first))
+                    words[i] = first + words[i].substring(1);
             }
         }
         return String.join(" ", words);
