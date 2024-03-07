@@ -25,12 +25,25 @@
         app:tabTextColor="@color/gray"
         app:tabSelectedTextColor="@color/black"
         />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/actShiftsRvEmployeeViews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/actShiftsPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="8dp"
+        android:background="?android:attr/listDivider" />
 
     <ProgressBar
         android:id="@+id/actShiftsPbLoading"
@@ -50,7 +63,7 @@
         android:drawablePadding="8dp"
         android:paddingHorizontal="10dp"
 
-        android:layout_marginVertical="16dp"
+        android:layout_marginVertical="10dp"
         />
 
 

@@ -1,7 +1,6 @@
 package com.example.finalproject.fragments.shifts;
 
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -18,7 +17,6 @@ import com.example.finalproject.R;
 import com.example.finalproject.custom_views.EmployeeView;
 import com.example.finalproject.custom_views.ShiftView;
 import com.example.finalproject.database.online.collections.Branch;
-import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
 
 import java.io.Serializable;
@@ -46,15 +44,6 @@ public class DayShiftsFragment extends Fragment {
     // The list that holds the shift views:
     private final List<ShiftView> shiftViews;
 
-    // TODO: Replace this, the activity will handle employee view. However, create a function that
-    //  accepts an employee view called "onEmployeeViewSelected" that will allow the activity to
-    //  communicate with this fragment
-    // The list that holds the employee views:
-    private List<EmployeeView> employeeViews;
-
-    // The layout that holds the employee views:
-    private LinearLayout employeesLayout;
-
     // The layout that holds the shift views:
     private LinearLayout shiftsLayout;
 
@@ -79,7 +68,7 @@ public class DayShiftsFragment extends Fragment {
      * @return A new instance of fragment DayShiftsFragment.
      */
     public static DayShiftsFragment newInstance(
-            Context context, int maxShifts, LocalDate date, Branch branch, List<Employee> employees, ArrayList<String> roles
+            int maxShifts, LocalDate date, Branch branch, ArrayList<String> roles
     ) {
         // Create the fragment instance:
         final DayShiftsFragment fragment = new DayShiftsFragment();
@@ -92,23 +81,7 @@ public class DayShiftsFragment extends Fragment {
         args.putStringArrayList(ROLES_KEY, roles);
         fragment.setArguments(args);
 
-        // Set the employee views in the fragment:
-        fragment.employeeViews = createEmployeeViews(context, employees);
-
         return fragment;
-    }
-
-    private static List<EmployeeView> createEmployeeViews(Context context, List<Employee> employees) {
-        // Create the employee views list:
-        final List<EmployeeView> employeeViews = new LinkedList<>();
-        for (Employee employee : employees) {
-            // Create the employee view from the employee:
-            final EmployeeView employeeView = new EmployeeView(context);
-            employeeView.setEmployee(employee);
-            employeeViews.add(employeeView);
-        }
-
-        return employeeViews;
     }
 
     @Override
@@ -128,6 +101,16 @@ public class DayShiftsFragment extends Fragment {
         }
     }
 
+    public void onEmployeeViewSelected(EmployeeView employeeView) {
+        // Clear the background of the previous employee:
+        if (this.selectedEmployee != null)
+            this.selectedEmployee.setBackgroundResource(android.R.color.background_light);
+
+        // Save the current employee view and set their background to blue:
+        this.selectedEmployee = employeeView;
+        this.selectedEmployee.setBackgroundResource(R.color.row_highlight);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -137,28 +120,9 @@ public class DayShiftsFragment extends Fragment {
         // Load the views:
         this.btnAddShift = parent.findViewById(R.id.fragDayShiftsBtnAddShift);
         this.shiftsLayout = parent.findViewById(R.id.fragDayShiftsShiftsLayout);
-        this.employeesLayout = parent.findViewById(R.id.fragDayShiftsEmployeesLayout);
 
         // Set an onClickListener for the button:
         this.btnAddShift.setOnClickListener(_v -> this.addShift());
-
-        // Reload the employee views to the employees layout:
-        for (EmployeeView employeeView : this.employeeViews) {
-            this.employeesLayout.addView(employeeView);
-
-            // Set an onClickListener to each employee view:
-            employeeView.setOnClickListener(view -> {
-                if (view instanceof EmployeeView) {
-                    // Clear the background of the previous employee:
-                    if (this.selectedEmployee != null)
-                        this.selectedEmployee.setBackgroundResource(android.R.color.background_light);
-
-                    // Save the current employee view and set their background to blue:
-                    this.selectedEmployee = (EmployeeView) view;
-                    this.selectedEmployee.setBackgroundResource(R.color.row_highlight);
-                }
-            });
-        }
 
         // Reload the shift views to the shift layout:
         for (ShiftView shiftView : this.shiftViews)
@@ -365,8 +329,7 @@ public class DayShiftsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        // Clear the layouts before the view is destroyed:
-        this.employeesLayout.removeAllViews();
+        // Clear the shifts layout before the view is destroyed:
         this.shiftsLayout.removeAllViews();
     }
 }

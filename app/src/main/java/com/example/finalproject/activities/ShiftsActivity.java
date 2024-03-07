@@ -2,6 +2,8 @@ package com.example.finalproject.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
@@ -13,7 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.example.finalproject.adapters.EmployeeViewsAdapter;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
+import com.example.finalproject.custom_views.EmployeeView;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
@@ -28,7 +32,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
@@ -38,13 +41,15 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
     // A reference to the online database:
     private FirebaseFirestore db;
+
+    // The recycler view that allows the user to choose employee views:
 
     // The branch whose shifts are being set:
     private Branch branch;
@@ -119,6 +124,9 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
 
         // Load employees:
         this.loadEmployees(() -> {
+            // Initialize the employee views' recyclerview:
+            this.initEmployeesRv();
+
             // Initialize fragments:
             this.initDayShiftsFragments();
 
@@ -136,6 +144,25 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         });
     }
 
+    private void initEmployeesRv() {
+        // Load the recycler view:
+        final RecyclerView rvEmployees = findViewById(R.id.actShiftsRvEmployeeViews);
+
+        // Set an adapter for it:
+        final EmployeeViewsAdapter adapter = new EmployeeViewsAdapter(
+                this, this.employeeList,
+                (employeeView, position) -> {
+                    if (employeeView instanceof EmployeeView)
+                        // Set the employee as the selected employee in all fragments:
+                        for (DayShiftsFragment fragment : this.fragments)
+                            fragment.onEmployeeViewSelected((EmployeeView) employeeView);
+                });
+        rvEmployees.setAdapter(adapter);
+
+        // Set a horizontal layout manager:
+        rvEmployees.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    }
+
     private void setLoading(boolean isLoading) {
         this.pbLoading.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         this.pager.setVisibility(isLoading ? View.GONE : View.VISIBLE);
@@ -147,12 +174,11 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         this.db.collection(String.format("branches/%s/employees", this.branch.getBranchId())).get()
                 .addOnSuccessListener(queryDocuments -> {
                     // Convert the documents to Employee objects:
-                    final List<Employee> employees = new LinkedList<>();
-                    for (QueryDocumentSnapshot document : queryDocuments) {
-                        final Employee employee = document.toObject(Employee.class);
-                        employees.add(employee);
-                    }
-                    this.employeeList = employees;
+                    this.employeeList = queryDocuments
+                            .getDocuments()
+                            .stream()
+                            .map(document -> document.toObject(Employee.class))
+                            .collect(Collectors.toList());
 
                     // Run the callback:
                     onSuccessRunnable.run();
@@ -168,7 +194,8 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         this.fragments = new DayShiftsFragment[7];
         for (int i = 0; i < this.fragments.length; i++) {
             this.fragments[i] = DayShiftsFragment.newInstance(
-                    this, i, this.firstDayDate.plusDays(i), this.branch, this.employeeList, this.rolesList
+                    this.branch.getDailyShiftsNum().get(i), this.firstDayDate.plusDays(i),
+                    this.branch, this.rolesList
             );
         }
     }
