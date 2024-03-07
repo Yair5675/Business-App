@@ -212,10 +212,16 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     private void loadDateFromIntent() {
         final Intent intent = getIntent();
         if (intent != null) {
-            final int day = intent.getIntExtra("day", 0);
-            final int month = intent.getIntExtra("month", 0);
-            final int year = intent.getIntExtra("year", 0);
-            this.firstDayDate = LocalDate.of(year, month, day);
+            final Serializable firstDaySer = intent.getSerializableExtra(Constants.ACT_SHIFTS_START_WEEK_KEY);
+            if (firstDaySer instanceof LocalDate)
+                this.firstDayDate = (LocalDate) firstDaySer;
+            else {
+                if (firstDaySer != null)
+                    Log.e(TAG, "Invalid date given. Expected LocalDate, got " + firstDaySer.getClass().getName());
+                else
+                    Log.e(TAG, "No date was given");
+                finish();
+            }
         }
     }
 

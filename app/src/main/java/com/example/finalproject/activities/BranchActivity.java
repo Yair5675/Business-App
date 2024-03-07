@@ -267,6 +267,7 @@ public class BranchActivity extends AppCompatActivity {
         }
         // If the manager wants to set the future shifts:
         else if (ID == R.id.menuBranchItemSetShifts) {
+            // TODO: Change this according to the new shifts activity design
             // Get the roles in order to give them to the shifts activity:
             this.loadRoles(roles -> {
                 // Check if the roles are empty:
