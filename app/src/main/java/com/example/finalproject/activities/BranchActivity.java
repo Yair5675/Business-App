@@ -28,6 +28,7 @@ import com.example.finalproject.fragments.branch.ApplicationsFragment;
 import com.example.finalproject.fragments.branch.EmployeesFragment;
 import com.example.finalproject.fragments.branch.RolesFragment;
 import com.example.finalproject.fragments.input.business.BusinessUpdateForm;
+import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.EmployeeStatus;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -199,6 +200,7 @@ public class BranchActivity extends AppCompatActivity {
         // Update the menu:
         supportInvalidateOptionsMenu();
 
+        // TODO: If the branch is not active add a little text view that informs the employees
         // If the branch isn't active, show the employees fragment only:
         if (!this.currentBranch.isActive()) {
             this.pager.setCurrentItem(0);
@@ -252,6 +254,16 @@ public class BranchActivity extends AppCompatActivity {
         else if (ID == R.id.menuBranchItemDelete) {
             // Show the delete dialog:
             this.deleteBranchDialog.show();
+        }
+        // If an employee/manager wants to see this week's shifts:
+        else if (ID == R.id.menuBranchItemSeeCurrentShifts) {
+            // Get this week's sunday's date:
+            final LocalDate startWeek = getRecentSunday();
+
+            // Send it to the shifts activity:
+            final Intent intent = new Intent(this, ShiftsActivity.class);
+            intent.putExtra(Constants.ACT_SHIFTS_START_WEEK_KEY, startWeek);
+            startActivity(intent);
         }
         // If the manager wants to set the future shifts:
         else if (ID == R.id.menuBranchItemSetShifts) {
@@ -450,4 +462,11 @@ public class BranchActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(callback);
     }
 
+    private static LocalDate getRecentSunday() {
+        final LocalDate date = LocalDate.now();
+        if (date.getDayOfWeek() == DayOfWeek.SUNDAY)
+            return date;
+        else
+            return date.minusDays(date.getDayOfWeek().getValue() - 1);
+    }
 }
