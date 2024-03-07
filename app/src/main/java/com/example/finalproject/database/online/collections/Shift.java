@@ -42,6 +42,21 @@ public class Shift implements Externalizable {
     // Empty constructor, per firestore's requirements
     public Shift() {}
 
+    // Additional constructor to make my life easier
+    public Shift(
+            String uid, String branchId, String userFullName, String companyName, String roleName,
+            Date shiftDate, int startingTime, int endingTime
+    ) {
+        this.uid = uid;
+        this.branchId = branchId;
+        this.userFullName = userFullName;
+        this.companyName = companyName;
+        this.roleName = roleName;
+        this.shiftDate = shiftDate;
+        this.startingTime = startingTime;
+        this.endingTime = endingTime;
+    }
+
     // Getters and setters:
     public String getShiftId() {
         return shiftId;
