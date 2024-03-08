@@ -28,7 +28,6 @@ import com.example.finalproject.fragments.branch.ApplicationsFragment;
 import com.example.finalproject.fragments.branch.EmployeesFragment;
 import com.example.finalproject.fragments.branch.RolesFragment;
 import com.example.finalproject.fragments.input.business.BusinessUpdateForm;
-import com.example.finalproject.util.Constants;
 import com.example.finalproject.util.EmployeeStatus;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -257,18 +256,17 @@ public class BranchActivity extends AppCompatActivity {
         }
         // If an employee/manager wants to see this week's shifts:
         else if (ID == R.id.menuBranchItemSeeCurrentShifts) {
-            // Get this week's sunday's date:
-            final LocalDate startWeek = getRecentSunday();
+            // Get  the roles:
+            this.loadRoles(roles -> {
+                // Get this week's sunday's date:
+                final LocalDate startWeek = getRecentSunday();
 
-            // Send it to the shifts activity:
-            final Intent intent = new Intent(this, ShiftsActivity.class);
-            intent.putExtra(Constants.ACT_SHIFTS_START_WEEK_KEY, startWeek);
-            intent.putExtra("branch", this.currentBranch);
-            startActivity(intent);
+                // Start the shifts activity:
+                ShiftsActivity.startShiftsActivity(this, this.currentBranch, startWeek, roles);
+            });
         }
         // If the manager wants to set the future shifts:
         else if (ID == R.id.menuBranchItemSetShifts) {
-            // TODO: Change this according to the new shifts activity design
             // Get the roles in order to give them to the shifts activity:
             this.loadRoles(roles -> {
                 // Check if the roles are empty:
@@ -277,18 +275,10 @@ public class BranchActivity extends AppCompatActivity {
                     return;
                 }
                 // Get next sunday (if today is a sunday, get today):
-                LocalDate nextSunday = LocalDate.now().with(DayOfWeek.SUNDAY);
-                if (nextSunday.isBefore(LocalDate.now()))
-                    nextSunday = nextSunday.plusWeeks(1);
+                LocalDate nextSunday = getRecentSunday().plusWeeks(1);
 
-                // Go to the shifts activity and pass it the branch, sunday date and roles:
-                final Intent intent = new Intent(this, ShiftsActivity.class);
-                intent.putExtra("branch", this.currentBranch)
-                        .putExtra("day", nextSunday.getDayOfMonth())
-                        .putExtra("month", nextSunday.getMonthValue())
-                        .putExtra("year", nextSunday.getYear())
-                        .putExtra("roles", roles);
-                startActivity(intent);
+                // Start the shifts activity:
+                ShiftsActivity.startShiftsActivity(this, this.currentBranch, nextSunday, roles);
             });
         }
 
