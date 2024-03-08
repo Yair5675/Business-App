@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.custom_views.EmployeeView;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.Employee;
 
@@ -65,7 +64,7 @@ public class EmployeeViewsAdapter extends RecyclerView.Adapter<EmployeeViewsAdap
         if (this.onEmployeeClickedListener != null)
             holder.itemView.setOnClickListener(
                 // Call with the current view and position:
-                view -> this.onEmployeeClickedListener.accept((EmployeeView) view, currentEmployee)
+                view -> this.onEmployeeClickedListener.accept(view, currentEmployee)
             );
     }
 

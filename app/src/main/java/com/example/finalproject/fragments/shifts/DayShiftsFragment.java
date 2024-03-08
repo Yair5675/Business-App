@@ -14,9 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
-import com.example.finalproject.custom_views.EmployeeView;
 import com.example.finalproject.custom_views.ShiftView;
 import com.example.finalproject.database.online.collections.Branch;
+import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
 
 import java.io.Serializable;
@@ -35,8 +35,9 @@ public class DayShiftsFragment extends Fragment {
     // The date of the shift fragment:
     private LocalDate date;
 
-    // The employee view that was selected:
-    private @Nullable EmployeeView selectedEmployee;
+    // The employee view that was selected and the employee in it:
+    private @Nullable View pressedView;
+    private @Nullable Employee selectedEmployee;
 
     // The roles available in the branch:
     private ArrayList<String> roles;
@@ -101,14 +102,15 @@ public class DayShiftsFragment extends Fragment {
         }
     }
 
-    public void onEmployeeViewSelected(EmployeeView employeeView) {
+    public void onEmployeeViewSelected(View pressedView, Employee employee) {
         // Clear the background of the previous employee:
-        if (this.selectedEmployee != null)
-            this.selectedEmployee.setBackgroundResource(android.R.color.background_light);
+        if (this.pressedView != null)
+            this.pressedView.setBackgroundResource(android.R.color.background_light);
 
         // Save the current employee view and set their background to blue:
-        this.selectedEmployee = employeeView;
-        this.selectedEmployee.setBackgroundResource(R.color.row_highlight);
+        this.selectedEmployee = employee;
+        this.pressedView = pressedView;
+        this.pressedView.setBackgroundResource(R.color.row_highlight);
     }
 
     @Override
@@ -151,16 +153,17 @@ public class DayShiftsFragment extends Fragment {
         // Set on role clicked listener:
         newShift.setOnRoleClickedListener(roleColumnView -> {
             // If the user selected an employee, add them to the role:
-            if (this.selectedEmployee != null) {
+            if (this.selectedEmployee != null && this.pressedView != null) {
                 // Check if the employee appears in the shift:
-                if (newShift.containsEmployee(this.selectedEmployee.getEmployee()))
+                if (newShift.containsEmployee(this.selectedEmployee))
                     Toast.makeText(requireContext(), "Employee already works in that shift", Toast.LENGTH_SHORT).show();
                 // If not add them:
                 else
-                    roleColumnView.addEmployee(this.selectedEmployee.getEmployee());
+                    roleColumnView.addEmployee(this.selectedEmployee);
 
                 // Remove the selection:
-                this.selectedEmployee.setBackgroundResource(android.R.color.background_light);
+                this.pressedView.setBackgroundResource(android.R.color.background_light);
+                this.pressedView = null;
                 this.selectedEmployee = null;
             }
         });
