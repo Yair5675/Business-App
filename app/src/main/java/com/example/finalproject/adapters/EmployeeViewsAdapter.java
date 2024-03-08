@@ -27,12 +27,12 @@ public class EmployeeViewsAdapter extends RecyclerView.Adapter<EmployeeViewsAdap
     private final List<Employee> employees;
 
     // A callback that will be activated once an employee is clicked. The callback receives the view
-    // that was clicked and its index in the list:
-    private final @Nullable BiConsumer<EmployeeView, Integer> onEmployeeClickedListener;
+    // that was clicked and the employee it corresponds to:
+    private final @Nullable BiConsumer<View, Employee> onEmployeeClickedListener;
 
     public EmployeeViewsAdapter(
             Context context, List<Employee> employees,
-            @Nullable BiConsumer<EmployeeView, Integer> onEmployeeClickedListener
+            @Nullable BiConsumer<View, Employee> onEmployeeClickedListener
     ) {
         // Load parameters:
         this.context = context;
@@ -64,11 +64,8 @@ public class EmployeeViewsAdapter extends RecyclerView.Adapter<EmployeeViewsAdap
         // Set the on employee clicked listener (if it isn't null):
         if (this.onEmployeeClickedListener != null)
             holder.itemView.setOnClickListener(
-                    // Call with the current view and position:
-                    view -> {
-                        if (view instanceof EmployeeView)
-                            this.onEmployeeClickedListener.accept((EmployeeView) view, position);
-                    }
+                // Call with the current view and position:
+                view -> this.onEmployeeClickedListener.accept((EmployeeView) view, currentEmployee)
             );
     }
 

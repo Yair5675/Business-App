@@ -161,10 +161,8 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         // Set an adapter for it:
         final EmployeeViewsAdapter adapter = new EmployeeViewsAdapter(
                 this, this.employeeList,
-                (employeeView, position) -> {
-                    // Set the employee as the selected employee in all fragments:
-                    for (DayShiftsFragment fragment : this.fragments)
-                        fragment.onEmployeeViewSelected(employeeView);
+                (view, employee) -> {
+                    // TODO: Set the employee as the selected employee in all fragments:
                 });
         rvEmployees.setAdapter(adapter);
 
