@@ -271,8 +271,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
 
     private void saveShifts() {
         // Show the progress bar and hide the save shifts button:
-        this.pbLoading.setVisibility(View.VISIBLE);
-        this.btnSaveShifts.setVisibility(View.GONE);
+        this.setLoading(true);
 
         // Configure callbacks:
         OnSuccessListener<Void> onSuccessListener = unused -> {
@@ -283,8 +282,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             // Log the error and alert the user:
             Log.e(TAG, "Failed to delete shifts", e);
             Toast.makeText(this, "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
-            this.btnSaveShifts.setVisibility(View.VISIBLE);
-            this.pbLoading.setVisibility(View.GONE);
+            this.setLoading(false);
         };
 
         // Delete all shifts:
