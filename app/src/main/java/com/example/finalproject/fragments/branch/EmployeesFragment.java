@@ -115,11 +115,11 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         this.btnApply.setOnClickListener(_v -> this.applyToBranch());
         this.btnLeave.setOnClickListener(_v -> this.leaveBranch());
 
-        // Load the info from the branch:
-        this.loadInfoFromBranch();
-
         // Initialize the recycler view adapter:
         this.initAdapter();
+
+        // Load the info from the branch:
+        this.loadInfoFromBranch();
 
         // If the status was already set, refresh it:
         if (this.employeeStatus != null)
