@@ -12,9 +12,13 @@ import com.example.finalproject.util.Util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ShiftView extends LinearLayout {
     // The context of the view:
@@ -135,5 +139,71 @@ public class ShiftView extends LinearLayout {
         }
 
         return shifts;
+    }
+
+    /**
+     * Generates a list of shiftViews according to a list of shift objects. The returned shift
+     * views' roles will be every role found in the shifts given to it.
+     * @param context Context of the shift views' creator.
+     * @param shifts A list of Shift objects that will be turned into a list of ShiftView objects.
+     *               The method assumes all shifts have the same date (as a shift view doesn't care
+     *               about the date of the shift).
+     * @param employeeList A list of employees that appear in the given shifts. Since each shift
+     *                     object doesn't hold enough info to recreate an employee (at least,
+     *                     without another call to the database), a list of employees is needed
+     *                     for adding employee views to the shift views.
+     * @return A list of shift views along with employee views inside them, similar to the provided
+     *         shift objects.
+     */
+    public static List<ShiftView> getShiftViewsFromShifts(Context context, List<Shift> shifts, List<Employee> employeeList) {
+        // A map between the times of the shifts and a shiftView:
+        final Map<Integer, ShiftView> viewsMap = new HashMap<>();
+
+        // Find all roles:
+        final List<String> roles = getRoles(shifts);
+
+        // Go over the shifts and convert them to shift views:
+        for (Shift shift : shifts) {
+            // Get the shiftView's key in the map:
+            int mapKey = Objects.hash(shift.getStartingTime(), shift.getEndingTime());
+
+            // Add a new shiftView to the map if one wasn't there already:
+            if (!viewsMap.containsKey(mapKey)) {
+                final ShiftView shiftView = new ShiftView(context);
+                shiftView.setRoles(roles);
+                viewsMap.put(mapKey, shiftView);
+            }
+
+            // Add the employee to the shiftView:
+            addEmployeeToShiftView(viewsMap.get(mapKey), shift, employeeList);
+        }
+
+        // Return the shiftViews:
+        return new ArrayList<>(viewsMap.values());
+    }
+
+    private static void addEmployeeToShiftView(ShiftView shiftView, Shift shift, List<Employee> employeeList) {
+        // Get the employee:
+        Employee employee = null;
+        for (Employee e : employeeList) {
+            if (shift.getUid().equals(e.getUid())) {
+                employee = e;
+                break;
+            }
+        }
+        if (employee == null)
+            return;
+
+        // Add the employee to the role column:
+        for (RoleColumnView roleColumn : shiftView.roleColumns) {
+            if (roleColumn.getRole().equals(shift.getRoleName())) {
+                roleColumn.addEmployee(employee);
+                return;
+            }
+        }
+    }
+
+    private static List<String> getRoles(List<Shift> shifts) {
+        return shifts.stream().map(Shift::getRoleName).collect(Collectors.toList());
     }
 }
