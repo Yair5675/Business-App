@@ -263,6 +263,7 @@ public class BranchActivity extends AppCompatActivity {
             // Send it to the shifts activity:
             final Intent intent = new Intent(this, ShiftsActivity.class);
             intent.putExtra(Constants.ACT_SHIFTS_START_WEEK_KEY, startWeek);
+            intent.putExtra("branch", this.currentBranch);
             startActivity(intent);
         }
         // If the manager wants to set the future shifts:
