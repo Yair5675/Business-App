@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -85,6 +86,16 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
 
     // Tag for debugging purposes:
     private static final String TAG = "ShiftsActivity";
+
+    public static void startShiftsActivity(
+            Activity callingActivity, Branch branch, LocalDate startWeek, ArrayList<String> roles
+    ) {
+        final Intent intent = new Intent(callingActivity, ShiftsActivity.class)
+                .putExtra(Constants.ACT_SHIFTS_BRANCH_KEY, branch)
+                .putExtra(Constants.ACT_SHIFTS_START_WEEK_KEY, startWeek)
+                .putExtra(Constants.ACT_SHIFTS_ROLES_KEY, roles);
+        callingActivity.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
