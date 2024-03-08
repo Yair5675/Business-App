@@ -240,7 +240,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     private void loadBranchFromIntent() {
         final Intent intent = getIntent();
         if (intent != null) {
-            final Serializable branch = intent.getSerializableExtra("branch");
+            final Serializable branch = intent.getSerializableExtra(Constants.ACT_SHIFTS_BRANCH_KEY);
             if (branch instanceof Branch)
                 this.branch = (Branch) branch;
         }
@@ -265,7 +265,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     private void loadRolesFromIntent() {
         final Intent intent = getIntent();
         if (intent != null) {
-            this.rolesList = intent.getStringArrayListExtra("roles");
+            this.rolesList = intent.getStringArrayListExtra(Constants.ACT_SHIFTS_ROLES_KEY);
         }
     }
 
