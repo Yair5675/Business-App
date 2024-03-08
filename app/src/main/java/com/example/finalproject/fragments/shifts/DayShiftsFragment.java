@@ -43,7 +43,7 @@ public class DayShiftsFragment extends Fragment {
     private ArrayList<String> roles;
 
     // The list that holds the shift views:
-    private final List<ShiftView> shiftViews;
+    private List<ShiftView> shiftViews;
 
     // The layout that holds the shift views:
     private LinearLayout shiftsLayout;
@@ -127,12 +127,20 @@ public class DayShiftsFragment extends Fragment {
         this.btnAddShift.setOnClickListener(_v -> this.addShift());
 
         // Reload the shift views to the shift layout:
-        for (ShiftView shiftView : this.shiftViews)
-            this.shiftsLayout.addView(shiftView);
+        this.setShiftViews(this.shiftViews);
+        return parent;
+    }
+
+    public void setShiftViews(List<ShiftView> shiftViews) {
+        this.shiftViews = shiftViews;
+        this.shiftsLayout.removeAllViews();
+
+        // Add the shift views but keep the maximum amount:
+        for (int i = 0; i < shiftViews.size() && i < this.maxShifts; i++)
+            this.shiftsLayout.addView(shiftViews.get(i));
 
         // Prevent the user from adding more shifts if the added number is the max number:
         this.btnAddShift.setVisibility(this.canAddShifts() ? View.VISIBLE : View.GONE);
-        return parent;
     }
 
     private boolean canAddShifts() {
