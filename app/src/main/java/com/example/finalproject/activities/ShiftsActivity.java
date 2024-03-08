@@ -32,6 +32,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
@@ -49,7 +50,8 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     // A reference to the online database:
     private FirebaseFirestore db;
 
-    // The recycler view that allows the user to choose employee views:
+    // The shifts that were previously set by another manager and are changed:
+    private List<Shift> previousShifts;
 
     // The branch whose shifts are being set:
     private Branch branch;
@@ -149,9 +151,39 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             // Initialize swipe listener:
             this.initSwipeListener();
 
-            // Stop loading:
-            this.setLoading(false);
+            // Load shifts that were already set in the week:
+            this.loadPreviousShifts(shiftDocuments -> {
+                // Save the previous shifts in a list:
+                this.previousShifts = shiftDocuments.getDocuments()
+                        .stream()
+                        .map(shiftDocument -> shiftDocument.toObject(Shift.class))
+                        .collect(Collectors.toList());
+
+                // TODO: Set shift views in all fragments
+
+                // Stop loading:
+                this.setLoading(false);
+            }, e -> {
+                // Initialize an empty "previous shifts" list to avoid null pointer exceptions:
+                this.previousShifts = new ArrayList<>(0);
+
+                // Log the error and stop loading:
+                Log.e(TAG, "Failed to load previous shifts", e);
+                this.setLoading(false);
+            });
         });
+    }
+
+    private void loadPreviousShifts(OnSuccessListener<QuerySnapshot> onSuccessListener, OnFailureListener onFailureListener) {
+        // Make a query of all shifts in this week:
+        final Date weekStart = Util.getDateFromLocalDate(this.firstDayDate);
+        final Date weekEnd = Util.getDateFromLocalDate(this.firstDayDate.plusWeeks(1));
+        this.db.collection("shifts")
+                .whereEqualTo(Shift.BRANCH_ID, this.branch.getBranchId())
+                .whereGreaterThanOrEqualTo(Shift.SHIFT_DATE, weekStart)
+                .whereLessThan(Shift.SHIFT_DATE, weekEnd)
+                .get()
+                .addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }
 
     private void initEmployeesRv() {
@@ -303,7 +335,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-        // TODO: If the activity loads the existing shiftss beforehand, a query won't be necessary
+        // TODO: If the activity loads the existing shifts beforehand, a query won't be necessary
         // Get every shift this week:
         final Date weekStart = Util.getDateFromLocalDate(this.firstDayDate);
         final Date weekEnd = Util.getDateFromLocalDate(this.firstDayDate.plusWeeks(1));
@@ -311,7 +343,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         this.db.collection("shifts")
                 .whereEqualTo(Shift.BRANCH_ID, this.branch.getBranchId())
                 .whereGreaterThanOrEqualTo(Shift.SHIFT_DATE, weekStart)
-                .whereLessThanOrEqualTo(Shift.SHIFT_DATE, weekEnd)
+                .whereLessThan(Shift.SHIFT_DATE, weekEnd)
                 .get()
                 .addOnSuccessListener(shiftDocs -> {
                     // Delete all documents:
