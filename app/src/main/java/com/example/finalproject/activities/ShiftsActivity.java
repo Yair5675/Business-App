@@ -294,29 +294,23 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             OnSuccessListener<Void> onSuccessListener,
             OnFailureListener onFailureListener
     ) {
-       deleteAllShifts(0, onSuccessListener, onFailureListener);
-    }
+        // TODO: If the activity loads the existing shiftss beforehand, a query won't be necessary
+        // Get every shift this week:
+        final Date weekStart = Util.getDateFromLocalDate(this.firstDayDate);
+        final Date weekEnd = Util.getDateFromLocalDate(this.firstDayDate.plusWeeks(1));
 
-    private void deleteAllShifts(int index, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
-        // TODO: Change the way that shifts are deleted. Think about receiving the shifts that are
-        //  already in the database using the shifts handler
-        if (index == 7)
-            onSuccessListener.onSuccess(null);
-
-        final Date date = Util.getDateFromLocalDate(this.firstDayDate.plusDays(index));
-        // Get all shifts from the branch at the date:
-        this.db
-                .collection(String.format("branches/%s/shifts", this.branch.getBranchId()))
-                .whereEqualTo("date", date)
+        this.db.collection("shifts")
+                .whereEqualTo(Shift.BRANCH_ID, this.branch.getBranchId())
+                .whereGreaterThanOrEqualTo(Shift.SHIFT_DATE, weekStart)
+                .whereLessThanOrEqualTo(Shift.SHIFT_DATE, weekEnd)
                 .get()
                 .addOnSuccessListener(shiftDocs -> {
-                    // Create a write batch:
+                    // Delete all documents:
                     final WriteBatch batch = this.db.batch();
                     for (DocumentSnapshot shiftDoc : shiftDocs)
                         batch.delete(shiftDoc.getReference());
-                    batch.commit().addOnSuccessListener(unused -> deleteAllShifts(index + 1, onSuccessListener, onFailureListener)).addOnFailureListener(onFailureListener);
-                })
-                .addOnFailureListener(onFailureListener);
+                    batch.commit().addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
+                }).addOnFailureListener(onFailureListener);
     }
 
     private void saveShifts(
