@@ -30,10 +30,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
@@ -317,61 +315,26 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
             this.setLoading(false);
         };
 
-        // Delete all shifts:
-        this.deleteAllShifts(unused -> {
-            // Go over every shifts fragment:
-            for (DayShiftsFragment fragment : this.fragments) {
-                // Get the shifts summary:
-                final List<Shift> packagedShifts = fragment.getPackagedShifts();
-
-                // Save them:
-                this.saveShifts(packagedShifts, onSuccessListener, onFailureListener);
-            }
-        }, onFailureListener);
-
-    }
-
-    private void deleteAllShifts(
-            OnSuccessListener<Void> onSuccessListener,
-            OnFailureListener onFailureListener
-    ) {
-        // TODO: If the activity loads the existing shifts beforehand, a query won't be necessary
-        // Get every shift this week:
-        final Date weekStart = Util.getDateFromLocalDate(this.firstDayDate);
-        final Date weekEnd = Util.getDateFromLocalDate(this.firstDayDate.plusWeeks(1));
-
-        this.db.collection("shifts")
-                .whereEqualTo(Shift.BRANCH_ID, this.branch.getBranchId())
-                .whereGreaterThanOrEqualTo(Shift.SHIFT_DATE, weekStart)
-                .whereLessThan(Shift.SHIFT_DATE, weekEnd)
-                .get()
-                .addOnSuccessListener(shiftDocs -> {
-                    // Delete all documents:
-                    final WriteBatch batch = this.db.batch();
-                    for (DocumentSnapshot shiftDoc : shiftDocs)
-                        batch.delete(shiftDoc.getReference());
-                    batch.commit().addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
-                }).addOnFailureListener(onFailureListener);
-    }
-
-    private void saveShifts(
-            List<Shift> shifts, OnSuccessListener<Void> onSuccessListener,
-            OnFailureListener onFailureListener
-    ) {
-        // Go over the shifts and save them as a batch:
+        // Create a batch write:
         final WriteBatch batch = this.db.batch();
+
+        // Delete the previous shifts that were loaded before:
+        DocumentReference shiftRef;
+        for (Shift shift : this.previousShifts) {
+            shiftRef = this.db.collection("shifts").document(shift.getShiftId());
+            batch.delete(shiftRef);
+        }
+
+        // Add the new shifts under new IDs:
         final CollectionReference shiftsRef = this.db.collection("shifts");
-        for (Shift shift : shifts) {
-            // Check if there is a pre-existing ID:
-            final DocumentReference shiftRef;
-            if (shift.getShiftId() == null) {
+        for (DayShiftsFragment fragment : this.fragments) {
+            final List<Shift> shifts = fragment.getPackagedShifts();
+            for (Shift shift : shifts) {
+                // Create a new reference and set the ID:
                 shiftRef = shiftsRef.document();
                 shift.setShiftId(shiftRef.getId());
+                batch.set(shiftRef, shift);
             }
-            else
-                shiftRef = shiftsRef.document(shift.getShiftId());
-
-            batch.set(shiftRef, shift, SetOptions.merge());
         }
 
         // Commit the batch:
