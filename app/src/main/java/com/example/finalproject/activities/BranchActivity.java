@@ -459,6 +459,6 @@ public class BranchActivity extends AppCompatActivity {
         if (date.getDayOfWeek() == DayOfWeek.SUNDAY)
             return date;
         else
-            return date.minusDays(date.getDayOfWeek().getValue() - 1);
+            return date.minusDays(date.getDayOfWeek().getValue());
     }
 }
