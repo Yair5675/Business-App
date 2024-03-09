@@ -24,6 +24,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
         >
         <!-- Layout for holding shift views that will be
         added dynamically -->
