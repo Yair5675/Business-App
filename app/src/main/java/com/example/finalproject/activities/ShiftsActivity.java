@@ -50,6 +50,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+    // Whether the user can edit the shifts displayed here or not:
+    private boolean isEditable;
+
     // A reference to the online database:
     private FirebaseFirestore db;
 
@@ -83,6 +86,9 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     // A list of roles in the branch:
     private ArrayList<String> rolesList;
 
+    // The recycler view that shows all the employees:
+    private RecyclerView rvEmployees;
+
     // A list of employees in the branch:
     private List<Employee> employeeList;
 
@@ -93,12 +99,14 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     private static final String TAG = "ShiftsActivity";
 
     public static void startShiftsActivity(
-            Activity callingActivity, Branch branch, LocalDate startWeek, ArrayList<String> roles
+            Activity callingActivity, Branch branch, LocalDate startWeek, ArrayList<String> roles,
+            boolean isEditable
     ) {
         final Intent intent = new Intent(callingActivity, ShiftsActivity.class)
                 .putExtra(Constants.ACT_SHIFTS_BRANCH_KEY, branch)
                 .putExtra(Constants.ACT_SHIFTS_START_WEEK_KEY, startWeek)
-                .putExtra(Constants.ACT_SHIFTS_ROLES_KEY, roles);
+                .putExtra(Constants.ACT_SHIFTS_ROLES_KEY, roles)
+                .putExtra(Constants.ACT_SHIFTS_IS_EDITABLE_KEY, isEditable);
         callingActivity.startActivity(intent);
     }
 
@@ -110,6 +118,9 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         // Load the reference to the database:
         this.db = FirebaseFirestore.getInstance();
 
+        // Load the editable attribute from the intent:
+        this.loadEditableFromIntent();
+
         // Load the branch from the intent:
         this.loadBranchFromIntent();
 
@@ -120,6 +131,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         this.loadRolesFromIntent();
 
         // Load the views:
+        this.rvEmployees = findViewById(R.id.actShiftsRvEmployeeViews);
         this.pbLoading = findViewById(R.id.actShiftsPbLoading);
         this.tabLayout = findViewById(R.id.actShiftsTabLayout);
         this.toolbar = findViewById(R.id.actShiftsToolbar);
@@ -131,6 +143,11 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
 
         // Set the onClickListener for the save shifts button:
         this.btnSaveShifts.setOnClickListener(_v -> this.saveShifts());
+
+        // If the activity isn't editable, hide the employees recycler view and the save shifts
+        // button:
+        this.rvEmployees.setVisibility(this.isEditable ? View.VISIBLE : View.GONE);
+        this.btnSaveShifts.setVisibility(this.isEditable ? View.VISIBLE : View.GONE);
 
         // Load until the employees and roles are loaded:
         this.setLoading(true);
@@ -162,6 +179,8 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
 
                 // Set shift views in all fragments:
                 this.setPreviousShiftsInFragments();
+
+                // TODO: Make the shift views editable according to what was received in the intent
 
                 // Stop loading:
                 this.setLoading(false);
@@ -226,9 +245,6 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     }
 
     private void initEmployeesRv() {
-        // Load the recycler view:
-        final RecyclerView rvEmployees = findViewById(R.id.actShiftsRvEmployeeViews);
-
         // Set an adapter for it:
         final EmployeeViewsAdapter adapter = new EmployeeViewsAdapter(
                 this, this.employeeList,
@@ -237,10 +253,12 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                     for (DayShiftsFragment fragment : this.fragments)
                         fragment.onEmployeeViewSelected(view, employee);
                 });
-        rvEmployees.setAdapter(adapter);
+        this.rvEmployees.setAdapter(adapter);
 
         // Set a horizontal layout manager:
-        rvEmployees.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        this.rvEmployees.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false)
+        );
     }
 
     private void setLoading(boolean isLoading) {
@@ -306,6 +324,12 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                 tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         });
+    }
+
+    private void loadEditableFromIntent() {
+        final Intent intent = getIntent();
+        if (intent != null)
+            this.isEditable = intent.getBooleanExtra(Constants.ACT_SHIFTS_IS_EDITABLE_KEY, false);
     }
 
     private void loadBranchFromIntent() {

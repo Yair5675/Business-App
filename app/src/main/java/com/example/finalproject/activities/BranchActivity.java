@@ -262,7 +262,10 @@ public class BranchActivity extends AppCompatActivity {
                 final LocalDate startWeek = getRecentSunday();
 
                 // Start the shifts activity:
-                ShiftsActivity.startShiftsActivity(this, this.currentBranch, startWeek, roles);
+                ShiftsActivity.startShiftsActivity(
+                        this, this.currentBranch, startWeek, roles,
+                        this.employeeStatus == EmployeeStatus.MANAGER
+                );
             });
         }
         // If the manager wants to set the future shifts:
@@ -278,7 +281,10 @@ public class BranchActivity extends AppCompatActivity {
                 LocalDate nextSunday = getRecentSunday().plusWeeks(1);
 
                 // Start the shifts activity:
-                ShiftsActivity.startShiftsActivity(this, this.currentBranch, nextSunday, roles);
+                ShiftsActivity.startShiftsActivity(
+                        this, this.currentBranch, nextSunday, roles,
+                        this.employeeStatus == EmployeeStatus.MANAGER
+                );
             });
         }
 
