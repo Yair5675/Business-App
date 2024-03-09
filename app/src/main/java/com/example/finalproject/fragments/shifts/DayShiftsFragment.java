@@ -26,6 +26,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DayShiftsFragment extends Fragment {
+    // Whether the user can change this fragment's shifts or not:
+    private boolean isEditable;
+
     // The branch whose shifts are set:
     private Branch branch;
 
@@ -56,6 +59,8 @@ public class DayShiftsFragment extends Fragment {
     private static final String BRANCH_KEY = "branch";
     private static final String MAX_SHIFTS_KEY = "maxShifts";
     private static final String ROLES_KEY = "roles";
+    private static final String IS_EDITABLE_KEY = "isEditable";
+
 
     public DayShiftsFragment() {
         // Required empty public constructor
@@ -69,7 +74,7 @@ public class DayShiftsFragment extends Fragment {
      * @return A new instance of fragment DayShiftsFragment.
      */
     public static DayShiftsFragment newInstance(
-            int maxShifts, LocalDate date, Branch branch, ArrayList<String> roles
+            int maxShifts, LocalDate date, Branch branch, ArrayList<String> roles, boolean isEditable
     ) {
         // Create the fragment instance:
         final DayShiftsFragment fragment = new DayShiftsFragment();
@@ -80,6 +85,7 @@ public class DayShiftsFragment extends Fragment {
         args.putSerializable(DATE_KEY, date);
         args.putSerializable(BRANCH_KEY, branch);
         args.putStringArrayList(ROLES_KEY, roles);
+        args.putBoolean(IS_EDITABLE_KEY, isEditable);
         fragment.setArguments(args);
 
         return fragment;
@@ -99,6 +105,7 @@ public class DayShiftsFragment extends Fragment {
                 this.branch = (Branch) branchSer;
             this.maxShifts = args.getInt(MAX_SHIFTS_KEY, 3);
             this.roles = args.getStringArrayList(ROLES_KEY);
+            this.isEditable = args.getBoolean(IS_EDITABLE_KEY, false);
         }
     }
 
@@ -128,6 +135,9 @@ public class DayShiftsFragment extends Fragment {
 
         // Reload the shift views to the shift layout:
         this.setShiftViews(this.shiftViews);
+
+        // If the fragment isn't editable, hide the add shift button:
+        this.btnAddShift.setVisibility(isEditable ? View.VISIBLE : View.GONE);
         return parent;
     }
 
@@ -149,7 +159,8 @@ public class DayShiftsFragment extends Fragment {
         }
 
         // Add click listeners for the shift views:
-        this.shiftViews.forEach(this::setClickListeners);
+        if (this.isEditable)
+            this.shiftViews.forEach(this::setClickListeners);
 
         // Prevent the user from adding more shifts if the added number is the max number:
         this.btnAddShift.setVisibility(this.canAddShifts() ? View.VISIBLE : View.GONE);
