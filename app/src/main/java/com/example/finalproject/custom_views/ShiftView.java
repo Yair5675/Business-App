@@ -4,6 +4,8 @@ import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+
 import com.example.finalproject.R;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
@@ -53,6 +55,16 @@ public class ShiftView extends LinearLayout {
 
         // Initialize the role columns list:
         this.roleColumns = new ArrayList<>();
+    }
+
+    public void setEditable(boolean isEditable) {
+        // Call "setEditable" for every role column:
+        this.roleColumns.forEach(roleColumnView -> roleColumnView.setEditable(isEditable));
+
+        // Change the drawables at the end of the text views:
+        final @DrawableRes int timeDrawableId = isEditable ? R.drawable.edit_icon_2 : 0;
+        this.tvStartTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, timeDrawableId, 0);
+        this.tvEndTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, timeDrawableId, 0);
     }
 
     public void clearRoles() {
