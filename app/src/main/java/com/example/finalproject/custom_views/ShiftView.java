@@ -11,9 +11,7 @@ import com.example.finalproject.database.online.collections.Shift;
 import com.example.finalproject.util.Util;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -180,7 +178,7 @@ public class ShiftView extends LinearLayout {
 
                 // Add to the maps:
                 viewsMap.put(mapKey, shiftView);
-                final LocalDate shiftDate = getLocalDateFromDate(shift.getShiftDate());
+                final LocalDate shiftDate = Util.getLocalDateFromDate(shift.getShiftDate());
                 final List<ShiftView> shiftViews = dateShiftMap.getOrDefault(shiftDate, new ArrayList<>());
                 if (shiftViews != null)
                     shiftViews.add(shiftView);
@@ -193,10 +191,6 @@ public class ShiftView extends LinearLayout {
 
         // Return the shiftViews:
         return dateShiftMap;
-    }
-
-    private static LocalDate getLocalDateFromDate(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     private static void addEmployeeToShiftView(ShiftView shiftView, Shift shift, List<Employee> employeeList) {

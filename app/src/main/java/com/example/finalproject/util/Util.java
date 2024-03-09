@@ -151,6 +151,10 @@ public class Util {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
+    public static LocalDate getLocalDateFromDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
 
     // Zoom level for google maps:
     public enum Zoom {
