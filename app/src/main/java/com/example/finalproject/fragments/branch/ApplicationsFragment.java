@@ -74,7 +74,7 @@ public class ApplicationsFragment extends Fragment {
                 .collection("branches")
                 .document(this.branch.getBranchId())
                 .collection("applications")
-                .orderBy("timestamp", Query.Direction.DESCENDING);
+                .orderBy(Application.SUBMITTED_AT, Query.Direction.DESCENDING);
 
         // Create the recyclerView's options:
         FirestoreRecyclerOptions<Application> options = new FirestoreRecyclerOptions.Builder<Application>()
