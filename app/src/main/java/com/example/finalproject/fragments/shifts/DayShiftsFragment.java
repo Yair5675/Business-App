@@ -141,8 +141,12 @@ public class DayShiftsFragment extends Fragment {
 
         this.shiftsLayout.removeAllViews();
         // Add the shift views but keep the maximum amount:
-        for (int i = 0; i < shiftViews.size() && i < this.maxShifts; i++)
+        for (int i = 0; i < shiftViews.size() && i < this.maxShifts; i++) {
             this.shiftsLayout.addView(shiftViews.get(i));
+
+            // Set the background color of the shift views:
+            shiftViews.get(i).setBackgroundResource(i % 2 == 0 ? R.color.light_gray : R.color.white);
+        }
 
         // Add click listeners for the shift views:
         this.shiftViews.forEach(this::setClickListeners);
