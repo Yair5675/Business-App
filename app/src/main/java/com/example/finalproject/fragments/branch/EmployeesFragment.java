@@ -265,7 +265,7 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
                 .collection("branches")
                 .document(this.currentBranch.getBranchId())
                 .collection("employees")
-                .orderBy("manager", Query.Direction.DESCENDING);
+                .orderBy(Employee.IS_MANAGER, Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Employee> options = new FirestoreRecyclerOptions.Builder<Employee>()
                 .setLifecycleOwner(this)
                 .setQuery(query, Employee.class)
