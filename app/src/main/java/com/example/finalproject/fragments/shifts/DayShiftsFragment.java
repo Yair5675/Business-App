@@ -133,8 +133,12 @@ public class DayShiftsFragment extends Fragment {
 
     public void setShiftViews(List<ShiftView> shiftViews) {
         this.shiftViews = shiftViews;
-        this.shiftsLayout.removeAllViews();
 
+        // Check that the views were initialized:
+        if (this.shiftsLayout == null || this.btnAddShift == null)
+            return;
+
+        this.shiftsLayout.removeAllViews();
         // Add the shift views but keep the maximum amount:
         for (int i = 0; i < shiftViews.size() && i < this.maxShifts; i++)
             this.shiftsLayout.addView(shiftViews.get(i));
