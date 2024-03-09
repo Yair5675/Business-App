@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoleColumnView extends LinearLayout {
+    // The context of the view:
+    private final Context context;
 
     // The name of the role of the current column:
     private String roleName;
@@ -23,7 +25,7 @@ public class RoleColumnView extends LinearLayout {
     private final TextView tvRoleName;
 
     // The adapter of the recyclerView:
-    private final EmployeeViewsAdapter adapter;
+    private EmployeeViewsAdapter adapter;
 
     // A list of the employee views in the column:
     private final ArrayList<Employee> employees;
@@ -33,6 +35,9 @@ public class RoleColumnView extends LinearLayout {
 
         // Inflate the XML file:
         inflate(context, R.layout.role_column_view, this);
+
+        // Save the context:
+        this.context = context;
 
         // Load the views:
         this.tvRoleName = findViewById(R.id.roleColumnViewTvRoleName);
@@ -55,6 +60,14 @@ public class RoleColumnView extends LinearLayout {
     public void addEmployee(Employee employee) {
         // Add a new employee to the adapter:
         this.adapter.addEmployee(employee);
+    }
+
+    public void setEditable(boolean isEditable) {
+        // Change the onEmployeeClicked listener according to the isEditable variable:
+        this.adapter = new EmployeeViewsAdapter(
+                this.context, this.employees,
+                isEditable ? (view, employee) -> removeEmployee(employee) : null
+        );
     }
 
     public boolean containsEmployee(Employee employee) {
