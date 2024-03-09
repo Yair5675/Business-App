@@ -132,6 +132,7 @@ public class DayShiftsFragment extends Fragment {
     }
 
     public void setShiftViews(List<ShiftView> shiftViews) {
+        // Save the shift views and add click listeners for them:
         this.shiftViews = shiftViews;
 
         // Check that the views were initialized:
@@ -142,6 +143,9 @@ public class DayShiftsFragment extends Fragment {
         // Add the shift views but keep the maximum amount:
         for (int i = 0; i < shiftViews.size() && i < this.maxShifts; i++)
             this.shiftsLayout.addView(shiftViews.get(i));
+
+        // Add click listeners for the shift views:
+        this.shiftViews.forEach(this::setClickListeners);
 
         // Prevent the user from adding more shifts if the added number is the max number:
         this.btnAddShift.setVisibility(this.canAddShifts() ? View.VISIBLE : View.GONE);
@@ -162,6 +166,13 @@ public class DayShiftsFragment extends Fragment {
         final int MARGINS = 10;
         ((LinearLayout.LayoutParams) newShift.getLayoutParams()).setMargins(0, MARGINS, 0, MARGINS);
 
+        this.setClickListeners(newShift);
+
+        // Refresh the shifts:
+        this.refreshShifts();
+    }
+
+    private void setClickListeners(ShiftView newShift) {
         // Set on role clicked listener:
         newShift.setOnRoleClickedListener(roleColumnView -> {
             // If the user selected an employee, add them to the role:
@@ -190,9 +201,6 @@ public class DayShiftsFragment extends Fragment {
                 this.deleteShift((ShiftView) shiftView);
             return true;
         });
-
-        // Refresh the shifts:
-        this.refreshShifts();
     }
 
     private void initTimePickers(ShiftView shiftView) {
