@@ -1,5 +1,7 @@
 package com.example.finalproject.activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +12,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -124,9 +127,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         this.btnSaveShifts = findViewById(R.id.actShiftsBtnSaveShifts);
 
         // Set the title and subtitle for the toolbar:
-        this.toolbar.setTitle(String.format(Locale.getDefault(), "%s's shifts", this.branch.getCompanyName()));
-        final Date date = Util.getDateFromLocalDate(this.firstDayDate);
-        this.toolbar.setSubtitle("Sun " + Constants.DATE_FORMAT.format(date));
+        this.initToolbar();
 
         // Set the onClickListener for the save shifts button:
         this.btnSaveShifts.setOnClickListener(_v -> this.saveShifts());
@@ -173,6 +174,28 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                 this.setLoading(false);
             });
         });
+    }
+
+    private void initToolbar() {
+        this.toolbar.setTitle(String.format(Locale.getDefault(), "%s's shifts", this.branch.getCompanyName()));
+        final Date date = Util.getDateFromLocalDate(this.firstDayDate);
+        this.toolbar.setSubtitle("Sun " + Constants.DATE_FORMAT.format(date));
+        this.setSupportActionBar(this.toolbar);
+
+        // Show back button on the toolbar:
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Check for the back button:
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setPreviousShiftsInFragments() {
