@@ -194,7 +194,7 @@
 
 
     <!-- Strings belonging to the branch roles fragment: -->
-    <string name="frag_branch_roles_title"><b>Roles in your branch:</b></string>
+    <string name="frag_branch_roles_title"><b>Roles in the branch:</b></string>
     <string name="frag_branch_roles_no_roles_found_txt">No roles found</string>
     <string name="frag_branch_role_add_role_btn_txt">Add Role</string>
 
