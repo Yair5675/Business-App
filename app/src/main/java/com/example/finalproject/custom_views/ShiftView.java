@@ -11,12 +11,15 @@ import com.example.finalproject.database.online.collections.Shift;
 import com.example.finalproject.util.Util;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -142,36 +145,46 @@ public class ShiftView extends LinearLayout {
     }
 
     /**
-     * Generates a list of shiftViews according to a list of shift objects. The returned shift
-     * views' roles will be every role found in the shifts given to it.
+     * Generates a map of localDates connected to shiftViews according to a list of shift objects.
+     * The returned shift views' roles will be every role found in the shifts given to it.
      * @param context Context of the shift views' creator.
      * @param shifts A list of Shift objects that will be turned into a list of ShiftView objects.
-     *               The method assumes all shifts have the same date (as a shift view doesn't care
-     *               about the date of the shift).
      * @param employeeList A list of employees that appear in the given shifts. Since each shift
      *                     object doesn't hold enough info to recreate an employee (at least,
      *                     without another call to the database), a list of employees is needed
      *                     for adding employee views to the shift views.
-     * @return A list of shift views along with employee views inside them, similar to the provided
-     *         shift objects.
+     * @return A map connecting the date of the shifts to the shift views that are in that date.
      */
-    public static List<ShiftView> getShiftViewsFromShifts(Context context, List<Shift> shifts, List<Employee> employeeList) {
-        // A map between the times of the shifts and a shiftView:
+    public static Map<LocalDate, List<ShiftView>> getShiftViewsFromShifts(Context context, List<Shift> shifts, List<Employee> employeeList) {
+        // A map between the times of the shifts and a shiftView (allows for quicker lookup):
         final Map<Integer, ShiftView> viewsMap = new HashMap<>();
 
+        // The map that will be returned eventually:
+        final Map<LocalDate, List<ShiftView>> dateShiftMap = new HashMap<>();
+
         // Find all roles:
-        final List<String> roles = getRoles(shifts);
+        final Set<String> roles = getRoles(shifts);
 
         // Go over the shifts and convert them to shift views:
         for (Shift shift : shifts) {
             // Get the shiftView's key in the map:
-            int mapKey = Objects.hash(shift.getStartingTime(), shift.getEndingTime());
+            int mapKey = Objects.hash(shift.getShiftDate(), shift.getStartingTime(), shift.getEndingTime());
 
             // Add a new shiftView to the map if one wasn't there already:
             if (!viewsMap.containsKey(mapKey)) {
+                // Create a new shift view with the roles, employee and times of the Shift:
                 final ShiftView shiftView = new ShiftView(context);
-                shiftView.setRoles(roles);
+                shiftView.setRoles(new ArrayList<>(roles));
+                shiftView.setStartTime(shift.getStartingTime());
+                shiftView.setEndTime(shift.getEndingTime());
+
+                // Add to the maps:
                 viewsMap.put(mapKey, shiftView);
+                final LocalDate shiftDate = getLocalDateFromDate(shift.getShiftDate());
+                final List<ShiftView> shiftViews = dateShiftMap.getOrDefault(shiftDate, new ArrayList<>());
+                if (shiftViews != null)
+                    shiftViews.add(shiftView);
+                dateShiftMap.put(shiftDate, shiftViews);
             }
 
             // Add the employee to the shiftView:
@@ -179,7 +192,11 @@ public class ShiftView extends LinearLayout {
         }
 
         // Return the shiftViews:
-        return new ArrayList<>(viewsMap.values());
+        return dateShiftMap;
+    }
+
+    private static LocalDate getLocalDateFromDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     private static void addEmployeeToShiftView(ShiftView shiftView, Shift shift, List<Employee> employeeList) {
@@ -203,7 +220,7 @@ public class ShiftView extends LinearLayout {
         }
     }
 
-    private static List<String> getRoles(List<Shift> shifts) {
-        return shifts.stream().map(Shift::getRoleName).collect(Collectors.toList());
+    private static Set<String> getRoles(List<Shift> shifts) {
+        return shifts.stream().map(Shift::getRoleName).collect(Collectors.toSet());
     }
 }
