@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.EmployeeViewsAdapter;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
+import com.example.finalproject.custom_views.ShiftView;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.Shift;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
@@ -157,7 +159,8 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                         .map(shiftDocument -> shiftDocument.toObject(Shift.class))
                         .collect(Collectors.toList());
 
-                // TODO: Set shift views in all fragments
+                // Set shift views in all fragments:
+                this.setPreviousShiftsInFragments();
 
                 // Stop loading:
                 this.setLoading(false);
@@ -170,6 +173,21 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                 this.setLoading(false);
             });
         });
+    }
+
+    private void setPreviousShiftsInFragments() {
+        // Get the shift views from the previous shifts:
+        final Map<LocalDate, List<ShiftView>> dateShiftMap = ShiftView.getShiftViewsFromShifts(
+                this, this.previousShifts, this.employeeList
+        );
+
+        // Set the for each fragment:
+        for (int i = 0; i < this.fragments.length; i++) {
+            final LocalDate currentDate = this.firstDayDate.plusDays(i);
+            final List<ShiftView> shiftViews = dateShiftMap.get(currentDate);
+            if (shiftViews != null)
+                this.fragments[i].setShiftViews(shiftViews);
+        }
     }
 
     private void loadPreviousShifts(OnSuccessListener<QuerySnapshot> onSuccessListener, OnFailureListener onFailureListener) {
