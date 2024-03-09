@@ -143,17 +143,22 @@ public class ShiftView extends LinearLayout {
     }
 
     /**
-     * Generates a map of localDates connected to shiftViews according to a list of shift objects.
-     * The returned shift views' roles will be every role found in the shifts given to it.
+     * Generates a map of localDates connected to shiftViews according to a list of shift objects
+     * and a list of roles.
      * @param context Context of the shift views' creator.
      * @param shifts A list of Shift objects that will be turned into a list of ShiftView objects.
      * @param employeeList A list of employees that appear in the given shifts. Since each shift
      *                     object doesn't hold enough info to recreate an employee (at least,
      *                     without another call to the database), a list of employees is needed
      *                     for adding employee views to the shift views.
+     * @param roles A list containing the name of every role in the branch. Pay attention that if
+     *              a shift contains a role which isn't in the given list, every shift view will
+     *              have this additional role (i.e: it will be added to the list automatically).
      * @return A map connecting the date of the shifts to the shift views that are in that date.
      */
-    public static Map<LocalDate, List<ShiftView>> getShiftViewsFromShifts(Context context, List<Shift> shifts, List<Employee> employeeList) {
+    public static Map<LocalDate, List<ShiftView>> getShiftViewsFromShifts(
+            Context context, List<Shift> shifts, List<Employee> employeeList, List<String> roles
+    ) {
         // A map between the times of the shifts and a shiftView (allows for quicker lookup):
         final Map<Integer, ShiftView> viewsMap = new HashMap<>();
 
@@ -161,7 +166,10 @@ public class ShiftView extends LinearLayout {
         final Map<LocalDate, List<ShiftView>> dateShiftMap = new HashMap<>();
 
         // Find all roles:
-        final Set<String> roles = getRoles(shifts);
+        final Set<String> totalRoles = getRoles(shifts);
+
+        // Combine the found roles and the given roles:
+        totalRoles.addAll(roles);
 
         // Go over the shifts and convert them to shift views:
         for (Shift shift : shifts) {
@@ -172,7 +180,7 @@ public class ShiftView extends LinearLayout {
             if (!viewsMap.containsKey(mapKey)) {
                 // Create a new shift view with the roles, employee and times of the Shift:
                 final ShiftView shiftView = new ShiftView(context);
-                shiftView.setRoles(new ArrayList<>(roles));
+                shiftView.setRoles(new ArrayList<>(totalRoles));
                 shiftView.setStartTime(shift.getStartingTime());
                 shiftView.setEndTime(shift.getEndingTime());
 

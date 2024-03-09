@@ -178,7 +178,7 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     private void setPreviousShiftsInFragments() {
         // Get the shift views from the previous shifts:
         final Map<LocalDate, List<ShiftView>> dateShiftMap = ShiftView.getShiftViewsFromShifts(
-                this, this.previousShifts, this.employeeList
+                this, this.previousShifts, this.employeeList, this.rolesList
         );
 
         // Set the for each fragment:
