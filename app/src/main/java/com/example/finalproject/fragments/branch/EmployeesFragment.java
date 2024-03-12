@@ -25,14 +25,15 @@ import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.EmployeeActions;
 import com.example.finalproject.util.EmployeeStatus;
+import com.example.finalproject.util.Result;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.firestore.Transaction;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -138,33 +139,43 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Get a reference to the database:
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Set the application object in the document:
-        final WriteBatch batch = db.batch();
-
         // Create a new application object:
         final Application application = new Application(
                 this.currentUser.getUid(), this.currentUser.getFullName(), this.currentUser.getImagePath()
         );
 
-        // Create an empty notification document with its ID equal to the current user's ID:
-        DocumentReference notificationRef = this.currentBranch
+        // Create an empty application document with its ID equal to the current user's ID:
+        DocumentReference applicationRef = this.currentBranch
                 .getReference()
                 .collection("applications")
                 .document(this.currentUser.getUid());
 
-        batch.set(notificationRef, application, SetOptions.merge());
+        // Make a transaction that applies to the branch:
+        db.runTransaction((Transaction.Function<Result<Void, String>>) transaction -> {
+            // Check if the application already exists:
+            final DocumentSnapshot applicationSnap = transaction.get(applicationRef);
+            if (applicationSnap.exists()) {
+                return Result.failure("The application was already made");
+            }
 
-        // Add to the branch's pending applications attribute:
-        batch.update(this.currentBranch.getReference(), Branch.PENDING_APPLICATIONS, FieldValue.increment(1));
-
-        // Commit the branch:
-        batch.commit().addOnSuccessListener(unused -> {
+            // If the application is new, create the document and increment the pending applications
+            // value:
+            else {
+                transaction.set(applicationRef, application);
+                transaction.update(currentBranch.getReference(), Branch.PENDING_APPLICATIONS, FieldValue.increment(1));
+                return Result.success(null);
+            }
+        }).addOnSuccessListener(result -> {
             // Show the apply button again and hide the progress bar:
             this.btnApply.setVisibility(View.VISIBLE);
             this.pbLoading.setVisibility(View.GONE);
 
-            // Alert the user:
-            Toast.makeText(requireContext(), "Successfully applied to the branch!", Toast.LENGTH_SHORT).show();
+            // If the result is successful:
+            if (result.isOk())
+                Toast.makeText(requireContext(), "Successfully applied to the branch!", Toast.LENGTH_SHORT).show();
+                // If not:
+            else
+                Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> {
             // Show the apply button again and hide the progress bar:
             this.btnApply.setVisibility(View.VISIBLE);
