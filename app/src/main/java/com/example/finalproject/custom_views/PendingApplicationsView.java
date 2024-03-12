@@ -64,13 +64,8 @@ public class PendingApplicationsView extends View {
         }
 
         final TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PendingApplicationsView, defStyleAttr, defStyleRes);
-        try {
-            this.textSize = a.getDimensionPixelSize(R.styleable.PendingApplicationsView_android_textSize, DEFAULT_TEXT_SIZE);
-        } finally {
-            a.recycle();
-        }
+        this.textSize = a.getDimensionPixelSize(R.styleable.PendingApplicationsView_android_textSize, DEFAULT_TEXT_SIZE);
         a.close();
-
     }
 
     private void init() {
