@@ -27,6 +27,9 @@ public class PendingApplicationsView extends View {
     private Paint textPaint;
     private Rect textBounds;
 
+    // Default value for the number:
+    private static final int DEFAULT_NUMBER = 10;
+
     // Default text size:
     private static final int DEFAULT_TEXT_SIZE = 16;
 
@@ -70,7 +73,7 @@ public class PendingApplicationsView extends View {
 
     private void init() {
         // Initialize the pending applications number:
-        this.pendingApplications = 0;
+        this.pendingApplications = DEFAULT_NUMBER;
 
         // Initialize the circle's paint:
         circlePaint = new Paint();
@@ -85,7 +88,15 @@ public class PendingApplicationsView extends View {
         textPaint.setTypeface(Typeface.DEFAULT_BOLD);
         textPaint.setTextSize(textSize);
         textPaint.setAntiAlias(true);
+
+        // Get text bounds:
         this.textBounds = new Rect();
+        reloadTextBounds();
+    }
+
+    private void reloadTextBounds() {
+        final String text = Integer.toString(this.pendingApplications);
+        this.textPaint.getTextBounds(text,0, text.length(), this.textBounds);
     }
 
     @Override
@@ -110,9 +121,6 @@ public class PendingApplicationsView extends View {
         final float cx = getWidth() / 2f, cy = getHeight() / 2f;
         canvas.drawCircle(cx, cy, radius, circlePaint);
 
-        // Get text bounds:
-        this.textPaint.getTextBounds(text, 0, text.length(), this.textBounds);
-
         // Draw the number inside the circle
         final float textX = cx - (textBounds.width() / 2f) - textBounds.left, textY = cy + (textBounds.height() / 2f);
         canvas.drawText(text, textX, textY, textPaint);
@@ -128,8 +136,14 @@ public class PendingApplicationsView extends View {
     }
 
     public void setTextSize(float textSize) {
+        // Set text size:
         this.textSize = textSize;
         textPaint.setTextSize(textSize);
+
+        // Update text bounds:
+        this.reloadTextBounds();
+
+        // Update the view:
         invalidate();
     }
 
