@@ -71,16 +71,34 @@
             android:background="@drawable/white_background_circular_border"
             >
 
-            <TextView
-                android:id="@+id/actBranchTvCompanyName"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/act_branch_business_name_sample"
-                android:textSize="38sp"
-                android:textStyle="bold"
-                android:maxLines="2"
-                />
+
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+                <TextView
+                    android:id="@+id/actBranchTvCompanyName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:text="@string/act_branch_business_name_sample"
+                    android:textSize="38sp"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    />
+
+                <com.example.finalproject.custom_views.PendingApplicationsView
+                    android:id="@+id/actBranchPendingApplicationsView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    />
+            </LinearLayout>
+
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/actBranchPager"

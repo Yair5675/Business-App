@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
+import com.example.finalproject.custom_views.PendingApplicationsView;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
@@ -60,6 +61,9 @@ public class BranchActivity extends AppCompatActivity {
     // The title of the toolbar:
     private TextView tvToolbarTitle;
 
+    // The view that displays the pending applications amount:
+    private PendingApplicationsView pendingApplicationsView;
+
     // The roles fragment:
     private RolesFragment rolesFragment;
 
@@ -86,9 +90,6 @@ public class BranchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_branch);
 
-        // TODO: Using the branch's "pending application" attribute, show an indicator to the
-        //  managers about pending applications. Consider a red circle with a number in it
-
         // Initialize the database reference:
         this.dbRef = FirebaseFirestore.getInstance();
 
@@ -101,6 +102,10 @@ public class BranchActivity extends AppCompatActivity {
         // Set the company name using the branch:
         this.tvTitle = findViewById(R.id.actBranchTvCompanyName);
         this.tvTitle.setText(this.currentBranch.getCompanyName());
+
+        // Load the pending applications view:
+        this.pendingApplicationsView = findViewById(R.id.actBranchPendingApplicationsView);
+        this.pendingApplicationsView.setPendingApplications(this.currentBranch.getPendingApplications());
 
         // Create the employees fragment:
         this.employeesFragment = new EmployeesFragment(this.currentUser, this.currentBranch);
@@ -195,6 +200,9 @@ public class BranchActivity extends AppCompatActivity {
 
         // Update password for the delete dialog:
         this.deleteBranchDialog.setRealPassword(branch.getPassword());
+
+        // Set the pending applications number:
+        this.pendingApplicationsView.setPendingApplications(branch.getPendingApplications());
 
         // Update the menu:
         supportInvalidateOptionsMenu();
