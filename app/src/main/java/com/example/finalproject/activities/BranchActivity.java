@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -401,6 +402,9 @@ public class BranchActivity extends AppCompatActivity {
         if (this.employeeStatus == EmployeeStatus.MANAGER) {
             this.screenSlideAdapter.addFragment(this.applicationsFragment);
         }
+
+        // Show the pending applications view only if the employee is a manager:
+        this.pendingApplicationsView.setVisibility(status == EmployeeStatus.MANAGER ? View.VISIBLE : View.GONE);
 
         // Notify the adapter:
         this.screenSlideAdapter.notifyDataSetChanged();
