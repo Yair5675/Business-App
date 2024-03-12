@@ -28,7 +28,7 @@ public class PendingApplicationsView extends View {
     private Rect textBounds;
 
     // Default value for the number:
-    private static final int DEFAULT_NUMBER = 10;
+    private static final int DEFAULT_NUMBER = 0;
 
     // Default text size:
     private static final int DEFAULT_TEXT_SIZE = 16;
@@ -114,16 +114,26 @@ public class PendingApplicationsView extends View {
         else
             text = Integer.toString(this.pendingApplications);
 
-        // Calculate the circle radius based on the text size
-        float radius = (textPaint.descent() - textPaint.ascent()) / 2 + textSize / 2;
-
-        // Draw the red circle
+        // Draw the red circle:
         final float cx = getWidth() / 2f, cy = getHeight() / 2f;
-        canvas.drawCircle(cx, cy, radius, circlePaint);
+        canvas.drawCircle(cx, cy, this.calcRadius(), circlePaint);
 
         // Draw the number inside the circle
         final float textX = cx - (textBounds.width() / 2f) - textBounds.left, textY = cy + (textBounds.height() / 2f);
         canvas.drawText(text, textX, textY, textPaint);
+    }
+
+    private float calcRadius() {
+        return (textPaint.descent() - textPaint.ascent() + textSize) / 2;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int diameter = (int) (2 * this.calcRadius());
+        int measuredWidth = resolveSize(diameter, widthMeasureSpec);
+        int measuredHeight = resolveSize(diameter, heightMeasureSpec);
+
+        setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
     public int getPendingApplications() {
