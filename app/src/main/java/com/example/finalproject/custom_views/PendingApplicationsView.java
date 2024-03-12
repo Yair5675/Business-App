@@ -129,11 +129,18 @@ public class PendingApplicationsView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int diameter = (int) (2 * this.calcRadius());
-        int measuredWidth = resolveSize(diameter, widthMeasureSpec);
-        int measuredHeight = resolveSize(diameter, heightMeasureSpec);
+        // If there are no pending applications, make the view take no space:
+        if (this.pendingApplications <= 0)
+            setMeasuredDimension(0, 0);
+        // If there is, calculate normally:
+        else {
+            final int diameter = (int) (2 * this.calcRadius());
+            int measuredWidth = resolveSize(diameter, widthMeasureSpec);
+            int measuredHeight = resolveSize(diameter, heightMeasureSpec);
 
-        setMeasuredDimension(measuredWidth, measuredHeight);
+            setMeasuredDimension(measuredWidth, measuredHeight);
+
+        }
     }
 
     public int getPendingApplications() {
