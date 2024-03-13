@@ -7,6 +7,8 @@
     <string name="act_main_delete_account_btn_txt">Delete\nAccount</string>
     <string name="act_main_content_description_user_img">A picture of the user</string>
     <string name="act_main_credits_txt"><b>Made by Yair Ziv</b></string>
+    <string name="act_main_exit_dialog_title">Exit App</string>
+    <string name="act_main_exit_dialog_body">Are you sure you want to exit?</string>
 
 
     <!-- Strings belonging to the users menu: -->

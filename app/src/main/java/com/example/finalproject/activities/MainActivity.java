@@ -1,10 +1,12 @@
 package com.example.finalproject.activities;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -69,9 +71,6 @@ public class MainActivity extends AppCompatActivity {
     // The login dialog (reusable):
     private LoginDialog loginDialog;
 
-    // TODO: If the back button is pressed, add a dialog that asks the user if they're sure they
-    //  want to leave the app
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +111,29 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the toolbar:
         this.setSupportActionBar(findViewById(R.id.actMainToolbar));
+
+        // Configure what happens when the back button is pressed:
+        this.initBackPress();
+    }
+
+    private void initBackPress() {
+        final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Create an alert dialog asking if the want to exit:
+                final AlertDialog exitDialog = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(R.string.act_main_exit_dialog_title)
+                        .setMessage(R.string.act_main_exit_dialog_body)
+                        .setPositiveButton("Yes", (dialogInterface, i) -> finish())
+                        .setNegativeButton("No", ((dialogInterface, i) -> {}))
+                        .create();
+
+                // Show the exit dialog:
+                exitDialog.show();
+            }
+        };
+        // Add the callback:
+        getOnBackPressedDispatcher().addCallback(callback);
     }
 
     private void initWithUser(User user) {
