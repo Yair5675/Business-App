@@ -230,4 +230,11 @@
     <!-- Strings belonging to the main shifts fragment: -->
     <string name="frag_main_shifts_title"><b>Your Shifts:</b></string>
     <string name="frag_main_shifts_no_shifts_message">You have no shifts</string>
+
+    <!-- Strings belonging to the workplace row: -->
+    <string name="row_workplace_employee_status">Status: Employee</string>
+    <string name="row_workplace_manager_status">Status: Manager</string>
+    <string name="row_workplace_inactive_txt">Inactive</string>
+    <string name="row_workplace_active_txt">Active</string>
+    <string name="row_workplace_btn_shifts_history">See Shifts History</string>
 </resources>
