@@ -50,6 +50,9 @@ public class BranchActivity extends AppCompatActivity {
     // The title of the activity:
     private TextView tvTitle;
 
+    // The text view that appears if the branch is inactive:
+    private TextView tvInactive;
+
     // The current user connected to the app:
     private User currentUser;
 
@@ -103,6 +106,9 @@ public class BranchActivity extends AppCompatActivity {
         // Set the company name using the branch:
         this.tvTitle = findViewById(R.id.actBranchTvCompanyName);
         this.tvTitle.setText(this.currentBranch.getCompanyName());
+
+        // Load the inactive text view:
+        this.tvInactive = findViewById(R.id.actBranchTvInactive);
 
         // Load the pending applications view:
         this.pendingApplicationsView = findViewById(R.id.actBranchPendingApplicationsView);
@@ -208,7 +214,9 @@ public class BranchActivity extends AppCompatActivity {
         // Update the menu:
         supportInvalidateOptionsMenu();
 
-        // TODO: If the branch is not active add a little text view that informs the employees
+        // Show/hide the inactive text view:
+        this.tvInactive.setVisibility(this.currentBranch.isActive() ? View.GONE : View.VISIBLE);
+
         // If the branch isn't active, show the employees fragment only:
         if (!this.currentBranch.isActive()) {
             this.pager.setCurrentItem(0);

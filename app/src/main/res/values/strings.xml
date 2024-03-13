@@ -150,6 +150,7 @@
 
     <!-- Strings belonging to the branch activity: -->
     <string name="act_branch_business_name_sample">Some business</string>
+    <string name="act_branch_inactive_msg">This branch is inactive</string>
     <string name="act_branch_opened_msg">Currently opened</string>
     <string name="act_branch_closed_msg">Currently closed</string>
     <string name="act_branch_working_hours_sample">Open during: 8:00 – 22:00</string>
