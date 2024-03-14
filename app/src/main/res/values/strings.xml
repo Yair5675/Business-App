@@ -237,4 +237,9 @@
     <string name="row_workplace_inactive_txt">Inactive</string>
     <string name="row_workplace_active_txt">Active</string>
     <string name="row_workplace_btn_shifts_history">See Shifts History</string>
+
+
+    <!-- Strings belonging to the main workplaces fragment: -->
+    <string name="frag_main_workplaces_subtitle"><b>Your Workplaces:</b></string>
+    <string name="frag_main_workplaces_no_workplace_found">You don\'t work anywhere</string>
 </resources>
