@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -99,15 +99,15 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
     private static final String TAG = "ShiftsActivity";
 
     public static void startShiftsActivity(
-            Activity callingActivity, Branch branch, LocalDate startWeek, ArrayList<String> roles,
+            Context context, Branch branch, LocalDate startWeek, ArrayList<String> roles,
             boolean isEditable
     ) {
-        final Intent intent = new Intent(callingActivity, ShiftsActivity.class)
+        final Intent intent = new Intent(context, ShiftsActivity.class)
                 .putExtra(Constants.ACT_SHIFTS_BRANCH_KEY, branch)
                 .putExtra(Constants.ACT_SHIFTS_START_WEEK_KEY, startWeek)
                 .putExtra(Constants.ACT_SHIFTS_ROLES_KEY, roles)
                 .putExtra(Constants.ACT_SHIFTS_IS_EDITABLE_KEY, isEditable);
-        callingActivity.startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
