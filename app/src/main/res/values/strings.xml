@@ -241,5 +241,5 @@
 
     <!-- Strings belonging to the main workplaces fragment: -->
     <string name="frag_main_workplaces_subtitle"><b>Your Workplaces:</b></string>
-    <string name="frag_main_workplaces_no_workplace_found">You don\'t work anywhere</string>
+    <string name="frag_main_workplaces_no_workplace_found">No workplace was found</string>
 </resources>
