@@ -242,4 +242,13 @@
     <!-- Strings belonging to the main workplaces fragment: -->
     <string name="frag_main_workplaces_subtitle"><b>Your Workplaces:</b></string>
     <string name="frag_main_workplaces_no_workplace_found">No workplace was found</string>
+
+    <!-- Strings belonging to the shift row: -->
+    <string name="row_shift_sample_company_name">Company Name</string>
+    <string name="row_shift_role_hint">Role</string>
+    <string name="row_shift_sample_role">Janitor</string>
+    <string name="row_shift_date_hint">Date</string>
+    <string name="row_shift_sample_date">10 / 10 / 2022</string>
+    <string name="row_shift_time_hint">Time</string>
+    <string name="row_shift_sample_time">9:00 to 22:30</string>
 </resources>
