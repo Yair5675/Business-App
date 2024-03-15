@@ -29,6 +29,7 @@ import com.example.finalproject.fragments.main.BranchesFragment;
 import com.example.finalproject.fragments.main.PersonalFragment;
 import com.example.finalproject.fragments.input.user.UserRegistrationForm;
 import com.example.finalproject.fragments.main.ShiftsFragment;
+import com.example.finalproject.fragments.main.WorkplaceFragment;
 
 import java.util.Locale;
 
@@ -42,11 +43,7 @@ public class MainActivity extends AppCompatActivity {
     // The text view greeting the user:
     private TextView tvUserGreeting;
 
-    // TODO: Create a fragment that shows the user's workplaces specifically, including deactivated
-    //  ones
-
     // TODO: Update the text view that says "Good morning" to "Good evening" or other time greetings
-
 
     // TODO: Add another activity that receives a user and a branch they work at, and presents the
     //  entire shifts history of the user in this branch.
@@ -58,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
     // A reference to the personal fragment:
     private PersonalFragment personalFragment;
+
+    // A reference to the workplace fragment:
+    private WorkplaceFragment workplaceFragment;
 
     // A reference to the branches fragment:
     private BranchesFragment branchesFragment;
@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize the branches fragment:
         this.branchesFragment = new BranchesFragment();
+
+        // Initialize the workplaces fragment:
+        this.workplaceFragment = WorkplaceFragment.newInstance(null);
 
         // Initialize the shifts fragment:
         this.shiftsFragment = ShiftsFragment.newInstance(null);
@@ -143,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         // Update the fragments:
         this.personalFragment.setConnectedUser(user);
         this.branchesFragment.setUser(user);
+        this.workplaceFragment.setUser(user);
         this.shiftsFragment.setUser(user);
 
         // Update the user's image:
@@ -191,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Fragment[] getFragments() {
-        return new Fragment[] { this.personalFragment, this.branchesFragment, this.shiftsFragment };
+        return new Fragment[] { this.personalFragment, this.branchesFragment, this.workplaceFragment, this.shiftsFragment };
     }
 
     private int getPersonalFragmentIndex() {

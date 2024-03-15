@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -83,13 +83,20 @@ public class WorkplaceFragment extends Fragment {
         this.rvWorkplaces = parent.findViewById(R.id.fragMainWorkplacesRvWorkplaces);
 
         // Initialize the adapter:
-        initAdapter();
+        if (this.user != null)
+            initAdapter();
 
         // Initialize a layout manager for the recycler view:
         this.rvWorkplaces.setLayoutManager(new WrapperLinearLayoutManager(requireContext()));
 
         // TODO: Set on submit query for the search view
         return parent;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+        if (this.adapter == null && this.rvWorkplaces != null)
+            initAdapter();
     }
 
     private void initAdapter() {
