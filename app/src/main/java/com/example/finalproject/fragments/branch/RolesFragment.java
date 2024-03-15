@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.online.OnlineRolesAdapter;
+import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.dialogs.AddRoleDialog;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -21,11 +22,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 public class RolesFragment extends Fragment {
+    // The branch whose roles are in this fragment:
+    private Branch branch;
+
     // Whether the user is a manager or not:
     private boolean isManager;
-
-    // The ID of the current branch:
-    private final String branchId;
 
     // The recycler view displaying the roles:
     private RecyclerView rvRoles;
@@ -42,8 +43,8 @@ public class RolesFragment extends Fragment {
     // The add role button:
     private Button btnAddRole;
 
-    public RolesFragment(String branchId, boolean isManager) {
-        this.branchId = branchId;
+    public RolesFragment(Branch branch, boolean isManager) {
+        this.branch = branch;
         this.isManager = isManager;
     }
 
@@ -54,8 +55,8 @@ public class RolesFragment extends Fragment {
             // Update the adapter:
             this.adapter.setManager(manager);
 
-            // Show the add role button only if the user is a manager:
-            this.btnAddRole.setVisibility(manager ? View.VISIBLE : View.GONE);
+            // Show the add role button only if the user is a manager and the branch is active:
+            this.btnAddRole.setVisibility(this.isManager && this.branch.isActive() ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -76,12 +77,10 @@ public class RolesFragment extends Fragment {
         this.initAdapter();
 
         // Initialize the add role dialog:
-        // TODO: If the branch is deactivated don't allow users to view the add role dialog. In
-        //   fact, consider not showing this fragment at all
-        this.addRoleDialog = new AddRoleDialog(requireContext(), this.branchId);
+        this.addRoleDialog = new AddRoleDialog(requireContext(), this.branch.getBranchId());
 
-        // Show the add role button only if the user is a manager:
-        this.btnAddRole.setVisibility(this.isManager ? View.VISIBLE : View.GONE);
+        // Show the add role button only if the user is a manager and the branch is active:
+        this.btnAddRole.setVisibility(this.isManager && this.branch.isActive() ? View.VISIBLE : View.GONE);
 
         // Initialize onClickListener for the add role button:
         this.btnAddRole.setOnClickListener(_v -> {
@@ -96,7 +95,7 @@ public class RolesFragment extends Fragment {
         final FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         final Query query = dbRef
                 .collection("branches")
-                .document(this.branchId)
+                .document(this.branch.getBranchId())
                 .collection("roles")
                 .orderBy("roleName");
         final FirestoreRecyclerOptions<String> options = new FirestoreRecyclerOptions.Builder<String>()
@@ -108,7 +107,7 @@ public class RolesFragment extends Fragment {
                 }).build();
 
         this.adapter = new OnlineRolesAdapter(
-                this.isManager, this.branchId, requireContext(),
+                this.isManager, this.branch.getBranchId(), requireContext(),
                 () -> {
                     this.rvRoles.setVisibility(View.GONE);
                     this.tvRolesNotFound.setVisibility(View.VISIBLE);
@@ -120,5 +119,12 @@ public class RolesFragment extends Fragment {
                 options
         );
         this.rvRoles.setAdapter(this.adapter);
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+
+        // Show the add role button only if the user is a manager and the branch is active:
+        this.btnAddRole.setVisibility(this.isManager && this.branch.isActive() ? View.VISIBLE : View.GONE);
     }
 }

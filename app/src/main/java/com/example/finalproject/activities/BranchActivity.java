@@ -118,7 +118,7 @@ public class BranchActivity extends AppCompatActivity {
         this.employeesFragment = new EmployeesFragment(this.currentUser, this.currentBranch);
 
         // Create the roles fragment (initially not as a manager):
-        this.rolesFragment = new RolesFragment(this.currentBranch.getBranchId(), false);
+        this.rolesFragment = new RolesFragment(this.currentBranch, false);
 
         // Create the applications fragment:
         this.applicationsFragment = new ApplicationsFragment(this.currentBranch);
@@ -199,6 +199,7 @@ public class BranchActivity extends AppCompatActivity {
 
         // Give the branch to the fragments:
         this.employeesFragment.setCurrentBranch(branch);
+        this.rolesFragment.setBranch(branch);
         this.applicationsFragment.setBranch(branch);
 
         // Update the toolbar and title:
