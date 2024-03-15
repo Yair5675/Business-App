@@ -27,6 +27,9 @@ public class RoleColumnView extends LinearLayout {
     // The adapter of the recyclerView:
     private EmployeeViewsAdapter adapter;
 
+    // The recycler view that shows the employee views:
+    private final RecyclerView rvEmployees;
+
     // A list of the employee views in the column:
     private final ArrayList<Employee> employees;
 
@@ -41,7 +44,7 @@ public class RoleColumnView extends LinearLayout {
 
         // Load the views:
         this.tvRoleName = findViewById(R.id.roleColumnViewTvRoleName);
-        final RecyclerView rvEmployees = findViewById(R.id.roleColumnViewRvEmployees);
+        this.rvEmployees = findViewById(R.id.roleColumnViewRvEmployees);
 
         // Initialize the employee list:
         this.employees = new ArrayList<>();
@@ -68,6 +71,7 @@ public class RoleColumnView extends LinearLayout {
                 this.context, this.employees,
                 isEditable ? (view, employee) -> removeEmployee(employee) : null
         );
+        this.rvEmployees.setAdapter(this.adapter);
     }
 
     public boolean containsEmployee(Employee employee) {
