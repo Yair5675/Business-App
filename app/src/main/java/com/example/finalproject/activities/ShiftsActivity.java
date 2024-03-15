@@ -180,8 +180,6 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
                 // Set shift views in all fragments:
                 this.setPreviousShiftsInFragments();
 
-                // TODO: Make the shift views editable according to what was received in the intent
-
                 // Stop loading:
                 this.setLoading(false);
             }, e -> {
