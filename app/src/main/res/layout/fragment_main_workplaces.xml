@@ -14,21 +14,12 @@
         android:layout_marginBottom="10dp"
         />
 
-    <LinearLayout
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/fragMainWorkplacesSvWorkplaces"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="4dp"
-        >
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/fragMainWorkplacesSvWorkplaces"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:iconifiedByDefault="false"
-            />
-    </LinearLayout>
+        app:iconifiedByDefault="false"
+        />
 
     <View
         android:layout_width="match_parent"
