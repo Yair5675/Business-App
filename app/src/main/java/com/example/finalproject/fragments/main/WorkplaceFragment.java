@@ -16,6 +16,7 @@ import com.example.finalproject.R;
 import com.example.finalproject.adapters.online.OnlineWorkplacesAdapter;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.Workplace;
+import com.example.finalproject.util.Util;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,7 +24,7 @@ import com.google.firebase.firestore.Query;
 
 import java.io.Serializable;
 
-public class WorkplaceFragment extends Fragment {
+public class WorkplaceFragment extends Fragment implements SearchView.OnQueryTextListener {
     // The connected user:
     private User user;
 
@@ -89,7 +90,8 @@ public class WorkplaceFragment extends Fragment {
         // Initialize a layout manager for the recycler view:
         this.rvWorkplaces.setLayoutManager(new WrapperLinearLayoutManager(requireContext()));
 
-        // TODO: Set on submit query for the search view
+        // Set the current fragment as a query listener for the search view:
+        svWorkplaces.setOnQueryTextListener(this);
         return parent;
     }
 
@@ -122,5 +124,57 @@ public class WorkplaceFragment extends Fragment {
             this.tvNoWorkplaces.setVisibility(View.GONE);
         }, options);
         this.rvWorkplaces.setAdapter(adapter);
+    }
+
+    private void showAllWorkplaces() {
+        final Query q = this.db
+                // Get every workplace of the current user:
+                .collection(String.format("users/%s/workplaces", this.user.getUid()))
+                // Sort by activeness and alphabetical order:
+                .orderBy(Workplace.IS_ACTIVE, Query.Direction.DESCENDING)
+                .orderBy(Workplace.COMPANY_NAME);
+
+        // Update the adapter:
+        final FirestoreRecyclerOptions<Workplace> options = new FirestoreRecyclerOptions.Builder<Workplace>()
+                .setLifecycleOwner(this)
+                .setQuery(q, Workplace.class)
+                .build();
+        this.adapter.updateOptions(options);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        // If the query is empty, show all workplaces:
+        if (query.isEmpty()) {
+            this.showAllWorkplaces();
+            return true;
+        }
+
+        // Perform a like query:
+        final String workplaceName = Util.fixNamingCapitalization(query);
+        final Query q = this.db
+                .collection(String.format("users/%s/workplaces", this.user.getUid()))
+                .whereGreaterThanOrEqualTo(Workplace.COMPANY_NAME, workplaceName)
+                .whereLessThan(Workplace.COMPANY_NAME, workplaceName + "\uf8ff")
+                // Unfortunately if we perform a greater/less than operations we can sort only by
+                // the field we operated on:
+                .orderBy(Workplace.COMPANY_NAME);
+
+        final FirestoreRecyclerOptions<Workplace> options = new FirestoreRecyclerOptions.Builder<Workplace>()
+                .setLifecycleOwner(this)
+                .setQuery(q, Workplace.class)
+                .build();
+        this.adapter.updateOptions(options);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        // If the query is empty, show all workplaces:
+        if (newText.isEmpty()) {
+            this.showAllWorkplaces();
+            return true;
+        }
+        return false;
     }
 }
