@@ -116,7 +116,7 @@ public class WorkplaceFragment extends Fragment implements SearchView.OnQueryTex
                 .build();
 
         // Create the adapter and set it for the recycler view:
-        this.adapter = new OnlineWorkplacesAdapter(requireContext(), () -> {
+        this.adapter = new OnlineWorkplacesAdapter(this.user, requireContext(), () -> {
             this.rvWorkplaces.setVisibility(View.GONE);
             this.tvNoWorkplaces.setVisibility(View.VISIBLE);
         }, () -> {

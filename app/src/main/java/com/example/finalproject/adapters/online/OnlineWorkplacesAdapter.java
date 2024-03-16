@@ -1,11 +1,15 @@
 package com.example.finalproject.adapters.online;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -13,12 +17,23 @@ import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.activities.BranchActivity;
+import com.example.finalproject.database.online.collections.Branch;
+import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.Workplace;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class OnlineWorkplacesAdapter extends OnlineAdapter<Workplace, OnlineWorkplacesAdapter.WorkplaceVH> {
-    public OnlineWorkplacesAdapter(Context context, Runnable onEmptyCallback, Runnable onNotEmptyCallback, @NonNull FirestoreRecyclerOptions<Workplace> options) {
+    // The user whose workplaces are shown:
+    private final User user;
+
+    // Tag for debugging purposes:
+    private static final String TAG = "OnlineWorkplacesAdapter";
+
+    public OnlineWorkplacesAdapter(User user, Context context, Runnable onEmptyCallback, Runnable onNotEmptyCallback, @NonNull FirestoreRecyclerOptions<Workplace> options) {
         super(context, onEmptyCallback, onNotEmptyCallback, options);
+        this.user = user;
     }
 
     @Override
@@ -62,13 +77,20 @@ public class OnlineWorkplacesAdapter extends OnlineAdapter<Workplace, OnlineWork
         return new WorkplaceVH(itemView);
     }
 
-    public static class WorkplaceVH extends RecyclerView.ViewHolder {
+    public class WorkplaceVH extends RecyclerView.ViewHolder implements View.OnClickListener {
+        // A reference to the online database:
+        private final FirebaseFirestore db;
+
         // The views in the item:
         private final TextView tvCompanyName, tvStatus, tvAddress, tvActive;
+        private final ProgressBar pbLoading;
         private final Button btnShiftsHistory;
 
         public WorkplaceVH(@NonNull View itemView) {
             super(itemView);
+
+            // Load the database reference:
+            this.db = FirebaseFirestore.getInstance();
 
             // Load the views:
             this.tvCompanyName = itemView.findViewById(R.id.rowWorkplaceTvName);
@@ -76,6 +98,55 @@ public class OnlineWorkplacesAdapter extends OnlineAdapter<Workplace, OnlineWork
             this.tvAddress = itemView.findViewById(R.id.rowWorkplaceTvAddress);
             this.tvActive = itemView.findViewById(R.id.rowWorkplaceTvActive);
             this.btnShiftsHistory = itemView.findViewById(R.id.rowWorkplaceBtnShiftsHistory);
+            this.pbLoading = itemView.findViewById(R.id.rowWorkplacePbLoading);
+
+            // Set the on click listener of the entire row:
+            this.itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (view != this.itemView)
+                return;
+
+            // Get the current workplace:
+            final int index = getAbsoluteAdapterPosition();
+            if (index < 0 || index >= getItemCount())
+                return;
+            final Workplace workplace = getItem(index);
+
+            // Get the branch of the current workplace:
+            this.setLoading(true);
+            this.db.collection("branches").document(workplace.getBranchId()).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        // Convert to branch (if the document doesn't exist we'll get null):
+                        final Branch branch = documentSnapshot.toObject(Branch.class);
+                        if (branch == null) {
+                            Log.e(TAG, "Workplace's document does not exist as a branch");
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            // Stop loading:
+                            this.setLoading(false);
+
+                            // Send the branch and user to the branch activity:
+                            final Intent intent = new Intent(context, BranchActivity.class);
+                            intent.putExtra("user", user);
+                            intent.putExtra("branch", branch);
+
+                            // Go to the activity:
+                            context.startActivity(intent);
+                        }
+                    }).addOnFailureListener(e -> {
+                        Log.e(TAG, "Failed to load branch", e);
+                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        this.setLoading(false);
+                    });
+        }
+
+        private void setLoading(boolean loading) {
+            this.pbLoading.setVisibility(loading ? View.VISIBLE : View.GONE);
+            this.btnShiftsHistory.setVisibility(loading ? View.GONE : View.VISIBLE);
         }
     }
 }
