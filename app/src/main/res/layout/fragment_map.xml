@@ -84,6 +84,8 @@
                 android:focusable="false"
                 android:clickable="false"
                 android:inputType="none"
+                android:enabled="false"
+                android:textColor="@color/black"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,6 +111,8 @@
                 android:focusable="false"
                 android:clickable="false"
                 android:inputType="none"
+                android:enabled="false"
+                android:textColor="@color/black"
                 />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
