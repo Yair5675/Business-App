@@ -31,6 +31,10 @@
             android:layout_height="wrap_content"
             android:text="@string/row_shift_sample_role"
             android:inputType="none"
+            android:clickable="false"
+            android:focusable="false"
+            android:enabled="false"
+            android:textColor="@color/black"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -48,6 +52,10 @@
             android:layout_height="wrap_content"
             android:text="@string/row_shift_sample_date"
             android:inputType="none"
+            android:clickable="false"
+            android:focusable="false"
+            android:enabled="false"
+            android:textColor="@color/black"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,6 +72,10 @@
             android:layout_height="wrap_content"
             android:text="@string/row_shift_sample_time"
             android:inputType="none"
+            android:clickable="false"
+            android:focusable="false"
+            android:enabled="false"
+            android:textColor="@color/black"
             />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
