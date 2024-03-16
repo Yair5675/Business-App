@@ -14,11 +14,13 @@ import com.example.finalproject.R;
 import com.example.finalproject.adapters.online.OnlineShiftsAdapter;
 import com.example.finalproject.database.online.collections.Shift;
 import com.example.finalproject.database.online.collections.User;
+import com.example.finalproject.util.Util;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class ShiftsFragment extends Fragment {
@@ -74,10 +76,11 @@ public class ShiftsFragment extends Fragment {
 
     private void initAdapter() {
         // Create a query that shows all future shifts that haven't happened yet, sorted by closest:
+        final Date today = Util.getDateFromLocalDate(LocalDate.now());
         final Query query = this.db
                 .collection("shifts")
                 .whereEqualTo(Shift.UID, this.user.getUid())
-                .whereGreaterThanOrEqualTo(Shift.SHIFT_DATE, new Date())
+                .whereGreaterThanOrEqualTo(Shift.SHIFT_DATE, today)
                 .orderBy(Shift.SHIFT_DATE);
 
         // Create the firestore options and add to the adapter:
