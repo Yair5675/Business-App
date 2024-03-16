@@ -68,6 +68,8 @@
                 android:maxLength="4"
                 android:focusable="false"
                 android:clickable="false"
+                android:enabled="false"
+                android:textColor="@color/black"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
