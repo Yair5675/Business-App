@@ -62,6 +62,8 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:inputType="none"
+                    android:enabled="false"
+                    android:textColor="@color/black"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,6 +82,8 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:inputType="none"
+                    android:enabled="false"
+                    android:textColor="@color/black"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,6 +102,8 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:inputType="none"
+                    android:enabled="false"
+                    android:textColor="@color/black"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -115,6 +121,8 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:inputType="none"
+                    android:enabled="false"
+                    android:textColor="@color/black"
                     />
             </com.google.android.material.textfield.TextInputLayout>
             <TextView
@@ -140,6 +148,8 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:inputType="none"
+                    android:enabled="false"
+                    android:textColor="@color/black"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -158,6 +168,8 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:inputType="textPassword"
+                    android:enabled="false"
+                    android:textColor="@color/black"
                     />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
