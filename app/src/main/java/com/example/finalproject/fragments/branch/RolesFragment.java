@@ -125,6 +125,7 @@ public class RolesFragment extends Fragment {
         this.branch = branch;
 
         // Show the add role button only if the user is a manager and the branch is active:
-        this.btnAddRole.setVisibility(this.isManager && this.branch.isActive() ? View.VISIBLE : View.GONE);
+        if (this.btnAddRole != null)
+            this.btnAddRole.setVisibility(this.isManager && this.branch.isActive() ? View.VISIBLE : View.GONE);
     }
 }
