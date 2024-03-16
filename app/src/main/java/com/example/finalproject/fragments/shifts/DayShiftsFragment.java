@@ -137,7 +137,8 @@ public class DayShiftsFragment extends Fragment {
         this.setShiftViews(this.shiftViews);
 
         // If the fragment isn't editable, hide the add shift button:
-        this.btnAddShift.setVisibility(isEditable ? View.VISIBLE : View.GONE);
+        if (!this.isEditable)
+            this.btnAddShift.setVisibility(View.GONE);
         return parent;
     }
 
