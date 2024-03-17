@@ -257,4 +257,5 @@
     <string name="act_shifts_history_showing_month_sample_txt">Showing: Jan. 2021</string>
     <string name="act_shifts_history_btn_select_month">Select Month</string>
     <string name="act_shifts_history_showing_all_times">Showing: All times</string>
+    <string name="act_shifts_history_no_shifts_found_txt">No recorded shifts found</string>
 </resources>

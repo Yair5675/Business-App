@@ -92,4 +92,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp" />
+
+    <TextView
+        android:id="@+id/actShiftsHistoryTvNoShiftsFound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/act_shifts_history_no_shifts_found_txt"
+        android:gravity="center"
+        android:textSize="32sp"
+        android:visibility="gone"
+        />
+
 </LinearLayout>

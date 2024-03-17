@@ -16,10 +16,18 @@ import android.widget.TextView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.online.OnlineShiftsAdapter;
+import com.example.finalproject.database.online.collections.Shift;
+import com.example.finalproject.util.WrapperLinearLayoutManager;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 public class ShiftsHistoryActivity extends AppCompatActivity {
     // The ID of the user whose shifts are shown (mandatory):
     private String uid;
+
+    // A reference to the online database:
+    private FirebaseFirestore db;
 
     // The ID of the branch whose shifts are shown (optional, will show all shifts of the user if
     // not given):
@@ -37,6 +45,9 @@ public class ShiftsHistoryActivity extends AppCompatActivity {
 
     // The text view that displays the month which is currently shown (or all times):
     private TextView tvShowingMonth;
+
+    // The text view that appears when there are no recorded shifts:
+    private TextView tvNoShiftsFound;
 
     // The adapter of the shifts recycler view:
     private OnlineShiftsAdapter adapter;
@@ -79,6 +90,9 @@ public class ShiftsHistoryActivity extends AppCompatActivity {
         // Load the uid and branch ID from the intent:
         this.loadInfoFromIntent();
 
+        // Initialize the database reference:
+        this.db = FirebaseFirestore.getInstance();
+
         // TODO: Add a month picker
 
         // Load the views:
@@ -87,8 +101,48 @@ public class ShiftsHistoryActivity extends AppCompatActivity {
         this.tvShowingMonth = findViewById(R.id.actShiftsHistoryTvShowingMonth);
         this.imgCancelSelection = findViewById(R.id.actShiftsHistoryImgCancelSelection);
 
+        // Initialize the adapter:
+        this.initAdapter();
+
+        // Set layout manager for the recycler view:
+        this.rvShifts.setLayoutManager(new WrapperLinearLayoutManager(this));
+
         // Initialize the month and year to show the entire history:
         this.setSelectedTime(ALL_TIMES, ALL_TIMES);
+    }
+
+    private void initAdapter() {
+        // Make the query (show all shifts initially):
+        final Query query;
+        if (this.branchId == null)
+            query = this.db.collection("shifts")
+                    .whereEqualTo(Shift.UID, this.uid)
+                    .orderBy(Shift.SHIFT_DATE);
+        else
+            query = this.db.collection("shifts")
+                    .whereEqualTo(Shift.UID, this.uid)
+                    .whereEqualTo(Shift.BRANCH_ID, this.branchId)
+                    .orderBy(Shift.SHIFT_DATE);
+
+        // Form the adapter options:
+        final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
+                .setLifecycleOwner(this)
+                .setQuery(query, Shift.class)
+                .build();
+
+        // Initialize the adapter and set it to the recycler view;
+        this.adapter = new OnlineShiftsAdapter(
+                true, false, this,
+                () -> {
+                    this.rvShifts.setVisibility(View.GONE);
+                    this.tvNoShiftsFound.setVisibility(View.VISIBLE);
+                },
+                () -> {
+                    this.rvShifts.setVisibility(View.VISIBLE);
+                    this.tvNoShiftsFound.setVisibility(View.VISIBLE);
+                }, options
+        );
+        this.rvShifts.setAdapter(this.adapter);
     }
 
     private void loadInfoFromIntent() {
@@ -106,8 +160,6 @@ public class ShiftsHistoryActivity extends AppCompatActivity {
         // Get the branch ID:
         this.branchId = intent.getStringExtra(BRANCH_ID_KEY);
     }
-
-    // TODO: Add the adapter
 
     private void setSelectedTime(int month, int year) {
         // TODO: Update the adapter
