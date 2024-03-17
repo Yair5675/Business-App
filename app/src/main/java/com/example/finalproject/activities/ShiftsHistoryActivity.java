@@ -22,7 +22,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class ShiftsHistoryActivity extends AppCompatActivity {
+public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnClickListener {
     // The ID of the user whose shifts are shown (mandatory):
     private String uid;
 
@@ -101,6 +101,10 @@ public class ShiftsHistoryActivity extends AppCompatActivity {
         this.tvShowingMonth = findViewById(R.id.actShiftsHistoryTvShowingMonth);
         this.imgCancelSelection = findViewById(R.id.actShiftsHistoryImgCancelSelection);
 
+        // Set an onClickListener for the cancel selection image and selection button:
+        this.btnSelectMonth.setOnClickListener(this);
+        this.imgCancelSelection.setOnClickListener(this);
+
         // Initialize the adapter:
         this.initAdapter();
 
@@ -177,6 +181,18 @@ public class ShiftsHistoryActivity extends AppCompatActivity {
 
             // Show the cancel image:
             this.imgCancelSelection.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        final int ID = view.getId();
+
+        if (ID == this.imgCancelSelection.getId()) {
+            this.setSelectedTime(ALL_TIMES, ALL_TIMES);
+        }
+        else if (ID == this.btnSelectMonth.getId()) {
+            // TODO: Activate the month picker dialog
         }
     }
 }
