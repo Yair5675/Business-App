@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.ShiftsHistoryActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/actShiftsHistoryToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Shifts History"
+        android:background="@color/toolbar_color"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/act_shifts_history_title"
+        android:textSize="34sp"
+        android:gravity="center"
+        android:layout_marginVertical="8dp"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginVertical="4dp"
+        >
+
+        <TextView
+            android:id="@+id/actShiftsHistoryTvShowingMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/actShiftsHistoryBtnSelectMonth"
+            android:text="@string/act_shifts_history_showing_month_sample_txt"
+            android:textSize="20sp"
+            />
+
+        <ImageView
+            android:id="@+id/actShiftsHistoryImgCancelSelection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/cancel_symbol_black"
+
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="8dp"
+
+            app:layout_constraintBottom_toBottomOf="@id/actShiftsHistoryTvShowingMonth"
+            app:layout_constraintEnd_toStartOf="@id/actShiftsHistoryBtnSelectMonth"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/actShiftsHistoryTvShowingMonth"
+            app:layout_constraintTop_toTopOf="@id/actShiftsHistoryTvShowingMonth"
+            />
+
+        <android.widget.Button
+            android:id="@+id/actShiftsHistoryBtnSelectMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/actShiftsHistoryTvShowingMonth"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            android:text="@string/act_shifts_history_btn_select_month"
+            style="@style/ImprovedButtonAppearance"
+            android:paddingHorizontal="10dp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/actShiftsHistoryRvShifts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp" />
+</LinearLayout>

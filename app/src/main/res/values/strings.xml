@@ -251,4 +251,10 @@
     <string name="row_shift_sample_date">10 / 10 / 2022</string>
     <string name="row_shift_time_hint">Time</string>
     <string name="row_shift_sample_time">9:00 to 22:30</string>
+
+    <!-- Strings belonging to the shifts history activity: -->
+    <string name="act_shifts_history_title"><b>Your Shifts History</b></string>
+    <string name="act_shifts_history_showing_month_sample_txt">Showing: Jan. 2021</string>
+    <string name="act_shifts_history_btn_select_month">Select Month</string>
+    <string name="act_shifts_history_showing_all_times">Showing: All times</string>
 </resources>
