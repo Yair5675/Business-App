@@ -90,7 +90,7 @@ public class ShiftsFragment extends Fragment {
                 .setQuery(query, Shift.class)
                 .build();
         this.adapter = new OnlineShiftsAdapter(
-                true, requireContext(),
+                true, true, requireContext(),
                 () -> {
                     this.rvUserShifts.setVisibility(View.GONE);
                     this.tvNoShifts.setVisibility(View.VISIBLE);
