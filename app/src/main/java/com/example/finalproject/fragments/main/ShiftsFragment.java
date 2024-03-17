@@ -81,7 +81,8 @@ public class ShiftsFragment extends Fragment {
                 .collection("shifts")
                 .whereEqualTo(Shift.UID, this.user.getUid())
                 .whereGreaterThanOrEqualTo(Shift.SHIFT_DATE, today)
-                .orderBy(Shift.SHIFT_DATE);
+                .orderBy(Shift.SHIFT_DATE)
+                .orderBy(Shift.STARTING_TIME);
 
         // Create the firestore options and add to the adapter:
         // TODO: Hide shifts which have passed today in real time
