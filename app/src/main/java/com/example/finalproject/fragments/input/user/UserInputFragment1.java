@@ -169,7 +169,7 @@ public class UserInputFragment1 extends InputFragment {
         );
 
         // Activate the birthdate dialog when the birthdate dialog is focused:
-        this.tilBirthdate.setOnFocusChangeListener(
+        this.etBirthdate.setOnFocusChangeListener(
                 (_v, hasFocus) -> {
                     if (hasFocus)
                         activateBirthdateDialog();
@@ -177,7 +177,7 @@ public class UserInputFragment1 extends InputFragment {
         );
 
         // Activate the birthdate dialog when the birthdate input is clicked:
-        this.tilBirthdate.setOnClickListener(view -> activateBirthdateDialog());
+        this.etBirthdate.setOnClickListener(view -> activateBirthdateDialog());
     }
 
     private void initEditTexts(View parent) {
@@ -190,6 +190,10 @@ public class UserInputFragment1 extends InputFragment {
         this.etEmail = parent.findViewById(R.id.fragUserInput1EtEmail);
 
         this.etPassword = parent.findViewById(R.id.fragUserInput1EtPassword);
+
+        // Don't allow the user to edit the birthdate edit text:
+        this.etBirthdate.setTextIsSelectable(false);
+        this.etBirthdate.setOnLongClickListener(_v -> true);
     }
 
     private void initInputLayouts(View parent) {
