@@ -121,12 +121,14 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         if (this.branchId == null)
             query = this.db.collection("shifts")
                     .whereEqualTo(Shift.UID, this.uid)
-                    .orderBy(Shift.SHIFT_DATE);
+                    .orderBy(Shift.SHIFT_DATE, Query.Direction.DESCENDING)
+                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
         else
             query = this.db.collection("shifts")
                     .whereEqualTo(Shift.UID, this.uid)
                     .whereEqualTo(Shift.BRANCH_ID, this.branchId)
-                    .orderBy(Shift.SHIFT_DATE);
+                    .orderBy(Shift.SHIFT_DATE, Query.Direction.DESCENDING)
+                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
 
         // Form the adapter options:
         final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
