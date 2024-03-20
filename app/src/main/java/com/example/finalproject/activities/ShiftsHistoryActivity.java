@@ -22,6 +22,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.time.LocalDate;
+import java.util.Calendar;
+
+import by.dzmitry_lakisau.month_year_picker_dialog.MonthYearPickerDialog;
+
 public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnClickListener {
     // The ID of the user whose shifts are shown (mandatory):
     private String uid;
@@ -36,6 +41,9 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
     // The month and year selected to be shown (equal to the ALL_TIMES constant if they weren't
     // selected):
     private int month, year;
+
+    // The dialog that allows the user to choose a specific month for shifts
+    private MonthYearPickerDialog monthPickerDialog;
 
     // The button that enables the user to select a specific month:
     private Button btnSelectMonth;
@@ -93,12 +101,11 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         // Initialize the database reference:
         this.db = FirebaseFirestore.getInstance();
 
-        // TODO: Add a month picker
-
         // Load the views:
         this.rvShifts = findViewById(R.id.actShiftsHistoryRvShifts);
         this.btnSelectMonth = findViewById(R.id.actShiftsHistoryBtnSelectMonth);
         this.tvShowingMonth = findViewById(R.id.actShiftsHistoryTvShowingMonth);
+        this.tvNoShiftsFound = findViewById(R.id.actShiftsHistoryTvNoShiftsFound);
         this.imgCancelSelection = findViewById(R.id.actShiftsHistoryImgCancelSelection);
 
         // Set an onClickListener for the cancel selection image and selection button:
@@ -108,11 +115,36 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         // Initialize the adapter:
         this.initAdapter();
 
+        // Initialize the month picker dialog:
+        this.initMonthPicker();
+
+
         // Set layout manager for the recycler view:
         this.rvShifts.setLayoutManager(new WrapperLinearLayoutManager(this));
 
         // Initialize the month and year to show the entire history:
-        this.setSelectedTime(ALL_TIMES, ALL_TIMES);
+        this.setSelectedMonth(ALL_TIMES, ALL_TIMES);
+    }
+
+    private void initMonthPicker() {
+        // Get the oldest shift's year and month:
+        final Shift oldestShift = this.adapter.getItem(this.adapter.getItemCount() - 1);
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(oldestShift.getShiftDate());
+        final int oldestYear = calendar.get(Calendar.YEAR);
+        final int oldestMonth = calendar.get(Calendar.MONTH); // 0 is January
+
+        // Get next week's year and month:
+        final LocalDate nextWeek = LocalDate.now().plusWeeks(1);
+        final int maxYear = nextWeek.getYear(), maxMonth = nextWeek.getMonthValue(); // 1 is January
+
+        // Create the month picker dialog:
+        this.monthPickerDialog = new MonthYearPickerDialog.Builder(
+                this, -1, this::setSelectedMonth,
+                // Month value needs to be from 0 to 11 (LocalDate is from 1 to 12):
+                LocalDate.now().getYear(), LocalDate.now().getMonthValue() - 1
+        // Set limits on selection:
+        ).setMaxMonth(maxMonth).setMinMonth(oldestMonth).setMaxYear(maxYear).setMinYear(oldestYear).build();
     }
 
     private void initAdapter() {
@@ -167,7 +199,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         this.branchId = intent.getStringExtra(BRANCH_ID_KEY);
     }
 
-    private void setSelectedTime(int month, int year) {
+    private void setSelectedMonth(int year, int month) {
         // TODO: Update the adapter
         // If the user wants to show every shift:
         if (month == ALL_TIMES || year == ALL_TIMES) {
@@ -191,10 +223,11 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         final int ID = view.getId();
 
         if (ID == this.imgCancelSelection.getId()) {
-            this.setSelectedTime(ALL_TIMES, ALL_TIMES);
+            this.setSelectedMonth(ALL_TIMES, ALL_TIMES);
         }
         else if (ID == this.btnSelectMonth.getId()) {
-            // TODO: Activate the month picker dialog
+            // Activate the month picker dialog:
+            this.monthPickerDialog.show();
         }
     }
 }
