@@ -205,6 +205,9 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         if (month == ALL_TIMES || year == ALL_TIMES) {
             this.tvShowingMonth.setText(R.string.act_shifts_history_showing_all_times);
             this.imgCancelSelection.setVisibility(View.GONE);
+
+            // Show every shift:
+            this.showAllShifts();
         }
         else {
             // Save the month and year:
@@ -216,6 +219,29 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
             // Show the cancel image:
             this.imgCancelSelection.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void showAllShifts() {
+        final Query query;
+        if (this.branchId == null)
+            query = this.db.collection("shifts")
+                    .whereEqualTo(Shift.UID, this.uid)
+                    .orderBy(Shift.SHIFT_DATE, Query.Direction.DESCENDING)
+                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
+        else
+            query = this.db.collection("shifts")
+                    .whereEqualTo(Shift.UID, this.uid)
+                    .whereEqualTo(Shift.BRANCH_ID, this.branchId)
+                    .orderBy(Shift.SHIFT_DATE, Query.Direction.DESCENDING)
+                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
+
+        // Form the adapter options:
+        final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
+                .setLifecycleOwner(this)
+                .setQuery(query, Shift.class)
+                .build();
+
+        this.adapter.updateOptions(options);
     }
 
     @Override
