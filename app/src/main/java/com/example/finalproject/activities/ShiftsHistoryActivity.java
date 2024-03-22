@@ -24,6 +24,7 @@ import com.google.firebase.firestore.Query;
 
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
 
 import by.dzmitry_lakisau.month_year_picker_dialog.MonthYearPickerDialog;
 
@@ -198,7 +199,10 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
     }
 
     private void setSelectedMonth(int year, int month) {
-        // TODO: Update the adapter
+        // Save the values:
+        this.year = year;
+        this.month = month;
+
         // If the user wants to show every shift:
         if (month == ALL_TIMES || year == ALL_TIMES) {
             this.tvShowingMonth.setText(R.string.act_shifts_history_showing_all_times);
@@ -208,9 +212,8 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
             this.showAllShifts();
         }
         else {
-            // Save the month and year:
-            this.month = month;
-            this.year = year;
+            // Update the adapter:
+            this.showSpecificMonth(year, month);
 
             // TODO: Get the month in text and set the showing month text view
 
@@ -231,7 +234,41 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
                     .whereEqualTo(Shift.BRANCH_ID, this.branchId)
                     .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
 
-        // Form the adapter options:
+        // Update the adapter options:
+        final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
+                .setLifecycleOwner(this)
+                .setQuery(query, Shift.class)
+                .build();
+
+        this.adapter.updateOptions(options);
+    }
+
+    private void showSpecificMonth(int year, int month) {
+        // Get the dates representing the start and end of the month:
+        final Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(year, month, 1, 0, 0); // Month should be 0 based
+        final Date startMonth = calendar.getTime();
+        calendar.set(Calendar.MONTH, (month + 1) % 12);
+        final Date endMonth = calendar.getTime();
+
+        // Create a query with theses dates:
+        final Query query;
+        if (this.branchId == null)
+            query = this.db.collection("shifts")
+                    .whereEqualTo(Shift.UID, this.uid)
+                    .whereGreaterThanOrEqualTo(Shift.STARTING_TIME, startMonth)
+                    .whereLessThan(Shift.STARTING_TIME, endMonth)
+                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
+        else
+            query = this.db.collection("shifts")
+                    .whereEqualTo(Shift.UID, this.uid)
+                    .whereEqualTo(Shift.BRANCH_ID, this.branchId)
+                    .whereGreaterThanOrEqualTo(Shift.STARTING_TIME, startMonth)
+                    .whereLessThan(Shift.STARTING_TIME, endMonth)
+                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
+
+        // Update the adapter options:
         final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
                 .setLifecycleOwner(this)
                 .setQuery(query, Shift.class)
