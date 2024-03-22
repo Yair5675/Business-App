@@ -119,6 +119,9 @@ public class OnlineWorkplacesAdapter extends OnlineAdapter<Workplace, OnlineWork
             this.setLoading(true);
             this.db.collection("branches").document(workplace.getBranchId()).get()
                     .addOnSuccessListener(documentSnapshot -> {
+                        // Stop loading:
+                        this.setLoading(false);
+
                         // Convert to branch (if the document doesn't exist we'll get null):
                         final Branch branch = documentSnapshot.toObject(Branch.class);
                         if (branch == null) {
@@ -126,9 +129,6 @@ public class OnlineWorkplacesAdapter extends OnlineAdapter<Workplace, OnlineWork
                             Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            // Stop loading:
-                            this.setLoading(false);
-
                             // Send the branch and user to the branch activity:
                             final Intent intent = new Intent(context, BranchActivity.class);
                             intent.putExtra("user", user);
