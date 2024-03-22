@@ -168,7 +168,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
 
         // Initialize the adapter and set it to the recycler view;
         this.adapter = new OnlineShiftsAdapter(
-                true, false, this,
+                true, this,
                 () -> {
                     this.rvShifts.setVisibility(View.GONE);
                     this.tvNoShiftsFound.setVisibility(View.VISIBLE);

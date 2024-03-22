@@ -15,41 +15,19 @@ import com.example.finalproject.database.online.collections.Shift;
 import com.example.finalproject.util.Constants;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-import java.time.LocalTime;
 import java.util.Locale;
 
 public class OnlineShiftsAdapter extends OnlineAdapter<Shift, OnlineShiftsAdapter.ShiftVH> {
     // A flag indicating if the branch's name should be visible:
     private final boolean showCompanyName;
 
-    // A flag indicating if only shifts that haven't happened yet should be visible:
-    private final boolean showFutureShiftsOnly;
-
-    public OnlineShiftsAdapter(boolean showCompanyName, boolean showFutureShiftsOnly, Context context, Runnable onEmptyCallback, Runnable onNotEmptyCallback, @NonNull FirestoreRecyclerOptions<Shift> options) {
+    public OnlineShiftsAdapter(boolean showCompanyName, Context context, Runnable onEmptyCallback, Runnable onNotEmptyCallback, @NonNull FirestoreRecyclerOptions<Shift> options) {
         super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.showCompanyName = showCompanyName;
-        this.showFutureShiftsOnly = showFutureShiftsOnly;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull ShiftVH holder, int position, @NonNull Shift shift) {
-        // If the future flag is on:
-        if (this.showFutureShiftsOnly) {
-            // Compare now to the opening time of the shifts:
-            final LocalTime now = LocalTime.now();
-            final int currentMinutes = now.getHour() * 60 + now.getMinute();
-
-            // Don't show the shift if it has passed:
-            if (shift.startHour() * 60 + shift.startMinutes() < currentMinutes) {
-                holder.itemView.setVisibility(View.GONE);
-                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
-                return;
-            }
-            else {
-                holder.itemView.setVisibility(View.VISIBLE);
-                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            }
-        }
         // Set company name if the "showCompanyName" flag is true:
         if (this.showCompanyName) {
             holder.tvCompanyName.setVisibility(View.VISIBLE);
