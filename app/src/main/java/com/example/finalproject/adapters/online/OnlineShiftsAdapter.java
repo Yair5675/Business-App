@@ -40,7 +40,7 @@ public class OnlineShiftsAdapter extends OnlineAdapter<Shift, OnlineShiftsAdapte
             final int currentMinutes = now.getHour() * 60 + now.getMinute();
 
             // Don't show the shift if it has passed:
-            if (shift.getStartingTime() < currentMinutes) {
+            if (shift.startHour() * 60 + shift.startMinutes() < currentMinutes) {
                 holder.itemView.setVisibility(View.GONE);
                 holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
                 return;
@@ -62,14 +62,14 @@ public class OnlineShiftsAdapter extends OnlineAdapter<Shift, OnlineShiftsAdapte
         holder.etRole.setText(shift.getRoleName());
 
         // Set date:
-        holder.etDate.setText(Constants.DATE_FORMAT.format(shift.getShiftDate()));
-
-        // Get the hours and minutes of the starting and ending time:
-        final int h1 = shift.getStartingTime() / 60, h2 = shift.getEndingTime() / 60;
-        final int m1 = shift.getStartingTime() % 60, m2 = shift.getEndingTime() % 60;
+        holder.etDate.setText(Constants.DATE_FORMAT.format(shift.getStartingTime()));
 
         // Set the edit text:
-        final String timeTxt = String.format(Locale.getDefault(), "%d:%02d to %d:%02d", h1, m1, h2, m2);
+        final String timeTxt = String.format(
+                Locale.getDefault(),
+                "%d:%02d to %d:%02d",
+                shift.startHour(), shift.startMinutes(), shift.endHour(), shift.endMinute()
+        );
         holder.etTime.setText(timeTxt);
     }
 

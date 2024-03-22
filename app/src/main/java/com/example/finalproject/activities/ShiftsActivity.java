@@ -236,8 +236,8 @@ public class ShiftsActivity extends AppCompatActivity implements TabLayout.OnTab
         final Date weekEnd = Util.getDateFromLocalDate(this.firstDayDate.plusWeeks(1));
         this.db.collection("shifts")
                 .whereEqualTo(Shift.BRANCH_ID, this.branch.getBranchId())
-                .whereGreaterThanOrEqualTo(Shift.SHIFT_DATE, weekStart)
-                .whereLessThan(Shift.SHIFT_DATE, weekEnd)
+                .whereGreaterThanOrEqualTo(Shift.STARTING_TIME, weekStart)
+                .whereLessThan(Shift.STARTING_TIME, weekEnd)
                 .get()
                 .addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }

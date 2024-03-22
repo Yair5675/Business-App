@@ -4,6 +4,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Shift implements Externalizable {
@@ -22,11 +23,8 @@ public class Shift implements Externalizable {
     // The role of the employee in the shift:
     private String roleName;
 
-    // The date of the shift:
-    private Date shiftDate;
-
-    // The starting time and ending time of the shift (in minutes since midnight):
-    private int startingTime, endingTime;
+    // The starting time and ending time of the shift:
+    private Date startingTime, endingTime;
 
     // Constants that show the attribute names in the database, instead of hardcoding them:
     public static final String SHIFT_ID = "shiftId";
@@ -35,7 +33,6 @@ public class Shift implements Externalizable {
     public static final String USER_FULL_NAME = "userFullName";
     public static final String COMPANY_NAME = Branch.COMPANY_NAME;
     public static final String ROLE_NAME = "roleName";
-    public static final String SHIFT_DATE = "shiftDate";
     public static final String STARTING_TIME = "startingTime";
     public static final String ENDING_TIME = "endingTime";
 
@@ -45,14 +42,13 @@ public class Shift implements Externalizable {
     // Additional constructor to make my life easier
     public Shift(
             String uid, String branchId, String userFullName, String companyName, String roleName,
-            Date shiftDate, int startingTime, int endingTime
+            Date startingTime, Date endingTime
     ) {
         this.uid = uid;
         this.branchId = branchId;
         this.userFullName = userFullName;
         this.companyName = companyName;
         this.roleName = roleName;
-        this.shiftDate = shiftDate;
         this.startingTime = startingTime;
         this.endingTime = endingTime;
     }
@@ -106,27 +102,57 @@ public class Shift implements Externalizable {
         this.roleName = roleName;
     }
 
-    public Date getShiftDate() {
-        return shiftDate;
+    /**
+     * Returns the hour at which the shift starts.
+     * @return The hour when the shift starts.
+     */
+    public int startHour() {
+        return getDateField(this.startingTime, Calendar.HOUR_OF_DAY);
     }
 
-    public void setShiftDate(Date shiftDate) {
-        this.shiftDate = shiftDate;
+    /**
+     * Returns the minutes at which the shift starts (from 0 to 59).
+     * @return The minutes at which the shift starts.
+     */
+    public int startMinutes() {
+        return getDateField(this.startingTime, Calendar.MINUTE);
     }
 
-    public int getStartingTime() {
+    /**
+     * Returns the hour at which the shift ends.
+     * @return The hour when the shift ends.
+     */
+    public int endHour() {
+        return getDateField(this.endingTime, Calendar.HOUR_OF_DAY);
+    }
+
+    /**
+     * Returns the minutes at which the shift ends (from 0 to 59).
+     * @return The minutes at which the shift ends.
+     */
+    public int endMinute() {
+        return getDateField(this.endingTime, Calendar.MINUTE);
+    }
+
+    private static int getDateField(Date date, int field) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(field);
+    }
+
+    public Date getStartingTime() {
         return startingTime;
     }
 
-    public void setStartingTime(int startingTime) {
+    public void setStartingTime(Date startingTime) {
         this.startingTime = startingTime;
     }
 
-    public int getEndingTime() {
+    public Date getEndingTime() {
         return endingTime;
     }
 
-    public void setEndingTime(int endingTime) {
+    public void setEndingTime(Date endingTime) {
         this.endingTime = endingTime;
     }
 
@@ -138,9 +164,8 @@ public class Shift implements Externalizable {
         this.branchId = (String) in.readObject();
         this.companyName = (String) in.readObject();
         this.roleName = (String) in.readObject();
-        this.shiftDate = new Date(in.readLong());
-        this.startingTime = in.readInt();
-        this.endingTime = in.readInt();
+        this.startingTime = new Date(in.readLong());
+        this.endingTime = new Date(in.readLong());
     }
 
     @Override
@@ -151,8 +176,7 @@ public class Shift implements Externalizable {
         out.writeChars(this.branchId);
         out.writeChars(this.companyName);
         out.writeChars(this.roleName);
-        out.writeLong(this.shiftDate.getTime());
-        out.writeInt(this.startingTime);
-        out.writeInt(this.endingTime);
+        out.writeLong(this.startingTime.getTime());
+        out.writeLong(this.endingTime.getTime());
     }
 }

@@ -14,6 +14,8 @@ import com.example.finalproject.util.Util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -135,7 +137,7 @@ public class ShiftView extends LinearLayout {
         );
     }
 
-    public List<Shift> getShifts(LocalDate localDate, Branch branch) {
+    public List<Shift> getShifts(LocalDate shiftsDate, Branch branch) {
         // Initialize a list to hold all the shifts:
         final List<Shift> shifts = new ArrayList<>(this.roleColumns.size() * 2);
 
@@ -145,13 +147,39 @@ public class ShiftView extends LinearLayout {
                 final Shift shift = new Shift(
                         employee.getUid(), branch.getBranchId(), employee.getFullName(),
                         branch.getCompanyName(), roleColumn.getRole(),
-                        Util.getDateFromLocalDate(localDate), this.startTime, this.endTime
+                        this.getShiftStartDate(shiftsDate), this.getShiftEndDate(shiftsDate)
                 );
                 shifts.add(shift);
             }
         }
 
         return shifts;
+    }
+
+    private Date getShiftStartDate(LocalDate shiftDay) {
+        // Create a date for today:
+        final Date today = Util.getDateFromLocalDate(shiftDay);
+
+        // Change the hour and minute:
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        calendar.set(Calendar.HOUR_OF_DAY, this.startTime / 60);
+        calendar.set(Calendar.MINUTE, this.startTime % 60);
+
+        return calendar.getTime();
+    }
+
+    private Date getShiftEndDate(LocalDate shiftDay) {
+        // Create a date for today:
+        final Date today = Util.getDateFromLocalDate(shiftDay);
+
+        // Change the hour and minute:
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        calendar.set(Calendar.HOUR_OF_DAY, this.endTime / 60);
+        calendar.set(Calendar.MINUTE, this.endTime % 60);
+
+        return calendar.getTime();
     }
 
     /**
@@ -186,19 +214,19 @@ public class ShiftView extends LinearLayout {
         // Go over the shifts and convert them to shift views:
         for (Shift shift : shifts) {
             // Get the shiftView's key in the map:
-            int mapKey = Objects.hash(shift.getShiftDate(), shift.getStartingTime(), shift.getEndingTime());
+            int mapKey = Objects.hash(shift.getStartingTime(), shift.getEndingTime());
 
             // Add a new shiftView to the map if one wasn't there already:
             if (!viewsMap.containsKey(mapKey)) {
                 // Create a new shift view with the roles, employee and times of the Shift:
                 final ShiftView shiftView = new ShiftView(context);
                 shiftView.setRoles(new ArrayList<>(totalRoles));
-                shiftView.setStartTime(shift.getStartingTime());
-                shiftView.setEndTime(shift.getEndingTime());
+                shiftView.setStartTime(shift.startHour() * 60 + shift.startMinutes());
+                shiftView.setEndTime(shift.endHour() * 60 + shift.endMinute());
 
                 // Add to the maps:
                 viewsMap.put(mapKey, shiftView);
-                final LocalDate shiftDate = Util.getLocalDateFromDate(shift.getShiftDate());
+                final LocalDate shiftDate = Util.getLocalDateFromDate(shift.getStartingTime());
                 final List<ShiftView> shiftViews = dateShiftMap.getOrDefault(shiftDate, new ArrayList<>());
                 if (shiftViews != null)
                     shiftViews.add(shiftView);

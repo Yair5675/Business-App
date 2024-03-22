@@ -130,7 +130,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         // Get the oldest shift's year and month:
         final Shift oldestShift = this.adapter.getItem(this.adapter.getItemCount() - 1);
         final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(oldestShift.getShiftDate());
+        calendar.setTime(oldestShift.getStartingTime());
         final int oldestYear = calendar.get(Calendar.YEAR);
         final int oldestMonth = calendar.get(Calendar.MONTH); // 0 is January
 
@@ -153,13 +153,11 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         if (this.branchId == null)
             query = this.db.collection("shifts")
                     .whereEqualTo(Shift.UID, this.uid)
-                    .orderBy(Shift.SHIFT_DATE, Query.Direction.DESCENDING)
                     .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
         else
             query = this.db.collection("shifts")
                     .whereEqualTo(Shift.UID, this.uid)
                     .whereEqualTo(Shift.BRANCH_ID, this.branchId)
-                    .orderBy(Shift.SHIFT_DATE, Query.Direction.DESCENDING)
                     .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
 
         // Form the adapter options:
@@ -226,13 +224,11 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         if (this.branchId == null)
             query = this.db.collection("shifts")
                     .whereEqualTo(Shift.UID, this.uid)
-                    .orderBy(Shift.SHIFT_DATE, Query.Direction.DESCENDING)
                     .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
         else
             query = this.db.collection("shifts")
                     .whereEqualTo(Shift.UID, this.uid)
                     .whereEqualTo(Shift.BRANCH_ID, this.branchId)
-                    .orderBy(Shift.SHIFT_DATE, Query.Direction.DESCENDING)
                     .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
 
         // Form the adapter options:

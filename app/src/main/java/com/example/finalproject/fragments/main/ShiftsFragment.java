@@ -80,8 +80,7 @@ public class ShiftsFragment extends Fragment {
         final Query query = this.db
                 .collection("shifts")
                 .whereEqualTo(Shift.UID, this.user.getUid())
-                .whereGreaterThanOrEqualTo(Shift.SHIFT_DATE, today)
-                .orderBy(Shift.SHIFT_DATE)
+                .whereGreaterThanOrEqualTo(Shift.STARTING_TIME, today)
                 .orderBy(Shift.STARTING_TIME);
 
         // Create the firestore options and add to the adapter:
