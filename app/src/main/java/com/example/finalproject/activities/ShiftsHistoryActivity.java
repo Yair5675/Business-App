@@ -23,8 +23,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import by.dzmitry_lakisau.month_year_picker_dialog.MonthYearPickerDialog;
 
@@ -38,10 +41,6 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
     // The ID of the branch whose shifts are shown (optional, will show all shifts of the user if
     // not given):
     private @Nullable String branchId;
-
-    // The month and year selected to be shown (equal to the ALL_TIMES constant if they weren't
-    // selected):
-    private int month, year;
 
     // The dialog that allows the user to choose a specific month for shifts
     private MonthYearPickerDialog monthPickerDialog;
@@ -198,11 +197,14 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         this.branchId = intent.getStringExtra(BRANCH_ID_KEY);
     }
 
+    /**
+     * Sets the selected month displayed in the activity. If either parameter is equal to the value
+     * of ALL_TIMES, no specific month is selected.
+     * @param year The year of the shifts that will be displayed.
+     * @param month The specific month of the shifts that will be displayed. The value should be 0
+     *              based (January is 0 and December is 11).
+     */
     private void setSelectedMonth(int year, int month) {
-        // Save the values:
-        this.year = year;
-        this.month = month;
-
         // If the user wants to show every shift:
         if (month == ALL_TIMES || year == ALL_TIMES) {
             this.tvShowingMonth.setText(R.string.act_shifts_history_showing_all_times);
@@ -215,7 +217,10 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
             // Update the adapter:
             this.showSpecificMonth(year, month);
 
-            // TODO: Get the month in text and set the showing month text view
+            // Show the month and year displayed:
+            final String monthName = Month.of(month + 1).getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+            final String msg = String.format(Locale.getDefault(), "Showing: %s. %d", monthName, year);
+            this.tvShowingMonth.setText(msg);
 
             // Show the cancel image:
             this.imgCancelSelection.setVisibility(View.VISIBLE);
