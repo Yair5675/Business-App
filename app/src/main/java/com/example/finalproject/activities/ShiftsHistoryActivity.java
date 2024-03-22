@@ -127,24 +127,30 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initMonthPicker() {
-        // Get the oldest shift's year and month:
-        final Shift oldestShift = this.adapter.getItem(this.adapter.getItemCount() - 1);
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(oldestShift.getStartingTime());
-        final int oldestYear = calendar.get(Calendar.YEAR);
-        final int oldestMonth = calendar.get(Calendar.MONTH); // 0 is January
-
-        // Get next week's year and month:
-        final LocalDate nextWeek = LocalDate.now().plusWeeks(1);
-        final int maxYear = nextWeek.getYear(), maxMonth = nextWeek.getMonthValue(); // 1 is January
-
         // Create the month picker dialog:
-        this.monthPickerDialog = new MonthYearPickerDialog.Builder(
-                this, -1, this::setSelectedMonth,
+        final MonthYearPickerDialog.Builder builder = new MonthYearPickerDialog.Builder(
+                this, R.style.Base_Theme_FinalProject, this::setSelectedMonth,
                 // Month value needs to be from 0 to 11 (LocalDate is from 1 to 12):
                 LocalDate.now().getYear(), LocalDate.now().getMonthValue() - 1
-        // Set limits on selection:
-        ).setMaxMonth(maxMonth).setMinMonth(oldestMonth).setMaxYear(maxYear).setMinYear(oldestYear).build();
+        );
+
+        // Get the oldest shift's year and month and set them as the minimum:
+        if (!this.adapter.isEmpty()) {
+            final Shift oldestShift = this.adapter.getItem(this.adapter.getItemCount() - 1);
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime(oldestShift.getStartingTime());
+            final int oldestYear = calendar.get(Calendar.YEAR);
+            final int oldestMonth = calendar.get(Calendar.MONTH); // 0 is January
+
+            builder.setMinMonth(oldestMonth).setMinYear(oldestYear);
+        }
+
+        // Get next week's year and month and set it as the maximum:
+        final LocalDate nextWeek = LocalDate.now().plusWeeks(1);
+        final int maxYear = nextWeek.getYear(), maxMonth = nextWeek.getMonthValue(); // 1 is January
+        builder.setMaxMonth(maxMonth).setMaxYear(maxYear);
+
+        this.monthPickerDialog = builder.build();
     }
 
     private void initAdapter() {

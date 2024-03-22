@@ -8,6 +8,9 @@
 
     <style name="Theme.FinalProject" parent="Base.Theme.FinalProject" >
 <!--        <item name="background">@drawable/background</item>-->
+        <item name="headerBackgroundColor">@color/royal_blue</item>
+        <item name="headerTextColor">@color/white</item>
+        <item name="headerTextColorSelected">@color/teal</item>
     </style>
 
     <!-- Better button style: -->
