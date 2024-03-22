@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.activities.BranchActivity;
+import com.example.finalproject.activities.ShiftsHistoryActivity;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.Workplace;
@@ -65,8 +66,10 @@ public class OnlineWorkplacesAdapter extends OnlineAdapter<Workplace, OnlineWork
         holder.tvActive.setText(activeRes);
         holder.tvActive.setCompoundDrawablesWithIntrinsicBounds(0, iconRes, 0, 0);
 
-        // TODO: Make the "Shifts History" button go to the shifts history activity once the activity
-        //  is made
+        // Make the "Shifts History" button go to the shifts history activity:
+        holder.btnShiftsHistory.setOnClickListener(
+                _v -> ShiftsHistoryActivity.startActivity(this.context, this.user.getUid(), workplace.getBranchId()
+                ));
     }
 
     @NonNull
