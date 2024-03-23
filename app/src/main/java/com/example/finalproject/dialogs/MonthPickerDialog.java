@@ -48,7 +48,7 @@ public class MonthPickerDialog extends DialogFragment implements DialogInterface
     private static final int NOT_SELECTED = -1;
 
     // A constant dictating the maximum amount of year allowed to the past/future:
-    private static final int MAX_YEARS_RANGE = 50;
+    private static final int MAX_YEARS_RANGE = 0;
 
     public MonthPickerDialog() {
         // Set default limitations on selection:
