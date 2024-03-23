@@ -146,6 +146,9 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         final int maxYear = nextWeek.getYear(), maxMonth = nextWeek.getMonthValue() - 1; // 1 is January so fix it
         this.monthPickerDialog.setMaxYear(maxYear);
         this.monthPickerDialog.setMaxMonth(maxMonth);
+
+        // Configure the listener:
+        this.monthPickerDialog.setOnMonthSelectedListener(this::setSelectedMonth);
     }
 
     private void initAdapter() {
