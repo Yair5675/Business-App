@@ -176,10 +176,15 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
                 () -> {
                     this.rvShifts.setVisibility(View.GONE);
                     this.tvNoShiftsFound.setVisibility(View.VISIBLE);
+                    // If we are showing shifts from all times and it's still empty, hide the select
+                    // month button:
+                    if (this.imgCancelSelection.getVisibility() == View.GONE)
+                        this.btnSelectMonth.setVisibility(View.GONE);
                 },
                 () -> {
                     this.rvShifts.setVisibility(View.VISIBLE);
-                    this.tvNoShiftsFound.setVisibility(View.VISIBLE);
+                    this.tvNoShiftsFound.setVisibility(View.GONE);
+                    this.btnSelectMonth.setVisibility(View.VISIBLE);
                 }, options
         );
         this.rvShifts.setAdapter(this.adapter);
@@ -218,9 +223,6 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
             this.showAllShifts();
         }
         else {
-            // Update the adapter:
-            this.showSpecificMonth(year, month);
-
             // Show the month and year displayed:
             final String monthName = Month.of(month + 1).getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
             final String msg = String.format(Locale.getDefault(), "Showing: %s. %d", monthName, year);
@@ -228,6 +230,9 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
 
             // Show the cancel image:
             this.imgCancelSelection.setVisibility(View.VISIBLE);
+
+            // Update the adapter:
+            this.showSpecificMonth(year, month);
         }
     }
 
