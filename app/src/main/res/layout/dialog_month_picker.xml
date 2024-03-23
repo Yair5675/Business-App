@@ -19,8 +19,7 @@
         >
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:text="@string/dialog_month_picker_month_title"
             android:textSize="32sp"
             android:gravity="bottom|center_horizontal"
@@ -47,8 +46,7 @@
         >
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:text="@string/dialog_month_picker_year_title"
             android:textSize="32sp"
             android:gravity="bottom|center_horizontal"
