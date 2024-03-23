@@ -19,7 +19,7 @@ import com.example.finalproject.R;
 import java.time.LocalDate;
 
 public class MonthPickerDialog extends DialogFragment implements DialogInterface.OnClickListener, NumberPicker.OnValueChangeListener {
-    // The maximum and minimum values for the month and year:
+    // The maximum and minimum values for the month and year (between 0 and 11 for months):
     private int minYear, maxYear;
     private int minMonth, maxMonth;
 
@@ -52,8 +52,8 @@ public class MonthPickerDialog extends DialogFragment implements DialogInterface
 
     public MonthPickerDialog() {
         // Set default limitations on selection:
-        this.minMonth = 1;
-        this.maxMonth = 12;
+        this.minMonth = 0;
+        this.maxMonth = 11;
 
         final int currentYear = LocalDate.now().getYear();
         this.minYear = currentYear - MAX_YEARS_RANGE;
@@ -95,6 +95,9 @@ public class MonthPickerDialog extends DialogFragment implements DialogInterface
         // year:
         if (this.minYear == this.maxYear)
             this.minMonth = Math.min(this.minMonth, this.maxMonth);
+
+        if (this.npMonth != null)
+            this.npMonth.setMinValue(this.minMonth + 1);
     }
 
     /**
@@ -111,6 +114,9 @@ public class MonthPickerDialog extends DialogFragment implements DialogInterface
         // same year:
         if (this.minYear == this.maxYear)
             this.maxMonth = Math.max(this.minMonth, this.maxMonth);
+
+        if (this.npMonth != null)
+            this.npMonth.setMaxValue(this.maxMonth + 1);
     }
 
     @NonNull
@@ -127,10 +133,6 @@ public class MonthPickerDialog extends DialogFragment implements DialogInterface
 
         // Load the previous state:
         this.loadOldState(savedInstanceState);
-
-        // Limit the month and year pickers:
-        this.npMonth.setMinValue(1);
-        this.npMonth.setMaxValue(12);
 
         // Set a listener for the year number picker that will monitor the max and min month values:
         this.npYear.setOnValueChangedListener(this);
