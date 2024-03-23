@@ -232,7 +232,7 @@ public class MonthPickerDialog extends DialogFragment implements DialogInterface
             // If the year changed, change the limitations on the month number picker according to
             // the year:
             this.npMonth.setMaxValue(newVal == this.maxYear ? this.maxMonth + 1 : 12);
-            this.npMonth.setMinValue(newVal == this.minYear ? this.minMonth + 1 : 12);
+            this.npMonth.setMinValue(newVal == this.minYear ? this.minMonth + 1 : 1);
         }
     }
 }
