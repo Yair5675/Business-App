@@ -132,14 +132,11 @@ public class MonthPickerDialog extends DialogFragment implements DialogInterface
         this.npMonth.setMinValue(1);
         this.npMonth.setMaxValue(12);
 
-
-
         // Set a listener for the year number picker that will monitor the max and min month values:
         this.npYear.setOnValueChangedListener(this);
 
         // Set up the dialog:
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
-                .setTitle(R.string.dialog_month_picker_title)
                 .setPositiveButton("Confirm", this)
                 .setNegativeButton("Cancel", this)
                 .setView(parent);

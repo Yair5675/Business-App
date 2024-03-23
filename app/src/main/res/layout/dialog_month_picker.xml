@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="8dp"
     android:gravity="center">
 
     <LinearLayout
@@ -22,8 +23,9 @@
             android:layout_height="wrap_content"
             android:text="@string/dialog_month_picker_month_title"
             android:textSize="32sp"
-            android:gravity="bottom|center_horizontal"
+            android:gravity="center"
             />
+
         <NumberPicker
             android:id="@+id/dialogMonthPickerNpMonth"
             android:layout_width="match_parent"
