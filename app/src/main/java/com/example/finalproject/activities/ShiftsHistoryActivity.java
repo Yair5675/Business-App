@@ -117,11 +117,74 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         // Initialize the month picker dialog:
         this.initMonthPicker();
 
+        // Listen to the newest and oldest shift in order to determine the minimal and maximal
+        // month:
+        this.listenToNewestShift();
+        this.listenToOldestShift();
+
         // Set layout manager for the recycler view:
         this.rvShifts.setLayoutManager(new WrapperLinearLayoutManager(this));
 
         // Initialize the month and year to show the entire history:
         this.setSelectedMonth(ALL_TIMES, ALL_TIMES);
+    }
+
+    private void listenToNewestShift() {
+        this.getRelevantShiftDocumentsQuery().limit(1).addSnapshotListener(this, (value, error) -> {
+            if (error != null) {
+                Log.e(TAG, "Failed to listen to newest shift", error);
+                return;
+            }
+            if (value == null) {
+                Log.e(TAG, "Query snapshot value is null without an error");
+                return;
+            }
+
+            // Get the first shift (should be the only one):
+            if (!value.isEmpty()) {
+                final Shift shift = value.getDocuments().get(0).toObject(Shift.class);
+                if (shift == null) {
+                    Log.e(TAG, "Failed to convert document to shift");
+                    return;
+                }
+
+                // Change the maximum pick in the month picker:
+                final Calendar calendar = Calendar.getInstance();
+                calendar.setTime(shift.getStartingTime());
+                final int year = calendar.get(Calendar.YEAR), month = calendar.get(Calendar.MONTH);
+                this.monthPickerDialog.setMaxYear(year);
+                this.monthPickerDialog.setMaxMonth(month);
+            }
+        });
+    }
+
+    private void listenToOldestShift() {
+        this.getRelevantShiftDocumentsQuery().limitToLast(1).addSnapshotListener(this, (value, error) -> {
+            if (error != null) {
+                Log.e(TAG, "Failed to listen to oldest shift", error);
+                return;
+            }
+            if (value == null) {
+                Log.e(TAG, "Query snapshot value is null without an error");
+                return;
+            }
+
+            // Get the first shift (should be the only one):
+            if (!value.isEmpty()) {
+                final Shift shift = value.getDocuments().get(0).toObject(Shift.class);
+                if (shift == null) {
+                    Log.e(TAG, "Failed to convert document to shift");
+                    return;
+                }
+
+                // Change the minimum pick in the month picker:
+                final Calendar calendar = Calendar.getInstance();
+                calendar.setTime(shift.getStartingTime());
+                final int year = calendar.get(Calendar.YEAR), month = calendar.get(Calendar.MONTH);
+                this.monthPickerDialog.setMinYear(year);
+                this.monthPickerDialog.setMinMonth(month);
+            }
+        });
     }
 
     private void initMonthPicker() {
@@ -138,23 +201,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         this.monthPickerDialog.setOnMonthSelectedListener(this::setSelectedMonth);
     }
 
-    private void updateMonthPickerMinSelection() {
-        if (this.adapter.isEmpty())
-            return;
-
-        // Get the oldest shift's year and month and set them as the minimum:
-        final Shift oldestShift = this.adapter.getItem(this.adapter.getItemCount() - 1);
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(oldestShift.getStartingTime());
-        final int oldestYear = calendar.get(Calendar.YEAR);
-        final int oldestMonth = calendar.get(Calendar.MONTH); // 0 is January
-
-        this.monthPickerDialog.setMinYear(oldestYear);
-        this.monthPickerDialog.setMinMonth(oldestMonth);
-    }
-
-    private void initAdapter() {
-        // Make the query (show all shifts initially):
+    private Query getRelevantShiftDocumentsQuery() {
         final Query query;
         if (this.branchId == null)
             query = this.db.collection("shifts")
@@ -165,6 +212,12 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
                     .whereEqualTo(Shift.UID, this.uid)
                     .whereEqualTo(Shift.BRANCH_ID, this.branchId)
                     .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
+        return query;
+    }
+
+    private void initAdapter() {
+        // Make the query (show all shifts initially):
+        final Query query = this.getRelevantShiftDocumentsQuery();
 
         // Form the adapter options:
         final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
@@ -239,16 +292,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
     }
 
     private void showAllShifts() {
-        final Query query;
-        if (this.branchId == null)
-            query = this.db.collection("shifts")
-                    .whereEqualTo(Shift.UID, this.uid)
-                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
-        else
-            query = this.db.collection("shifts")
-                    .whereEqualTo(Shift.UID, this.uid)
-                    .whereEqualTo(Shift.BRANCH_ID, this.branchId)
-                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
+        final Query query = this.getRelevantShiftDocumentsQuery();
 
         // Update the adapter options:
         final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
@@ -256,7 +300,6 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
                 .setQuery(query, Shift.class)
                 .build();
 
-        this.updateMonthPickerMinSelection();
         this.adapter.updateOptions(options);
     }
 
@@ -270,20 +313,9 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         final Date endMonth = calendar.getTime();
 
         // Create a query with theses dates:
-        final Query query;
-        if (this.branchId == null)
-            query = this.db.collection("shifts")
-                    .whereEqualTo(Shift.UID, this.uid)
-                    .whereGreaterThanOrEqualTo(Shift.STARTING_TIME, startMonth)
-                    .whereLessThan(Shift.STARTING_TIME, endMonth)
-                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
-        else
-            query = this.db.collection("shifts")
-                    .whereEqualTo(Shift.UID, this.uid)
-                    .whereEqualTo(Shift.BRANCH_ID, this.branchId)
-                    .whereGreaterThanOrEqualTo(Shift.STARTING_TIME, startMonth)
-                    .whereLessThan(Shift.STARTING_TIME, endMonth)
-                    .orderBy(Shift.STARTING_TIME, Query.Direction.DESCENDING);
+        final Query query = this.getRelevantShiftDocumentsQuery()
+                .whereGreaterThanOrEqualTo(Shift.STARTING_TIME, startMonth)
+                .whereLessThan(Shift.STARTING_TIME, endMonth);
 
         // Update the adapter options:
         final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
@@ -291,7 +323,6 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
                 .setQuery(query, Shift.class)
                 .build();
 
-        this.updateMonthPickerMinSelection();
         this.adapter.updateOptions(options);
     }
 
