@@ -128,9 +128,6 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         // Create the month picker:
         this.monthPickerDialog = new MonthPickerDialog();
 
-        // Set the minimum selection:
-        this.updateMonthPickerMinSelection();
-
         // Get next week's year and month and set it as the maximum:
         final LocalDate nextWeek = LocalDate.now().plusWeeks(1);
         final int maxYear = nextWeek.getYear(), maxMonth = nextWeek.getMonthValue() - 1; // 1 is January so fix it
@@ -190,7 +187,6 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
                     this.rvShifts.setVisibility(View.VISIBLE);
                     this.tvNoShiftsFound.setVisibility(View.GONE);
                     this.btnSelectMonth.setVisibility(View.VISIBLE);
-                    this.updateMonthPickerMinSelection();
                 }, options
         );
         this.rvShifts.setAdapter(this.adapter);
@@ -260,6 +256,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
                 .setQuery(query, Shift.class)
                 .build();
 
+        this.updateMonthPickerMinSelection();
         this.adapter.updateOptions(options);
     }
 
@@ -294,6 +291,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
                 .setQuery(query, Shift.class)
                 .build();
 
+        this.updateMonthPickerMinSelection();
         this.adapter.updateOptions(options);
     }
 
