@@ -258,4 +258,10 @@
     <string name="act_shifts_history_btn_select_month">Select Month</string>
     <string name="act_shifts_history_showing_all_times">Showing: All times</string>
     <string name="act_shifts_history_no_shifts_found_txt">No recorded shifts found</string>
+
+
+    <!-- Strings belonging to the month picker dialog: -->
+    <string name="dialog_month_picker_title">Pick a month:</string>
+    <string name="dialog_month_picker_month_title"><b>Month</b></string>
+    <string name="dialog_month_picker_year_title"><b>Year</b></string>
 </resources>
