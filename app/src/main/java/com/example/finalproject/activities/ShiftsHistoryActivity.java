@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.online.OnlineShiftsAdapter;
 import com.example.finalproject.database.online.collections.Shift;
+import com.example.finalproject.dialogs.MonthPickerDialog;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,8 +29,6 @@ import java.time.format.TextStyle;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import by.dzmitry_lakisau.month_year_picker_dialog.MonthYearPickerDialog;
 
 public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnClickListener {
     // The ID of the user whose shifts are shown (mandatory):
@@ -43,7 +42,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
     private @Nullable String branchId;
 
     // The dialog that allows the user to choose a specific month for shifts
-    private MonthYearPickerDialog monthPickerDialog;
+    private MonthPickerDialog monthPickerDialog;
 
     // The button that enables the user to select a specific month:
     private Button btnSelectMonth;
@@ -127,12 +126,8 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initMonthPicker() {
-        // Create the month picker dialog:
-        final MonthYearPickerDialog.Builder builder = new MonthYearPickerDialog.Builder(
-                this, R.style.Base_Theme_FinalProject, this::setSelectedMonth,
-                // Month value needs to be from 0 to 11 (LocalDate is from 1 to 12):
-                LocalDate.now().getYear(), LocalDate.now().getMonthValue() - 1
-        );
+        // Create the month picker:
+        this.monthPickerDialog = new MonthPickerDialog();
 
         // Get the oldest shift's year and month and set them as the minimum:
         if (!this.adapter.isEmpty()) {
@@ -142,15 +137,15 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
             final int oldestYear = calendar.get(Calendar.YEAR);
             final int oldestMonth = calendar.get(Calendar.MONTH); // 0 is January
 
-            builder.setMinMonth(oldestMonth).setMinYear(oldestYear);
+            this.monthPickerDialog.setMinYear(oldestYear);
+            this.monthPickerDialog.setMinMonth(oldestMonth);
         }
 
         // Get next week's year and month and set it as the maximum:
         final LocalDate nextWeek = LocalDate.now().plusWeeks(1);
-        final int maxYear = nextWeek.getYear(), maxMonth = nextWeek.getMonthValue(); // 1 is January
-        builder.setMaxMonth(maxMonth).setMaxYear(maxYear);
-
-        this.monthPickerDialog = builder.build();
+        final int maxYear = nextWeek.getYear(), maxMonth = nextWeek.getMonthValue() - 1; // 1 is January so fix it
+        this.monthPickerDialog.setMaxYear(maxYear);
+        this.monthPickerDialog.setMaxMonth(maxMonth);
     }
 
     private void initAdapter() {
@@ -297,7 +292,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         }
         else if (ID == this.btnSelectMonth.getId()) {
             // Activate the month picker dialog:
-            this.monthPickerDialog.show();
+            this.monthPickerDialog.show(getSupportFragmentManager(), "monthPicker");
         }
     }
 }

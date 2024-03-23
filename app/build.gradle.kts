@@ -48,9 +48,6 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // Month picker:
-    implementation("io.github.dzmitry-lakisau:month-year-picker-dialog:1.0.0")
-    
     // Gifs and Glide:
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.22")
     implementation("com.github.bumptech.glide:glide:4.12.0")
