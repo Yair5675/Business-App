@@ -117,7 +117,6 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         // Initialize the month picker dialog:
         this.initMonthPicker();
 
-
         // Set layout manager for the recycler view:
         this.rvShifts.setLayoutManager(new WrapperLinearLayoutManager(this));
 
@@ -129,17 +128,8 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
         // Create the month picker:
         this.monthPickerDialog = new MonthPickerDialog();
 
-        // Get the oldest shift's year and month and set them as the minimum:
-        if (!this.adapter.isEmpty()) {
-            final Shift oldestShift = this.adapter.getItem(this.adapter.getItemCount() - 1);
-            final Calendar calendar = Calendar.getInstance();
-            calendar.setTime(oldestShift.getStartingTime());
-            final int oldestYear = calendar.get(Calendar.YEAR);
-            final int oldestMonth = calendar.get(Calendar.MONTH); // 0 is January
-
-            this.monthPickerDialog.setMinYear(oldestYear);
-            this.monthPickerDialog.setMinMonth(oldestMonth);
-        }
+        // Set the minimum selection:
+        this.updateMonthPickerMinSelection();
 
         // Get next week's year and month and set it as the maximum:
         final LocalDate nextWeek = LocalDate.now().plusWeeks(1);
@@ -149,6 +139,21 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
 
         // Configure the listener:
         this.monthPickerDialog.setOnMonthSelectedListener(this::setSelectedMonth);
+    }
+
+    private void updateMonthPickerMinSelection() {
+        if (this.adapter.isEmpty())
+            return;
+
+        // Get the oldest shift's year and month and set them as the minimum:
+        final Shift oldestShift = this.adapter.getItem(this.adapter.getItemCount() - 1);
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(oldestShift.getStartingTime());
+        final int oldestYear = calendar.get(Calendar.YEAR);
+        final int oldestMonth = calendar.get(Calendar.MONTH); // 0 is January
+
+        this.monthPickerDialog.setMinYear(oldestYear);
+        this.monthPickerDialog.setMinMonth(oldestMonth);
     }
 
     private void initAdapter() {
@@ -185,6 +190,7 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
                     this.rvShifts.setVisibility(View.VISIBLE);
                     this.tvNoShiftsFound.setVisibility(View.GONE);
                     this.btnSelectMonth.setVisibility(View.VISIBLE);
+                    this.updateMonthPickerMinSelection();
                 }, options
         );
         this.rvShifts.setAdapter(this.adapter);
