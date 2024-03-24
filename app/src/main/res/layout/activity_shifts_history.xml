@@ -75,7 +75,6 @@
 
             android:text="@string/act_shifts_history_btn_select_month"
             style="@style/ImprovedButtonAppearance"
-            android:backgroundTint="@color/blue"
             android:paddingHorizontal="10dp"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
