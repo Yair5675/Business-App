@@ -1,6 +1,7 @@
 package com.example.finalproject.activities;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,10 +32,12 @@ import com.example.finalproject.fragments.main.PersonalFragment;
 import com.example.finalproject.fragments.input.user.UserRegistrationForm;
 import com.example.finalproject.fragments.main.ShiftsFragment;
 import com.example.finalproject.fragments.main.WorkplaceFragment;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
     // A reference to the online database:
     private OnlineDatabase db;
 
@@ -45,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO: Update the text view that says "Good morning" to "Good evening" or other time greetings
 
-    // The adapter for the view pager:
-    private ScreenSlideAdapter adapter;
+    // The tab layout allowing the user to conveniently navigate between fragments:
+    private TabLayout tabLayout;
 
     // The view pager that allows the user to swipe between fragments:
     private ViewPager2 pager;
@@ -99,7 +103,13 @@ public class MainActivity extends AppCompatActivity {
         this.pager = findViewById(R.id.actMainPager);
         this.initPagerAdapter();
 
+        // Initialize the tab layout:
+        this.tabLayout = findViewById(R.id.actMainTabLayout);
+        this.initTabLayout();
+
         // Get the current user:
+        // TODO: If we get back here from another activity, pass the user through intent to prevent
+        //  unnecessary lookups in the database. Look there only if the user wasn't received
         this.db.getCurrentUser(
                 this::initWithUser, _e -> this.initWithoutUser()
         );
@@ -115,6 +125,29 @@ public class MainActivity extends AppCompatActivity {
 
         // Configure what happens when the back button is pressed:
         this.initBackPress();
+    }
+
+    private void initTabLayout() {
+        // Set up a mediator between the layout and the pager:
+        final String[] titles = this.getFragmentsTitles();
+        final @DrawableRes int[] icons = this.getFragmentsIcons();
+        new TabLayoutMediator(this.tabLayout, this.pager,
+                (tab, position) -> {
+                    tab.setText(titles[position]);
+                    tab.setIcon(icons[position]);
+                }
+        ).attach();
+
+        // Set up swiping listeners:
+        this.tabLayout.addOnTabSelectedListener(this);
+        this.pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+                tabLayout.selectTab(tabLayout.getTabAt(position));
+            }
+        });
     }
 
     private void initBackPress() {
@@ -140,6 +173,9 @@ public class MainActivity extends AppCompatActivity {
     private void initWithUser(User user) {
         // Set the user:
         this.connectedUser = user;
+
+        // Show the tab layout:
+        this.tabLayout.setVisibility(View.VISIBLE);
 
         // Update the fragments:
         this.personalFragment.setConnectedUser(user);
@@ -167,6 +203,9 @@ public class MainActivity extends AppCompatActivity {
         this.connectedUser = null;
         this.db.disconnectUser();
 
+        // Hide the tab layout:
+        this.tabLayout.setVisibility(View.GONE);
+
         // Update the personal fragment:
         this.personalFragment.setConnectedUser(null);
 
@@ -186,14 +225,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void initPagerAdapter() {
         // Initialize the adapter and prevent the user from swiping at first:
-        this.adapter = new ScreenSlideAdapter(this, this.getFragments());
-        this.pager.setAdapter(this.adapter);
+        final ScreenSlideAdapter adapter = new ScreenSlideAdapter(this, this.getFragments());
+        this.pager.setAdapter(adapter);
         this.pager.setUserInputEnabled(false);
         this.pager.setCurrentItem(getPersonalFragmentIndex());
     }
 
     private Fragment[] getFragments() {
         return new Fragment[] { this.personalFragment, this.branchesFragment, this.workplaceFragment, this.shiftsFragment };
+    }
+
+    private String[] getFragmentsTitles() {
+        return new String[] { "Personal", "Businesses", "Your Workplaces", "Your Shifts" };
+    }
+
+    private @DrawableRes int[] getFragmentsIcons() {
+        return new int[] {
+                R.drawable.person_icon, R.drawable.add_business_icon, R.drawable.work_icon,
+                R.drawable.shift_icon
+        };
     }
 
     private int getPersonalFragmentIndex() {
@@ -308,5 +358,20 @@ public class MainActivity extends AppCompatActivity {
 
         // Show the dialog:
         dialog.show();
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        this.pager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
     }
 }
