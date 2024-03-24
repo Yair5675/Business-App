@@ -14,4 +14,10 @@
     <color name="red">#FF1100</color>
     <color name="toolbar_color">#F4EDED</color>
     <color name="row_highlight">#ADD8E6</color>
+
+    <!-- Blue color template: -->
+    <color name="blue">#008DDA</color>
+    <color name="light_blue">#41C9E2</color>
+    <color name="light_gray_blue">#ACE2E1</color>
+    <color name="sand">#F7EEDD</color>
 </resources>
