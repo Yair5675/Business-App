@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO: Update the text view that says "Good morning" to "Good evening" or other time greetings
 
-    // TODO: Add another activity that receives a user and a branch they work at, and presents the
-    //  entire shifts history of the user in this branch.
     // The adapter for the view pager:
     private ScreenSlideAdapter adapter;
 
