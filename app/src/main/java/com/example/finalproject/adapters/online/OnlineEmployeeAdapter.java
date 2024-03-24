@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.activities.ShiftsHistoryActivity;
 import com.example.finalproject.database.online.StorageUtil;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.util.EmployeeActions;
@@ -28,14 +29,14 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
     // A flag indicating that the employee options menu should appear for managers:
     private boolean showEmployeeMenu;
 
+    // The ID of the branch whose employees are displayed:
+    private final String branchId;
+
     // The current user's ID:
     private final String currentUserId;
 
     // Whether the user viewing the employees is a manager or not:
     private boolean isManager;
-
-    // TODO: When clicking on an employee, add an option to see all of their shifts for the specific
-    //  branch. Create a separate activity (or choose another method for displaying them)
 
     // Employee actions for the menu:
     private final EmployeeActions employeeActions;
@@ -44,14 +45,15 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
     private final Context context;
 
     public OnlineEmployeeAdapter(
-            boolean isManager, boolean showEmployeeMenu, String currentUserId, Context context,
-            Runnable onEmptyCallback, Runnable onNotEmptyCallback,
+            boolean isManager, boolean showEmployeeMenu, String currentUserId, String branchId,
+            Context context, Runnable onEmptyCallback, Runnable onNotEmptyCallback,
             EmployeeActions employeeActions,
             @NonNull FirestoreRecyclerOptions<Employee> options
     ) {
         super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.showEmployeeMenu = showEmployeeMenu;
         this.isManager = isManager;
+        this.branchId = branchId;
         this.currentUserId = currentUserId;
         this.employeeActions = employeeActions;
         this.context = context;
@@ -110,11 +112,17 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
         else
             holder.imgMore.setOnClickListener(null);
 
-
         // Show menu items according to certain conditions:
+        holder.menuItemShiftsHistory.setVisible(this.isManager);
         holder.menuItemPromote.setVisible(this.isManager && !employee.isManager());
         holder.menuItemDemote.setVisible(this.isManager && employee.isManager());
         holder.menuItemFire.setVisible(this.isManager);
+
+        // If the manager pressed on the shifts history menu item, go to the history activity:
+        holder.menuItemShiftsHistory.setOnMenuItemClickListener(item -> {
+            ShiftsHistoryActivity.startActivity(this.context, employee.getUid(), this.branchId);
+            return true;
+        });
     }
 
     @NonNull
@@ -145,7 +153,7 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
         private final ImageView imgMore;
 
         // The menu items:
-        private final MenuItem menuItemPromote, menuItemDemote, menuItemFire;
+        private final MenuItem menuItemShiftsHistory, menuItemPromote, menuItemDemote, menuItemFire;
 
         public EmployeeVH(@NonNull View itemView) {
             super(itemView);
@@ -164,6 +172,7 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
 
             // Load the menu items:
             final Menu menu = popupMenu.getMenu();
+            this.menuItemShiftsHistory = menu.findItem(R.id.menuEmployeeItemShiftsHistory);
             this.menuItemPromote = menu.findItem(R.id.menuEmployeeItemPromote);
             this.menuItemDemote = menu.findItem(R.id.menuEmployeeItemDemote);
             this.menuItemFire = menu.findItem(R.id.menuEmployeeItemFire);
@@ -193,6 +202,7 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
                 employeeActions.fire(employee);
                 return true;
             }
+
             else
                 return false;
         }

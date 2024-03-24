@@ -287,6 +287,7 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
                 this.employeeStatus == EmployeeStatus.MANAGER,
                 true,
                 this.currentUser.getUid(),
+                this.currentBranch.getBranchId(),
                 requireContext(),
                 () -> {
                     // Show the "Employee not found" textView and hide the recyclerView:
