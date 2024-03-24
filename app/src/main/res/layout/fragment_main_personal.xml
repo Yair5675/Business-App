@@ -172,6 +172,72 @@
                     android:textColor="@color/black"
                     />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/fragMainPersonalButtonsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:baselineAligned="false">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_weight="0.5"
+                    >
+
+                    <pl.droidsonroids.gif.GifImageButton
+                        android:id="@+id/fragPersonalImgBtnEdit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:background="@drawable/transparent_background"
+                        android:src="@drawable/edit_icon"
+
+                        />
+
+                    <TextView
+                        android:id="@+id/fragPersonalTvEditBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="@string/act_main_edit_account_btn_txt"
+                        android:lines="2"
+                        android:gravity="center"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_weight="0.5"
+                    >
+                    <pl.droidsonroids.gif.GifImageButton
+                        android:id="@+id/fragPersonalImgBtnDelete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:background="@drawable/transparent_background"
+                        android:src="@drawable/trash_can_icon"
+                        />
+
+                    <TextView
+                        android:id="@+id/fragPersonalTvDeleteBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="@string/act_main_delete_account_btn_txt"
+                        android:lines="2"
+                        android:gravity="center"
+                        />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -192,92 +258,5 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.7" />
-
-    <LinearLayout
-        android:id="@+id/fragMainPersonalButtonsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
-        app:layout_constraintTop_toTopOf="@id/fragPersonalGlMiddle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:baselineAligned="false">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_weight="0.5"
-            >
-
-            <pl.droidsonroids.gif.GifImageButton
-                android:id="@+id/fragPersonalImgBtnEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:background="@drawable/transparent_background"
-                android:src="@drawable/edit_icon"
-
-                app:layout_constraintEnd_toStartOf="@+id/fragPersonalImgBtnDelete"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/fragPersonalGlMiddle"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
-
-            <TextView
-                android:id="@+id/fragPersonalTvEditBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                app:layout_constraintTop_toBottomOf="@id/fragPersonalImgBtnEdit"
-                app:layout_constraintStart_toStartOf="@id/fragPersonalImgBtnEdit"
-                app:layout_constraintEnd_toEndOf="@id/fragPersonalImgBtnEdit"
-
-                android:text="@string/act_main_edit_account_btn_txt"
-                android:lines="2"
-                android:gravity="center"
-                />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_weight="0.5"
-            >
-            <pl.droidsonroids.gif.GifImageButton
-                android:id="@+id/fragPersonalImgBtnDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:background="@drawable/transparent_background"
-                android:src="@drawable/trash_can_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/fragPersonalImgBtnEdit"
-                app:layout_constraintTop_toBottomOf="@id/fragPersonalGlMiddle" />
-
-            <TextView
-                android:id="@+id/fragPersonalTvDeleteBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                app:layout_constraintTop_toBottomOf="@id/fragPersonalImgBtnDelete"
-                app:layout_constraintStart_toStartOf="@id/fragPersonalImgBtnDelete"
-                app:layout_constraintEnd_toEndOf="@id/fragPersonalImgBtnDelete"
-
-                android:text="@string/act_main_delete_account_btn_txt"
-                android:lines="2"
-                android:gravity="center"
-                />
-        </LinearLayout>
-    </LinearLayout>
 
 </LinearLayout>
