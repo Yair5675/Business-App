@@ -3,7 +3,6 @@ package com.example.finalproject.adapters.online;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -87,7 +86,7 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
         if (employee.getUid().equals(this.currentUserId))
             color = res.getColor(R.color.row_highlight, this.context.getTheme());
         else
-            color = Color.WHITE;
+            color = res.getColor(R.color.sand, this.context.getTheme());
         holder.rowLayout.setBackgroundColor(color);
 
         // Set the employee's image:
