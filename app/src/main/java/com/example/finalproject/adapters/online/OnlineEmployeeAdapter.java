@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalproject.R;
 import com.example.finalproject.activities.ShiftsHistoryActivity;
 import com.example.finalproject.database.online.StorageUtil;
+import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.util.EmployeeActions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -29,8 +30,8 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
     // A flag indicating that the employee options menu should appear for managers:
     private boolean showEmployeeMenu;
 
-    // The ID of the branch whose employees are displayed:
-    private final String branchId;
+    // The branch whose employees are displayed:
+    private final Branch branch;
 
     // The current user's ID:
     private final String currentUserId;
@@ -45,7 +46,7 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
     private final Context context;
 
     public OnlineEmployeeAdapter(
-            boolean isManager, boolean showEmployeeMenu, String currentUserId, String branchId,
+            boolean isManager, boolean showEmployeeMenu, String currentUserId, Branch branch,
             Context context, Runnable onEmptyCallback, Runnable onNotEmptyCallback,
             EmployeeActions employeeActions,
             @NonNull FirestoreRecyclerOptions<Employee> options
@@ -53,7 +54,7 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
         super(context, onEmptyCallback, onNotEmptyCallback, options);
         this.showEmployeeMenu = showEmployeeMenu;
         this.isManager = isManager;
-        this.branchId = branchId;
+        this.branch = branch;
         this.currentUserId = currentUserId;
         this.employeeActions = employeeActions;
         this.context = context;
@@ -104,10 +105,10 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
 
         // Show the more image only if the employee is an admin and not the current user:
         final boolean isCurrentUser = this.currentUserId.equals(employee.getUid());
-        holder.imgMore.setVisibility(this.isManager && !isCurrentUser ? View.VISIBLE : View.GONE);
+        holder.imgMore.setVisibility(this.branch.isActive() && this.isManager && !isCurrentUser ? View.VISIBLE : View.GONE);
 
-        // Show the menu only if the "showEmployeeMenu" flag is true:
-        if (this.showEmployeeMenu)
+        // Show the menu only if the "showEmployeeMenu" flag is true and the branch is active:
+        if (this.branch.isActive() && this.isManager && this.showEmployeeMenu)
             holder.imgMore.setOnClickListener((_v) -> holder.popupMenu.show());
         else
             holder.imgMore.setOnClickListener(null);
@@ -120,7 +121,7 @@ public class OnlineEmployeeAdapter extends OnlineAdapter<Employee, OnlineEmploye
 
         // If the manager pressed on the shifts history menu item, go to the history activity:
         holder.menuItemShiftsHistory.setOnMenuItemClickListener(item -> {
-            ShiftsHistoryActivity.startActivity(this.context, employee.getUid(), this.branchId);
+            ShiftsHistoryActivity.startActivity(this.context, employee.getUid(), this.branch.getBranchId());
             return true;
         });
     }
