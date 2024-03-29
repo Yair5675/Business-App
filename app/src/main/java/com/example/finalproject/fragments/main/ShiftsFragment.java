@@ -2,9 +2,11 @@ package com.example.finalproject.fragments.main;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,9 @@ public class ShiftsFragment extends Fragment {
 
     // The adapter of the recycler view:
     private OnlineShiftsAdapter adapter;
+
+    // The count down timer that will refresh the adapter to clear shifts in real time:
+    private @Nullable CountDownTimer shiftRefreshTimer;
 
     // The text view that appears in case there are no shifts:
     private TextView tvNoShifts;
@@ -82,7 +87,6 @@ public class ShiftsFragment extends Fragment {
                 .orderBy(Shift.STARTING_TIME);
 
         // Create the firestore options and add to the adapter:
-        // TODO: Hide shifts which have passed today in real time
         final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
                 .setLifecycleOwner(this)
                 .setQuery(query, Shift.class)
@@ -92,12 +96,68 @@ public class ShiftsFragment extends Fragment {
                 () -> {
                     this.rvUserShifts.setVisibility(View.GONE);
                     this.tvNoShifts.setVisibility(View.VISIBLE);
+
+                    // Cancel the timer:
+                    if (this.shiftRefreshTimer != null) {
+                        this.shiftRefreshTimer.cancel();
+                        this.shiftRefreshTimer = null;
+                    }
                     },
                 () -> {
                     this.rvUserShifts.setVisibility(View.VISIBLE);
                     this.tvNoShifts.setVisibility(View.GONE);
+
+                    // Schedule the time to refresh the adapter:
+                    this.scheduleAdapterRefresh(this.adapter.getItem(0));
                     },
                 options);
         this.rvUserShifts.setAdapter(this.adapter);
+    }
+
+    private void scheduleAdapterRefresh(Shift closestShift) {
+        // Cancel the current timer if it exists:
+        if (this.shiftRefreshTimer != null) {
+            this.shiftRefreshTimer.cancel();
+            this.shiftRefreshTimer = null;
+        }
+
+        // Get the difference in millis:
+        final Date now = new Date();
+        final long diff = closestShift.getStartingTime().getTime() - now.getTime();
+
+        // Schedule a refresh:
+        if (diff > 0) {
+            this.shiftRefreshTimer = new CountDownTimer(diff, diff) {
+                @Override
+                public void onTick(long l) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    refreshAdapter();
+
+                    // Schedule the next refresh:
+                    if (!adapter.isEmpty())
+                        scheduleAdapterRefresh(adapter.getItem(0));
+                }
+            }.start();
+        }
+
+    }
+
+    private void refreshAdapter() {
+        // Update the adapter's date filter:
+        final Query query = this.db
+                .collection("shifts")
+                .whereEqualTo(Shift.UID, this.user.getUid())
+                .whereGreaterThan(Shift.STARTING_TIME, new Date())
+                .orderBy(Shift.STARTING_TIME);
+        final FirestoreRecyclerOptions<Shift> options = new FirestoreRecyclerOptions.Builder<Shift>()
+                .setLifecycleOwner(this)
+                .setQuery(query, Shift.class)
+                .build();
+
+        this.adapter.updateOptions(options);
     }
 }
