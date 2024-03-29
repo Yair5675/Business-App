@@ -22,7 +22,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 public class UsersHandler {
-    // TODO: For the love of god dismantle this class and cast it to the shadow realm
     public static final String TAG = "UsersHandler";
 
     /**
@@ -181,7 +180,7 @@ public class UsersHandler {
             OnFailureListener onFailureListener
     ) {
         // Download the file (limit to 15 megabytes):
-        final long MAX_DOWNLOAD_SIZE = (long) (15 * 1024 * 1024);
+        final long MAX_DOWNLOAD_SIZE = 15 * 1024 * 1024;
 
         // Download the bytes:
         storage.child(user.getImagePath()).getBytes(MAX_DOWNLOAD_SIZE)

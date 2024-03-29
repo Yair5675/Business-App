@@ -15,8 +15,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class OnlineDatabase {
-    // TODO: For the love of god dismantle this class and cast it to the shadow realm
-
     // A reference to the actual database:
     private final FirebaseFirestore db;
 
