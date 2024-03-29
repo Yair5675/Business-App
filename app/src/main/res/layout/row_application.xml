@@ -1,41 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/rowApplicationUserImage"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@drawable/guest"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="8dp"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rowApplicationLayoutButtons"
+        app:layout_constraintStart_toEndOf="@id/rowApplicationUserImage"
+        app:layout_constraintEnd_toEndOf="parent"
         >
-        <ImageView
-            android:id="@+id/rowApplicationUserImage"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:src="@drawable/guest"
-            android:layout_marginStart="8dp"
-            />
+
         <TextView
             android:id="@+id/rowApplicationTvFullName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:text="User full name"
             android:ellipsize="end"
             android:textSize="20sp"
             android:maxLines="2"
-            android:layout_marginHorizontal="8dp"
+            android:gravity="bottom"
+            />
+
+        <TextView
+            android:id="@+id/rowApplicationTvPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:text="+111111111111"
+            android:gravity="top"
             />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/rowApplicationLayoutButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
         android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/rowApplicationUserImage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         >
 
         <android.widget.Button
@@ -77,4 +104,4 @@
             />
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,9 @@ public class Application {
     // The ID and full name of the user applying to the branch:
     private String uid, userFullName;
 
+    // The user's phone number:
+    private String userPhoneNumber;
+
     // The path to the user's image in the storage:
     private String userImagePath;
 
@@ -23,10 +26,11 @@ public class Application {
 
     public Application() {}
 
-    public Application(String uid, String userFullName, String userImagePath) {
-        this.uid = uid;
-        this.userFullName = userFullName;
-        this.userImagePath = userImagePath;
+    public Application(User user) {
+        this.uid = user.getUid();
+        this.userFullName = user.getFullName();
+        this.userPhoneNumber = user.getPhoneNumber();
+        this.userImagePath = user.getImagePath();
     }
 
     public Date getSubmittedAt() {
@@ -47,6 +51,14 @@ public class Application {
 
     public String getUserFullName() {
         return userFullName;
+    }
+
+    public String getUserPhoneNumber() {
+        return userPhoneNumber;
+    }
+
+    public void setUserPhoneNumber(String userPhoneNumber) {
+        this.userPhoneNumber = userPhoneNumber;
     }
 
     public void setUserFullName(String userFullName) {

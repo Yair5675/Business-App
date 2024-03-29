@@ -140,9 +140,7 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Create a new application object:
-        final Application application = new Application(
-                this.currentUser.getUid(), this.currentUser.getFullName(), this.currentUser.getImagePath()
-        );
+        final Application application = new Application(this.currentUser);
 
         // Create an empty application document with its ID equal to the current user's ID:
         DocumentReference applicationRef = this.currentBranch

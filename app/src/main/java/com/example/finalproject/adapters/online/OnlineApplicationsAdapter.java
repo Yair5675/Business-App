@@ -70,6 +70,9 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
         // Set the user's name:
         holder.tvUserName.setText(application.getUserFullName());
 
+        // Set the user's phone number:
+        holder.tvPhoneNumber.setText(application.getUserPhoneNumber());
+
         // Set the user's image:
         StorageUtil.loadImgFromStorage(this.context, application.getUserImagePath(), holder.userImg, R.drawable.guest);
 
@@ -217,6 +220,9 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
         // The textView holding the user's full name:
         private final TextView tvUserName;
 
+        // The text view holding the user's phone number:
+        private final TextView tvPhoneNumber;
+
         // The accept and reject buttons:
         private final Button btnAccept, btnReject;
 
@@ -229,6 +235,7 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
             // Load the views:
             this.userImg = itemView.findViewById(R.id.rowApplicationUserImage);
             this.tvUserName = itemView.findViewById(R.id.rowApplicationTvFullName);
+            this.tvPhoneNumber = itemView.findViewById(R.id.rowApplicationTvPhoneNumber);
             this.btnAccept = itemView.findViewById(R.id.rowApplicationBtnAccept);
             this.btnReject = itemView.findViewById(R.id.rowApplicationBtnReject);
             this.pbLoading = itemView.findViewById(R.id.rowApplicationPbLoading);
