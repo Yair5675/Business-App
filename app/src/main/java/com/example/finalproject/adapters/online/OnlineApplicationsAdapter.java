@@ -1,6 +1,8 @@
 package com.example.finalproject.adapters.online;
 
+import android.Manifest;
 import android.content.Context;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.database.online.collections.Workplace;
+import com.example.finalproject.util.Permissions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -105,6 +108,9 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
                     application.getUserFullName(), accepted ? "accepted" : "rejected"
             );
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+
+            // Send an SMS to the applicant:
+            this.sendSMS(application, accepted);
         };
         final OnFailureListener onFailureListener = e -> {
             // Show the two buttons:
@@ -126,6 +132,23 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
             this.acceptApplication(application.getUid(), application.getUid(), onSuccessListener, onFailureListener);
         else
             this.rejectApplication(application.getUid(), onSuccessListener, onFailureListener);
+    }
+
+    private void sendSMS(Application application, boolean accepted) {
+        // Check permission:
+        // Prepare the message:
+        final String msg;
+        if (accepted)
+            msg = String.format(this.context.getString(R.string.application_accepted_text), application.getUserFullName(), this.currentBranch.getCompanyName());
+        else
+            msg = String.format(this.context.getString(R.string.application_rejected_text), application.getUserFullName(), this.currentBranch.getCompanyName());
+
+        // Validate permission:
+        if (Permissions.checkPermissions(this.context, Manifest.permission.SEND_SMS)) {
+            // Send the text to the phone number:
+            final SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(application.getUserPhoneNumber(), null, msg, null, null);
+        }
     }
 
     private void acceptApplication(

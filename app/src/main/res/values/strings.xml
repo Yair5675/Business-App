@@ -172,6 +172,8 @@
     <!-- Strings belonging to the branch applications fragment: -->
     <string name="frag_branch_applications_pending_applications_subtitle"><b>Pending Applications:</b></string>
     <string name="frag_branch_applications_no_application_found_txt"><b>No applications found</b></string>
+    <string name="application_accepted_text">Hello %s! It is our pleasure to inform you that you have been accepted to %s!</string>
+    <string name="application_rejected_text">Hello %s. Unfortunately, your application to %s was rejected.</string>
 
 
     <!-- Strings belonging to the application row: -->
