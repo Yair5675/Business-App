@@ -75,10 +75,14 @@ public class BranchesFragment extends Fragment implements SearchView.OnQueryText
     }
 
     private void initAdapter() {
+        // View all branches that are active:
+        final Query query = this.dbRef.collection("branches")
+                .whereEqualTo(Branch.IS_ACTIVE, true);
+
         // Create the recyclerView's options:
         FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
                 .setLifecycleOwner(this)
-                .setQuery(this.dbRef.collection("branches"), Branch.class)
+                .setQuery(query, Branch.class)
                 .build();
 
         // Create the adapter and set the options:
@@ -113,9 +117,11 @@ public class BranchesFragment extends Fragment implements SearchView.OnQueryText
     public boolean onQueryTextSubmit(String branchName) {
         // If the branch name is empty, show all branches:
         if (branchName.isEmpty()) {
+            final Query query = this.dbRef.collection("branches")
+                    .whereEqualTo(Branch.IS_ACTIVE, true);
             final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
                     .setLifecycleOwner(this)
-                    .setQuery(this.dbRef.collection("branches"), Branch.class)
+                    .setQuery(query, Branch.class)
                     .build();
             this.adapter.updateOptions(options);
             return true;
@@ -126,9 +132,10 @@ public class BranchesFragment extends Fragment implements SearchView.OnQueryText
         // Perform a like query:
         final Query query = this.dbRef
                 .collection("branches")
-                .whereGreaterThanOrEqualTo("companyName", branchName)
-                .whereLessThan("companyName", branchName + "\uf8ff")
-                .orderBy("city");
+                .whereEqualTo(Branch.IS_ACTIVE, true)
+                .whereGreaterThanOrEqualTo(Branch.COMPANY_NAME, branchName)
+                .whereLessThan(Branch.COMPANY_NAME, branchName + "\uf8ff")
+                .orderBy(Branch.CITY);
         final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
                 .setLifecycleOwner(this)
                 .setQuery(query, Branch.class)
@@ -141,9 +148,11 @@ public class BranchesFragment extends Fragment implements SearchView.OnQueryText
     public boolean onQueryTextChange(String newText) {
         // If the branch name is empty, show all branches:
         if (newText.isEmpty()) {
+            final Query query = this.dbRef.collection("branches")
+                    .whereEqualTo(Branch.IS_ACTIVE, true);
             final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
                     .setLifecycleOwner(this)
-                    .setQuery(this.dbRef.collection("branches"), Branch.class)
+                    .setQuery(query, Branch.class)
                     .build();
             this.adapter.updateOptions(options);
             return true;
