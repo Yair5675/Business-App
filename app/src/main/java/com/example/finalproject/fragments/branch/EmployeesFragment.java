@@ -263,8 +263,8 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Show the "leave branch" button if the user is employed at the branch or the "apply to
         // branch" if they aren't:
         final boolean isEmployed = status != EmployeeStatus.UNEMPLOYED;
-        this.btnApply.setVisibility(isEmployed ? View.GONE : View.VISIBLE);
-        this.btnLeave.setVisibility(isEmployed ? View.VISIBLE : View.GONE);
+        this.btnApply.setVisibility(this.currentBranch.isActive() && !isEmployed ? View.VISIBLE : View.GONE);
+        this.btnLeave.setVisibility(this.currentBranch.isActive() && isEmployed ? View.VISIBLE : View.GONE);
     }
 
     private void initAdapter() {
@@ -328,11 +328,11 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         // Set the address:
         this.tvAddress.setText(this.currentBranch.getFullAddress());
 
-        // If the branch isn't active, don't allow users to apply/leave it:
-        if (!this.currentBranch.isActive()) {
-            this.btnApply.setVisibility(View.GONE);
-            this.btnLeave.setVisibility(View.GONE);
-        }
+        // Show the "leave branch" button if the user is employed at the branch or the "apply to
+        // branch" if they aren't:
+        final boolean isEmployed = this.employeeStatus != EmployeeStatus.UNEMPLOYED;
+        this.btnApply.setVisibility(this.currentBranch.isActive() && !isEmployed ? View.VISIBLE : View.GONE);
+        this.btnLeave.setVisibility(this.currentBranch.isActive() && isEmployed ? View.VISIBLE : View.GONE);
 
         // If the branch isn't active, don't allow anyone to promote/demote/fire anyone else:
         this.adapter.setShowEmployeeMenu(this.currentBranch.isActive());
