@@ -139,23 +139,24 @@ public class UserInputFragment3 extends InputFragment implements View.OnClickLis
 
         if (ID == R.id.fragUserInput3BtnUploadCamera) {
             // Check for permission to use the camera:
-            if (Permissions.checkPermissions(requireContext(), Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            if (Permissions.checkPermissions(requireContext(), Manifest.permission.CAMERA))
                 // If the permission is granted, take a picture from the camera:
                 takePicFromCamera();
             else
                 // If not, ask for permission to open the camera:
-                Permissions.requestPermissions(requireActivity(), Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                Permissions.requestPermissions(requireActivity(), Manifest.permission.CAMERA);
 
 
         }
         else if (ID == R.id.fragUserInput3BtnUploadGallery) {
+            Log.i(TAG, "hi");
             // Check for permission to open the gallery:
-            if (Permissions.checkPermissions(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            if (Permissions.checkPermissions(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE))
                 // If the permission is granted, take a picture from the gallery:
                 takePicFromGallery();
             else
                 // If not, ask for permission to open the gallery:
-                Permissions.requestPermissions(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                Permissions.requestPermissions(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
         }
     }
 
