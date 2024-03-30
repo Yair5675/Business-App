@@ -63,7 +63,6 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
     // The recycler view that shows the branch's employees:
     private RecyclerView rvEmployees;
 
-    // TODO: Implement a search bar to look for a particular employee
     // The button that allows the user to leave the branch:
     private Button btnLeave;
 
