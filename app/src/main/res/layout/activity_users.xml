@@ -7,24 +7,8 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     tools:context=".activities.UsersActivity"
-    android:background="@drawable/background">
+    android:background="@color/light_blue">
 
-    <TextView
-        android:id="@+id/actUsersTitle"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/actUsersTopEdge"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-
-        android:layout_marginVertical="16dp"
-
-        android:text="@string/act_users_title"
-        android:textSize="38sp"
-        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/actUsersTopEdge"
@@ -49,7 +33,20 @@
 
         android:orientation="vertical"
         android:background="@drawable/white_background_circular_border"
+        android:backgroundTint="@color/sand"
         >
+
+        <TextView
+            android:id="@+id/actUsersTitle"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginVertical="16dp"
+
+            android:text="@string/act_users_title"
+            android:textSize="38sp"
+            />
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/actUsersSearchUsers"
