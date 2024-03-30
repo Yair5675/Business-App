@@ -23,7 +23,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class BranchesFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class BranchesFragment extends Fragment implements View.OnClickListener, SearchView.OnQueryTextListener {
     // A reference to the database:
     private FirebaseFirestore dbRef;
 
@@ -45,8 +45,6 @@ public class BranchesFragment extends Fragment implements SearchView.OnQueryText
     // The checkbox that allows the user to search for businesses in their city only:
     private CheckedTextView checkboxMyCity;
 
-    // TODO: Implement city check box
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,6 +59,9 @@ public class BranchesFragment extends Fragment implements SearchView.OnQueryText
         this.svBranches.setOnQueryTextListener(this);
         this.checkboxMyCity = parent.findViewById(R.id.fragMainBranchesMyCityCheckBox);
         this.tvBusinessNotFound = parent.findViewById(R.id.fragMainBranchesTvNoBusinessFound);
+
+        // Make an onClickListener for the city checkbox:
+        this.checkboxMyCity.setOnClickListener(this);
 
         // Set the "Business not found" textView's visibility to gone:
         this.tvBusinessNotFound.setVisibility(View.GONE);
@@ -115,32 +116,7 @@ public class BranchesFragment extends Fragment implements SearchView.OnQueryText
 
     @Override
     public boolean onQueryTextSubmit(String branchName) {
-        // If the branch name is empty, show all branches:
-        if (branchName.isEmpty()) {
-            final Query query = this.dbRef.collection("branches")
-                    .whereEqualTo(Branch.IS_ACTIVE, true);
-            final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
-                    .setLifecycleOwner(this)
-                    .setQuery(query, Branch.class)
-                    .build();
-            this.adapter.updateOptions(options);
-            return true;
-        }
-
-        branchName = Util.fixNamingCapitalization(branchName);
-
-        // Perform a like query:
-        final Query query = this.dbRef
-                .collection("branches")
-                .whereEqualTo(Branch.IS_ACTIVE, true)
-                .whereGreaterThanOrEqualTo(Branch.COMPANY_NAME, branchName)
-                .whereLessThan(Branch.COMPANY_NAME, branchName + "\uf8ff")
-                .orderBy(Branch.CITY);
-        final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
-                .setLifecycleOwner(this)
-                .setQuery(query, Branch.class)
-                .build();
-        this.adapter.updateOptions(options);
+        this.refreshBranchesSearch();
         return true;
     }
 
@@ -148,15 +124,48 @@ public class BranchesFragment extends Fragment implements SearchView.OnQueryText
     public boolean onQueryTextChange(String newText) {
         // If the branch name is empty, show all branches:
         if (newText.isEmpty()) {
-            final Query query = this.dbRef.collection("branches")
-                    .whereEqualTo(Branch.IS_ACTIVE, true);
-            final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
-                    .setLifecycleOwner(this)
-                    .setQuery(query, Branch.class)
-                    .build();
-            this.adapter.updateOptions(options);
+            this.refreshBranchesSearch();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        final int ID = view.getId();
+
+        if (ID == R.id.fragMainBranchesMyCityCheckBox) {
+            // Toggle the view:
+            this.checkboxMyCity.toggle();
+
+            refreshBranchesSearch();
+        }
+    }
+
+    private void refreshBranchesSearch() {
+        // Get every active branch:
+        Query query = this.dbRef.collection("branches").whereEqualTo(Branch.IS_ACTIVE, true);
+
+        // Limit to the user's city if the check box is checked:
+        if (this.checkboxMyCity.isChecked())
+            query = query.whereEqualTo(Branch.CITY, this.connectedUser.getCity())
+                    .whereEqualTo(Branch.COUNTRY, this.connectedUser.getCountry());
+
+        // Check if the user searched anything:
+        String branchName;
+        if (!(branchName = Util.fixNamingCapitalization(this.svBranches.getQuery().toString())).isEmpty())
+            query = query
+                    .whereGreaterThanOrEqualTo(Branch.COMPANY_NAME, branchName)
+                    .whereLessThan(Branch.COMPANY_NAME, branchName + "\uf8ff");
+
+        // Order alphabetically:
+        query = query.orderBy(Branch.COMPANY_NAME);
+
+        // Finally, update the options:
+        final FirestoreRecyclerOptions<Branch> options = new FirestoreRecyclerOptions.Builder<Branch>()
+                .setLifecycleOwner(this)
+                .setQuery(query, Branch.class)
+                .build();
+        this.adapter.updateOptions(options);
     }
 }
