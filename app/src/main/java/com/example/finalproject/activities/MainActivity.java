@@ -11,6 +11,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import com.example.finalproject.fragments.main.PersonalFragment;
 import com.example.finalproject.fragments.input.user.UserRegistrationForm;
 import com.example.finalproject.fragments.main.ShiftsFragment;
 import com.example.finalproject.fragments.main.WorkplaceFragment;
+import com.example.finalproject.services.ShiftNotificationService;
 import com.example.finalproject.util.Permissions;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -81,8 +83,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         setContentView(R.layout.activity_main);
 
         // Ask the user for permission to send messages (necessary for other parts of the app):
-        if (!Permissions.checkPermissions(this, Manifest.permission.SEND_SMS))
-            Permissions.requestPermissions(this, Manifest.permission.SEND_SMS);
+        this.askPermissions();
 
         // Initialize the online database reference:
         this.db = OnlineDatabase.getInstance();
@@ -131,6 +132,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         // Configure what happens when the back button is pressed:
         this.initBackPress();
+    }
+
+    private void askPermissions() {
+        if (!Permissions.checkPermissions(this, Manifest.permission.SEND_SMS))
+            Permissions.requestPermissions(this, Manifest.permission.SEND_SMS);
+
+        if (!Permissions.checkPermissions(this, Manifest.permission.POST_NOTIFICATIONS))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Permissions.requestPermissions(this, Manifest.permission.POST_NOTIFICATIONS);
+            }
     }
 
     private void initTabLayout() {
@@ -202,6 +213,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         // Allow the user to swipe:
         this.pager.setUserInputEnabled(true);
+
+        // Start the notifications service:
+        final Intent intent = new Intent(this, ShiftNotificationService.class);
+        intent.putExtra(ShiftNotificationService.UID_INTENT_KEY, user.getUid());
+        startService(intent);
     }
 
     private void initWithoutUser() {
@@ -227,6 +243,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         // Update the menu:
         supportInvalidateOptionsMenu();
+
+        // Stop the notification service:
+        final Intent intent = new Intent(this, ShiftNotificationService.class);
+        stopService(intent);
     }
 
     private void initPagerAdapter() {
