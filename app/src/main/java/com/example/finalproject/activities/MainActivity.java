@@ -318,7 +318,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             // Launch the input activity:
             final Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
-            finish();
         }
         // If they want to log in to a user, show the login dialog:
         else if (ID == R.id.menuUsersItemSignIn)
@@ -352,7 +351,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             // Go to the input activity:
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
-            finish();
         }
 
         // If they want to see the users:

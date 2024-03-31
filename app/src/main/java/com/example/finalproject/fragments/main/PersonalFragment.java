@@ -192,7 +192,6 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                 // Open the input activity:
                 Intent intent = new Intent(this.context, InputActivity.class);
                 startActivity(intent);
-                requireActivity().finish();
             }
         }
         else if (ID == R.id.fragPersonalImgBtnDelete) {
