@@ -31,6 +31,10 @@
     <string name="act_input_back_btn_text">Previous</string>
     <string name="act_input_cancel_btn_text">Cancel</string>
 
+    <string name="act_input_exit_dialog_title">Exit Form</string>
+    <string name="act_input_exit_dialog_message">Are you sure you want to exit? Any changes you made
+        will not be saved</string>
+
     <string name="act_input_scrollview_content_desc">A scrollView holding a page of the input form</string>
 
 

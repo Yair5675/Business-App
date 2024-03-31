@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,8 +78,16 @@ public class InputActivity extends AppCompatActivity {
     }
 
     private void closeInputForm() {
-        // TODO: Create an alert dialog here that asks the user if they're sure
-        finish();
+        // Create an alert dialog asking if the want to exit:
+        final AlertDialog exitDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.act_input_exit_dialog_title)
+                .setMessage(R.string.act_input_exit_dialog_message)
+                .setPositiveButton("Yes", (dialogInterface, i) -> finish())
+                .setNegativeButton("No", ((dialogInterface, i) -> {}))
+                .create();
+
+        // Show the exit dialog:
+        exitDialog.show();
     }
 
     private void loadCurrentPage(@AnimRes int enter, @AnimRes int exit) {
