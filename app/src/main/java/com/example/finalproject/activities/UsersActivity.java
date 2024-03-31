@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.online.OnlineUsersAdapter;
+import com.example.finalproject.broadcast_receivers.OnInternetConnectivityChanged;
 import com.example.finalproject.database.online.OnlineDatabase;
 import com.example.finalproject.database.online.collections.User;
 import com.example.finalproject.util.Util;
@@ -22,7 +24,7 @@ import com.google.firebase.firestore.Query;
 
 import java.io.Serializable;
 
-public class UsersActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class UsersActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, OnInternetConnectivityChanged {
     // The currently connected user:
     private User user;
 
@@ -31,6 +33,9 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
 
     // The recycler view of the users:
     private RecyclerView rvUsers;
+
+    // The dialog that appears when there is no wifi:
+    private Dialog noInternetDialog;
 
     // The text view that will appear if the users recyclerView is empty:
     private TextView tvNoUsersFound;
@@ -189,5 +194,21 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
             this.onlineAdapter.updateOptions(options);
         }
         return false;
+    }
+
+    @Override
+    public void onInternetAvailable() {
+        // Create the dialog if it wasn't created already:
+        if (this.noInternetDialog == null)
+            this.noInternetDialog = Util.getNoInternetDialog(this);
+        this.noInternetDialog.dismiss();
+    }
+
+    @Override
+    public void onInternetUnavailable() {
+        // Create the dialog if it wasn't created already:
+        if (this.noInternetDialog == null)
+            this.noInternetDialog = Util.getNoInternetDialog(this);
+        this.noInternetDialog.show();
     }
 }
