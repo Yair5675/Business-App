@@ -7,24 +7,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public class InternetBroadcastReceiver extends BroadcastReceiver {
-    // A callback that will be run once there is wifi:
-    private final Runnable onInternetAvailableCallback;
+    // The callbacks handling changes in the internet:
+    private final OnInternetConnectivityChanged internetCallback;
 
-    // A callback that will be run once there isn't wifi:
-    private final Runnable onInternetNotAvailableCallback;
-
-    public InternetBroadcastReceiver(Runnable onInternetAvailableCallback, Runnable onInternetNotAvailableCallback) {
-        this.onInternetAvailableCallback = onInternetAvailableCallback;
-        this.onInternetNotAvailableCallback = onInternetNotAvailableCallback;
+    public InternetBroadcastReceiver(OnInternetConnectivityChanged internetCallback) {
+        this.internetCallback = internetCallback;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         // Activate the callbacks according to the state of the internet:
         if (isOnline(context))
-            this.onInternetAvailableCallback.run();
+            this.internetCallback.onInternetAvailable();
         else
-            this.onInternetNotAvailableCallback.run();
+            this.internetCallback.onInternetUnavailable();
     }
 
     private static boolean isOnline(Context context) {
