@@ -35,6 +35,9 @@ public class UserRegistrationForm extends InputForm {
                 // Set the title:
                 res.getString(R.string.act_input_title_register),
 
+                // Set the title in the toolbar:
+                res.getString(R.string.user_registration_form_toolbar_title),
+
                 // Set the fragments:
                 new UserInputFragment1(null),
                 new UserInputFragment2(null),

@@ -2,11 +2,15 @@ package com.example.finalproject.activities;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.AnimRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -52,6 +56,32 @@ public class InputActivity extends AppCompatActivity {
         // Implement custom back navigation when the user presses the back button:
         this.loadBackButtonCallback();
 
+        // Initialize the toolbar:
+        final Toolbar toolbar = findViewById(R.id.actInputToolbar);
+        toolbar.setTitle(currentForm.getToolbarTitle());
+        this.setSupportActionBar(toolbar);
+
+        // Show back button on the toolbar:
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Check for the toolbar's back button:
+        if (item.getItemId() == android.R.id.home) {
+            this.closeInputForm();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void closeInputForm() {
+        // TODO: Create an alert dialog here that asks the user if they're sure
+        final Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void loadCurrentPage(@AnimRes int enter, @AnimRes int exit) {
@@ -111,9 +141,7 @@ public class InputActivity extends AppCompatActivity {
     private void moveBackwards() {
         // If it's the first page, go back to the main activity:
         if (currentForm.isFirstPage()) {
-            final Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            this.closeInputForm();
         }
         else {
             // Go to the previous page and load it:

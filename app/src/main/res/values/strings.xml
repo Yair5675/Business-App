@@ -34,7 +34,9 @@
     <string name="act_input_scrollview_content_desc">A scrollView holding a page of the input form</string>
 
 
-    <!-- Strings belonging to the first input fragment: -->
+    <!-- Strings belonging to the first user input fragment: -->
+    <string name="user_registration_form_toolbar_title">Sign Up</string>
+    <string name="user_update_form_toolbar_title">Update Your Account</string>
     <string name="frag_input1_first_name_input_hint">First Name</string>
     <string name="frag_input1_last_name_input_hint">Last Name</string>
     <string name="frag_input1_birthdate_input_hint">Your Birthday</string>
@@ -114,6 +116,8 @@
 
     <!-- Strings belonging to the first business input fragment: -->
     <string name="act_business_input_title"><b>Your Business Details:</b></string>
+    <string name="business_registration_form_toolbar_title">Create Your Business</string>
+    <string name="business_update_form_toolbar_title">Update Your Business</string>
     <string name="frag_business_input_1_company_name_hint">Company Name</string>
     <string name="frag_business_input_1_password_hint">Branch Password</string>
     <string name="frag_business_input_1_opening_time_hint">Opening Time</string>

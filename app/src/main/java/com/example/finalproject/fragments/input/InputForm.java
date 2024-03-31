@@ -10,20 +10,28 @@ public abstract class InputForm {
     // The title of the form:
     protected final String title;
 
+    // The title that appears on the toolbar:
+    protected final String toolbarTitle;
+
     // The index of the current page:
     protected int currentPageIdx;
 
     // An array of the fragments in the form:
     protected final InputFragment[] inputFragments;
 
-    public InputForm(String title, InputFragment ... inputFragments) {
+    public InputForm(String title, String toolbarTitle, InputFragment ... inputFragments) {
         this.title = title;
+        this.toolbarTitle = toolbarTitle;
         this.inputFragments = inputFragments;
         this.currentPageIdx = 0;
     }
 
     public String getTitle() {
         return title;
+    }
+
+    public String getToolbarTitle() {
+        return toolbarTitle;
     }
 
     public boolean isFirstPage() {

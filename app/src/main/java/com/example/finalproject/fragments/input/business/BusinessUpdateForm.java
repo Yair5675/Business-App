@@ -42,6 +42,9 @@ public class BusinessUpdateForm extends InputForm {
                 // Set the title:
                 res.getString(R.string.act_business_input_title),
 
+                // Set the toolbar's title:
+                res.getString(R.string.business_update_form_toolbar_title),
+
                 // Set the fragments with the branch:
                 new BusinessInputFragment1(branch),
                 new BusinessInputFragment2(branch.getCountry(), branch)

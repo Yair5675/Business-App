@@ -55,6 +55,9 @@ public class UserUpdateForm extends InputForm {
                 // Set the title:
                 res.getString(R.string.act_input_title_update),
 
+                // Set the title in the toolbar:
+                res.getString(R.string.user_update_form_toolbar_title),
+
                 // Load the rest of the fragments:
                 new UserInputFragment1(connectedUser),
                 new UserInputFragment2(connectedUser),

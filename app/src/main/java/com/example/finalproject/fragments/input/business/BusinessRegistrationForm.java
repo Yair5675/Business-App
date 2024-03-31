@@ -60,6 +60,9 @@ public class BusinessRegistrationForm extends InputForm {
                 // Set the title:
                 res.getString(R.string.act_business_input_title),
 
+                // Set the title in the toolbar:
+                res.getString(R.string.business_registration_form_toolbar_title),
+
                 // Set the input fragments:
                 new BusinessInputFragment1(null),
                 new BusinessInputFragment2(connectedUser.getCountry(), null)
