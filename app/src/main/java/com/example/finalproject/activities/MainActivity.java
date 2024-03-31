@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.example.finalproject.broadcast_receivers.OnInternetConnectivityChanged;
 import com.example.finalproject.dialogs.LoginDialog;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
 import com.example.finalproject.database.online.OnlineDatabase;
@@ -36,12 +37,13 @@ import com.example.finalproject.fragments.main.ShiftsFragment;
 import com.example.finalproject.fragments.main.WorkplaceFragment;
 import com.example.finalproject.services.ShiftNotificationService;
 import com.example.finalproject.util.Permissions;
+import com.example.finalproject.util.Util;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, OnInternetConnectivityChanged {
     // A reference to the online database:
     private OnlineDatabase db;
 
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private TextView tvUserGreeting;
 
     // TODO: Update the text view that says "Good morning" to "Good evening" or other time greetings
+    // The dialog that appears when there is no wifi:
+    private Dialog noInternetDialog;
 
     // The tab layout allowing the user to conveniently navigate between fragments:
     private TabLayout tabLayout;
@@ -397,5 +401,21 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    @Override
+    public void onInternetAvailable() {
+        // Create the dialog if it wasn't created already:
+        if (this.noInternetDialog == null)
+            this.noInternetDialog = Util.getNoInternetDialog(this);
+        this.noInternetDialog.dismiss();
+    }
+
+    @Override
+    public void onInternetUnavailable() {
+        // Create the dialog if it wasn't created already:
+        if (this.noInternetDialog == null)
+            this.noInternetDialog = Util.getNoInternetDialog(this);
+        this.noInternetDialog.show();
     }
 }
