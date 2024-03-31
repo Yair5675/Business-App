@@ -30,6 +30,6 @@ public class InternetBroadcastReceiver extends BroadcastReceiver {
     private static boolean isOnline(Context context) {
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 }
