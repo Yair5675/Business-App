@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
+import com.example.finalproject.broadcast_receivers.OnInternetConnectivityChanged;
 import com.example.finalproject.custom_views.PendingApplicationsView;
 import com.example.finalproject.database.online.collections.Branch;
 import com.example.finalproject.database.online.collections.Employee;
@@ -31,6 +33,7 @@ import com.example.finalproject.fragments.branch.EmployeesFragment;
 import com.example.finalproject.fragments.branch.RolesFragment;
 import com.example.finalproject.fragments.input.business.BusinessUpdateForm;
 import com.example.finalproject.util.EmployeeStatus;
+import com.example.finalproject.util.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,7 +46,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class BranchActivity extends AppCompatActivity {
+public class BranchActivity extends AppCompatActivity implements OnInternetConnectivityChanged {
     // The view pager that allows the user to swipe between fragments:
     private ViewPager2 pager;
 
@@ -58,6 +61,9 @@ public class BranchActivity extends AppCompatActivity {
 
     // The current branch that is being displayed:
     private Branch currentBranch;
+
+    // The dialog that appears when there is no wifi:
+    private Dialog noInternetDialog;
 
     // A reference to the online database:
     private FirebaseFirestore dbRef;
@@ -487,5 +493,21 @@ public class BranchActivity extends AppCompatActivity {
             return date;
         else
             return date.minusDays(date.getDayOfWeek().getValue());
+    }
+
+    @Override
+    public void onInternetAvailable() {
+        // Create the dialog if it wasn't created already:
+        if (this.noInternetDialog == null)
+            this.noInternetDialog = Util.getNoInternetDialog(this);
+        this.noInternetDialog.dismiss();
+    }
+
+    @Override
+    public void onInternetUnavailable() {
+        // Create the dialog if it wasn't created already:
+        if (this.noInternetDialog == null)
+            this.noInternetDialog = Util.getNoInternetDialog(this);
+        this.noInternetDialog.show();
     }
 }
