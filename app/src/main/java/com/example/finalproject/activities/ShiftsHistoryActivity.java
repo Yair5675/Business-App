@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,10 +16,8 @@ import android.widget.TextView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.adapters.online.OnlineShiftsAdapter;
-import com.example.finalproject.broadcast_receivers.OnInternetConnectivityChanged;
 import com.example.finalproject.database.online.collections.Shift;
 import com.example.finalproject.dialogs.MonthPickerDialog;
-import com.example.finalproject.util.Util;
 import com.example.finalproject.util.WrapperLinearLayoutManager;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,7 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnClickListener, OnInternetConnectivityChanged {
+public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnClickListener {
     // The ID of the user whose shifts are shown (mandatory):
     private String uid;
 
@@ -43,9 +40,6 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
     // The ID of the branch whose shifts are shown (optional, will show all shifts of the user if
     // not given):
     private @Nullable String branchId;
-
-    // The dialog that appears when there is no wifi:
-    private Dialog noInternetDialog;
 
     // The dialog that allows the user to choose a specific month for shifts
     private MonthPickerDialog monthPickerDialog;
@@ -343,21 +337,5 @@ public class ShiftsHistoryActivity extends AppCompatActivity implements View.OnC
             // Activate the month picker dialog:
             this.monthPickerDialog.show(getSupportFragmentManager(), "monthPicker");
         }
-    }
-
-    @Override
-    public void onInternetAvailable() {
-        // Create the dialog if it wasn't created already:
-        if (this.noInternetDialog == null)
-            this.noInternetDialog = Util.getNoInternetDialog(this);
-        this.noInternetDialog.dismiss();
-    }
-
-    @Override
-    public void onInternetUnavailable() {
-        // Create the dialog if it wasn't created already:
-        if (this.noInternetDialog == null)
-            this.noInternetDialog = Util.getNoInternetDialog(this);
-        this.noInternetDialog.show();
     }
 }

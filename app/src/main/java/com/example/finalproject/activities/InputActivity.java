@@ -9,7 +9,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,19 +17,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.broadcast_receivers.OnInternetConnectivityChanged;
 import com.example.finalproject.fragments.input.InputForm;
-import com.example.finalproject.util.Util;
 
-public class InputActivity extends AppCompatActivity implements OnInternetConnectivityChanged {
+public class InputActivity extends AppCompatActivity {
     // The buttons that go forwards or backwards in the pages:
     private Button btnNext, btnPrev;
 
     // The progress bar that will be shown while the user's details are saved in the database:
     private ProgressBar progressBar;
-
-    // The dialog that appears when there is no wifi:
-    private Dialog noInternetDialog;
 
     // The current input form:
     private static InputForm currentForm;
@@ -199,21 +193,5 @@ public class InputActivity extends AppCompatActivity implements OnInternetConnec
 
     public static void setCurrentInputForm(InputForm inputForm) {
         InputActivity.currentForm = inputForm;
-    }
-
-    @Override
-    public void onInternetAvailable() {
-        // Create the dialog if it wasn't created already:
-        if (this.noInternetDialog == null)
-            this.noInternetDialog = Util.getNoInternetDialog(this);
-        this.noInternetDialog.dismiss();
-    }
-
-    @Override
-    public void onInternetUnavailable() {
-        // Create the dialog if it wasn't created already:
-        if (this.noInternetDialog == null)
-            this.noInternetDialog = Util.getNoInternetDialog(this);
-        this.noInternetDialog.show();
     }
 }
