@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="32dp"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:drawableTopCompat="@drawable/no_wifi_img"
+        android:text="@string/looks_like_you_aren_t_connected_to_the_internet_come_again_when_you_are"
+        android:gravity="center"
+        android:textSize="16sp"
+        />
+</LinearLayout>

@@ -275,4 +275,7 @@
     <string name="dialog_month_picker_title">Pick a month:</string>
     <string name="dialog_month_picker_month_title"><b>Month</b></string>
     <string name="dialog_month_picker_year_title"><b>Year</b></string>
+
+
+    <string name="looks_like_you_aren_t_connected_to_the_internet_come_again_when_you_are">Looks like you aren\'t connected to the internet. Come again when you are.</string>
 </resources>
