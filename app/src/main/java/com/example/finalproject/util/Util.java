@@ -1,5 +1,7 @@
 package com.example.finalproject.util;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.finalproject.R;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.jetbrains.annotations.Nullable;
@@ -170,5 +173,13 @@ public class Util {
         Zoom(int level) {
             this.level = level;
         }
+    }
+
+    public static Dialog getNoInternetDialog(Context context) {
+        // Create the dialog with the custom layout:
+        return new AlertDialog.Builder(context)
+                .setView(R.layout.dialog_no_internet)
+                .setCancelable(false)
+                .create();
     }
 }
