@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         menu.findItem(R.id.menuUsersItemAddBusiness).setVisible(isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemSignUp).setVisible(!isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemSignIn).setVisible(!isUserLoggedIn);
+        menu.findItem(R.id.menuUsersItemShiftsHistory).setVisible(isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemVerification).setVisible(isUserLoggedIn && !this.db.isConnectedUserEmailVerified());
         menu.findItem(R.id.menuUsersItemShowUsers).setVisible(isUserLoggedIn);
         menu.findItem(R.id.menuUsersItemDisconnect).setVisible(isUserLoggedIn);
@@ -350,6 +351,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             // Go to the input activity:
             Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
+        }
+
+        // If they want to watch their shifts history:
+        else if (ID == R.id.menuUsersItemShiftsHistory) {
+            // Give null as branch ID to show all branches:
+            ShiftsHistoryActivity.startActivity(this, this.connectedUser.getUid(), null);
         }
 
         // If they want to see the users:

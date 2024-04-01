@@ -19,6 +19,7 @@
     <string name="users_menu_item_verify_email_title">Verify Email</string>
     <string name="users_menu_item_disconnect_title">Disconnect</string>
     <string name="users_menu_item_show_users_title">Show Users</string>
+    <string name="users_menu_item_shifts_history_title">See Shifts History</string>
 
 
     <!-- Strings belonging to the input activity: -->
