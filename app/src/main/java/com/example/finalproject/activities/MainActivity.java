@@ -13,6 +13,8 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +41,12 @@ import com.example.finalproject.util.Permissions;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
     // A reference to the online database:
@@ -51,7 +58,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     // The text view greeting the user:
     private TextView tvUserGreeting;
 
-    // TODO: Update the text view that says "Good morning" to "Good evening" or other time greetings
+    // The text view showing the time greeting (Good morning / afternoon / etc...):
+    private TextView tvUserTimeGreeting;
+
     // The tab layout allowing the user to conveniently navigate between fragments:
     private TabLayout tabLayout;
 
@@ -76,6 +85,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     // The login dialog (reusable):
     private LoginDialog loginDialog;
 
+    // The count down timer that changes the greeting:
+    private CountDownTimer greetingTimer;
+
+    // A map connecting the hour of the day to the greeting suiting it:
+    private Map<Integer, String> hourlyGreetingsMap;
+
+    // Tag for debugging purposes:
+    private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         // Load the user's image view and greeting text view:
         this.imgUser = findViewById(R.id.actMainImgUser);
         this.tvUserGreeting = findViewById(R.id.actMainTvUserGreeting);
+        this.tvUserTimeGreeting = findViewById(R.id.actMainTvTimeGreeting);
 
         // Initialize the personal fragment without a user:
         this.personalFragment = new PersonalFragment(
@@ -131,6 +150,147 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         // Configure what happens when the back button is pressed:
         this.initBackPress();
+
+        // Initialize the greetings timer:
+        this.initGreetingsTimer();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Cancel the greetings timer:
+        if (this.greetingTimer != null)
+            this.greetingTimer.cancel();
+    }
+
+    private void initGreetingsTimer() {
+        // Load the greetings from the resources:
+        this.loadGreetings();
+
+        // Set the current greeting:
+        this.tvUserTimeGreeting.setText(this.hourlyGreetingsMap.get(this.getCurrentGreetingHour()));
+
+        // Schedule the next switch:
+        this.scheduleNextGreetingSwitch();
+    }
+
+    private void scheduleNextGreetingSwitch() {
+        // Get the next hour:
+        final int nextGreetingHour = this.getNextGreetingHour();
+        final long nextGreetingMillis = this.getMillisUntilHour(nextGreetingHour);
+
+        // Plan the count down timer (Tick every 10 minutes):
+        final long INTERVAL_MILLIS = 1000 * 60 * 10;
+        this.greetingTimer = new CountDownTimer(nextGreetingMillis, INTERVAL_MILLIS) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                final long secondsUntilFinished = millisUntilFinished / 1000;
+                Log.i(
+                        TAG,
+                        String.format(
+                                "Changing greeting in %d hours, %d minutes and %d seconds (at %d:00)",
+                                secondsUntilFinished / (60 * 60),  // Hours
+                                (secondsUntilFinished / 60) % 60,  // Minutes
+                                secondsUntilFinished % 60,  // Seconds
+                                nextGreetingHour
+                        )
+                );
+            }
+
+            @Override
+            public void onFinish() {
+                // Change the greeting in the text view:
+                tvUserTimeGreeting.setText(hourlyGreetingsMap.get(nextGreetingHour));
+
+                // Schedule the next change:
+                scheduleNextGreetingSwitch();
+            }
+        }.start();
+    }
+
+    private long getMillisUntilHour(int hour) {
+        // Get the current time:
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
+        // Set the hour:
+        final int prevHour = calendar.get(Calendar.HOUR_OF_DAY);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // If the new hour is before the current one, it must mean it's the next day:
+        if (prevHour > hour)
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        // Calculate difference:
+        return calendar.getTimeInMillis() - System.currentTimeMillis();
+    }
+
+    private int getCurrentGreetingHour() {
+        // Get the current greeting hour:
+        final Set<Integer> keys = this.hourlyGreetingsMap.keySet();
+
+        // Get the current hour:
+        final Calendar calendar = Calendar.getInstance();
+        final Date now = new Date();
+        calendar.setTime(now);
+        final int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        // Get the key of the highest hour before now:
+        int currentKey = keys.iterator().next();
+        for (int hour : keys) {
+            if (hour > currentHour)
+                break;
+            else
+                currentKey = hour;
+        }
+
+        return currentKey;
+    }
+
+    private int getNextGreetingHour() {
+        // Get the current greeting hour:
+        final Set<Integer> keys = this.hourlyGreetingsMap.keySet();
+
+        // Get the current hour:
+        final Calendar calendar = Calendar.getInstance();
+        final Date now = new Date();
+        calendar.setTime(now);
+        final int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        // Loop over them all until you find the suitable one:
+        for (int hour : keys) {
+            if (hour > currentHour)
+                return hour;
+        }
+
+        // If no hour was found, return the first hour:
+        return keys.iterator().next();
+    }
+
+    private void loadGreetings() {
+        // Initialize the map:
+        this.hourlyGreetingsMap = new TreeMap<>(); // Use a tree map for sorted keys
+
+        // Load the greetings:
+        final String[] greetingsArr = getResources().getStringArray(R.array.hourly_greetings_array);
+
+        // Parse the hours and the greeting itself:
+        for (String greeting : greetingsArr) {
+            final String[] parts = greeting.split(":");
+            // Try to parse the hour (avoid exceptions):
+            final int hour;
+            try {
+                // Parse the hour and add it with the greeting to the map:
+                hour = Integer.parseInt(parts[0]);
+                this.hourlyGreetingsMap.put(hour, parts[1]);
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Could not parse greeting hour", e);
+            }
+        }
     }
 
     private void askPermissions() {

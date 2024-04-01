@@ -9,6 +9,12 @@
     <string name="act_main_credits_txt"><b>Made by Yair Ziv</b></string>
     <string name="act_main_exit_dialog_title">Exit App</string>
     <string name="act_main_exit_dialog_body">Are you sure you want to exit?</string>
+    <string-array name="hourly_greetings_array">
+        <item>6:Good morning</item>
+        <item>12:Good afternoon</item>
+        <item>17:Good evening</item>
+        <item>21:Good night</item>
+    </string-array>
 
 
     <!-- Strings belonging to the users menu: -->
