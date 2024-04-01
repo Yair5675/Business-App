@@ -1,5 +1,8 @@
 package com.example.finalproject.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * A class responsible for the validation of any information given by the user.
  */
@@ -98,73 +101,17 @@ public class InputValidation {
         return Result.success(null);
     }
 
-    // TODO: Fix function, it for some reason allows a dot after the @. Consider forcing the email
-    //  to have an english character after the @
     public static Result<Void, String> validateEmail(String email) {
-        // https://knowledge.validity.com/hc/en-us/articles/220560587-What-are-the-rules-for-email-address-syntax
-        // Checking if the email is empty:
-        if (email.isEmpty())
+        if (email == null || email.isEmpty())
             return Result.failure(Constants.MANDATORY_INPUT_ERROR);
-        // Check for @:
-        else if (!email.contains("@"))
-            return Result.failure("Missing @");
-        // Check for more than one @:
-        else if (email.indexOf('@') != email.lastIndexOf('@'))
-            return Result.failure("Multiple @ are not allowed");
 
-        // Validate recipient name:
-        final String recipient = email.substring(0, email.indexOf('@'));
-        final Result<Void, String> recipientResult = validateRecipientName(recipient);
-        if (recipientResult.isErr())
-            return recipientResult;
+        // Try with custom email regex:
+        final String EMAIL_REGEX = "^[a-zA-Z0-9+&-]+(?:\\.[a-zA-Z0-9+&-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(EMAIL_REGEX);
+        Matcher matcher = pattern.matcher(email);
 
-        // Validate domain name:
-        final String domain = email.substring(email.indexOf('@') + 1);
-        if (domain.isEmpty())
-            return Result.failure("Missing domain");
-        else if (!domain.contains("."))
-            return Result.failure("Missing top level domain");
-        else if (domain.contains(".."))
-            return Result.failure("Double dots are invalid");
-
-        // Validate top domain:
-        final String topDomain = domain.substring(domain.lastIndexOf('.') + 1);
-        if (topDomain.isEmpty())
-            return Result.failure("Missing top level domain");
-        else if (!isInEnglish(topDomain))
-            return Result.failure("Top domain must only contain letters");
-
-        // Validate bottom domain:
-        final String bottomDomain = domain.substring(0, domain.lastIndexOf('.'));
-        if (bottomDomain.isEmpty())
-            return Result.failure("Missing bottom domain");
-        for (char c : bottomDomain.toCharArray()) {
-            if (!isInEnglish(Character.toString(c)) && c != '.')
-                return Result.failure(String.format("Invalid character: %c", c));
-        }
-
-        return Result.success(null);
-    }
-
-    private static Result<Void, String> validateRecipientName(String recipient) {
-        if (recipient.isEmpty())
-            return Result.failure("Recipient name is empty");
-
-        else if (!isInEnglish(Character.toString(recipient.charAt(0))))
-            return Result.failure("Must start with an english character");
-
-        else if (recipient.length() > 20)
-            return Result.failure("Recipient name too long");
-
-        final String allowedCharacters = "!#$%&'*+-/=?^_`{|}()._";
-        for (char c : recipient.toCharArray()) {
-            if (!isInEnglish(Character.toString(c)) &&
-                !Character.isDigit(c) &&
-                !allowedCharacters.contains(Character.toString(c)))
-                return Result.failure(String.format("Invalid character: %c", c));
-        }
-
-        return Result.success(null);
+        // If the pattern matches it's an email:
+        return matcher.matches() ? Result.success(null) : Result.failure("Invalid email");
     }
 
     public static Result<Void, String> validateRoleName(String roleName) {
