@@ -112,7 +112,7 @@ public class DayShiftsFragment extends Fragment {
     public void onEmployeeViewSelected(View pressedView, Employee employee) {
         // Clear the background of the previous employee:
         if (this.pressedView != null)
-            this.pressedView.setBackgroundResource(android.R.color.background_light);
+            this.pressedView.setBackgroundResource(R.color.sand);
 
         // Save the current employee view and set their background to blue:
         this.selectedEmployee = employee;
@@ -165,7 +165,7 @@ public class DayShiftsFragment extends Fragment {
                 this.setClickListeners(current);
 
             // Set the background color of the shift views:
-            current.setBackgroundResource(i % 2 == 0 ? R.color.light_gray : R.color.white);
+            current.setBackgroundResource(R.color.light_gray_blue);
         }
 
         // Prevent the user from adding more shifts if the added number is the max number:
@@ -206,7 +206,7 @@ public class DayShiftsFragment extends Fragment {
                     roleColumnView.addEmployee(this.selectedEmployee);
 
                 // Remove the selection:
-                this.pressedView.setBackgroundResource(android.R.color.background_light);
+                this.pressedView.setBackgroundResource(R.color.sand);
                 this.pressedView = null;
                 this.selectedEmployee = null;
             }
@@ -347,7 +347,7 @@ public class DayShiftsFragment extends Fragment {
             startTime += sharedTime;
 
             // Set the color:
-            currentShift.setBackgroundResource(i % 2 == 0 ? R.color.light_gray : R.color.white);
+            currentShift.setBackgroundResource(R.color.light_gray_blue);
         }
     }
 

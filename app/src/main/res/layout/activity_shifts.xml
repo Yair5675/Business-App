@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
+    android:background="@color/sand"
     tools:context=".activities.ShiftsActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -21,9 +22,11 @@
         android:id="@+id/actShiftsTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabBackground="@drawable/background"
         app:tabTextColor="@color/gray"
-        app:tabSelectedTextColor="@color/black"
+        app:tabBackground="@color/sand"
+        app:tabUnboundedRipple="true"
+        app:tabIndicatorColor="@color/blue"
+        app:tabSelectedTextColor="@color/blue"
         />
 
     <androidx.recyclerview.widget.RecyclerView

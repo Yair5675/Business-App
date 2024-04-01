@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/transparent_background"
     android:gravity="center_horizontal">
 
     <HorizontalScrollView
@@ -23,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         >
         <!-- Layout for holding shift views that will be
