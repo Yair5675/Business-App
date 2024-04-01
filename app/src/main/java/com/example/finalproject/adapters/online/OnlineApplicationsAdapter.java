@@ -207,7 +207,6 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
     }
 
     private void sendSMS(Application application, boolean accepted) {
-        // Check permission:
         // Prepare the message:
         final String msg;
         if (accepted)
@@ -268,8 +267,7 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
             if (pending == null)
                 throw new FirebaseFirestoreException("Document doesn't contain pending applications", FirebaseFirestoreException.Code.INVALID_ARGUMENT);
 
-            if (pending > 0)
-                transaction.update(this.currentBranch.getReference(), Branch.PENDING_APPLICATIONS, FieldValue.increment(-1));
+            transaction.update(this.currentBranch.getReference(), Branch.PENDING_APPLICATIONS, Math.max(0, pending - 1));
 
             // Delete the application:
             transaction.delete(applicationRef);
