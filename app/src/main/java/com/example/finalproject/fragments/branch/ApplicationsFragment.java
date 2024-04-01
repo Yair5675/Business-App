@@ -84,7 +84,7 @@ public class ApplicationsFragment extends Fragment {
 
         // Create the adapter:
         this.adapter = new OnlineApplicationsAdapter(
-                requireContext(),
+                requireActivity(),
                 this.branch,
                 () -> {
                     this.tvNoApplicationsFound.setVisibility(View.VISIBLE);

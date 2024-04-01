@@ -1,7 +1,13 @@
 package com.example.finalproject.adapters.online;
 
 import android.Manifest;
-import android.content.Context;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
+import android.content.OperationApplicationException;
+import android.os.RemoteException;
+import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,9 +42,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class OnlineApplicationsAdapter extends OnlineAdapter<Application, OnlineApplicationsAdapter.ApplicationVH> {
+    // The activity that holds the applications adapter:
+    private final Activity activity;
+
     // A reference to the online database:
     private final FirebaseFirestore db;
 
@@ -48,10 +59,11 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
     private static final String TAG = "OnlineApplicationsAdapter";
 
     public OnlineApplicationsAdapter(
-            Context context, Branch currentBranch, Runnable onEmptyCallback, Runnable onNotEmptyCallback,
+            Activity activity, Branch currentBranch, Runnable onEmptyCallback, Runnable onNotEmptyCallback,
             @NonNull FirestoreRecyclerOptions<Application> options
     ) {
-        super(context, onEmptyCallback, onNotEmptyCallback, options);
+        super(activity, onEmptyCallback, onNotEmptyCallback, options);
+        this.activity = activity;
         this.db = FirebaseFirestore.getInstance();
         this.currentBranch = currentBranch;
     }
@@ -82,6 +94,66 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
         // Resolve the applications when the buttons are clicked:
         holder.btnAccept.setOnClickListener(_v -> this.resolveApplication(holder, application, true));
         holder.btnReject.setOnClickListener(_v -> this.resolveApplication(holder, application, false));
+
+        // Show a dialog asking the user if they want to register the applicant's phone number on
+        // their phone:
+        holder.layoutUserDetails.setOnClickListener(_v -> this.showSavePhoneDialog(application));
+    }
+
+    private void showSavePhoneDialog(Application application) {
+        // Create a dialog confirming their desire:
+        final AlertDialog savePhoneDialog = new AlertDialog.Builder(this.context)
+                .setTitle(R.string.row_application_save_contact_title)
+                .setMessage(R.string.row_application_save_contact_msg)
+                .setPositiveButton("Yes", ((dialogInterface, i) -> this.saveApplicantPhone(application)))
+                .setNegativeButton("No", null)
+                .create();
+        savePhoneDialog.show();
+    }
+
+    private void saveApplicantPhone(Application application) {
+        // Check for permissions:
+        if (!Permissions.checkPermissions(this.context, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)) {
+            Log.i(TAG, "Permission to read/write contacts was not given, asking for it");
+            Permissions.requestPermissions(this.activity, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS);
+            return;
+        }
+        // Get content resolver to access the contacts content provider:
+        final ContentResolver contentResolver = this.context.getContentResolver();
+
+        // Create a list to hold the operations needed to add a contact:
+        final ArrayList<ContentProviderOperation> operationList = new ArrayList<>(3);
+
+        // Add the initially empty contact:
+        operationList.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                .build());
+
+        // Add the applicant's name:
+        operationList.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, application.getUserFullName())
+                .build());
+
+        // Add the applicant's phone number:
+        operationList.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, application.getUserPhoneNumber())
+                .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+                .build());
+
+        // Execute the operations:
+        try {
+            contentResolver.applyBatch(ContactsContract.AUTHORITY, operationList);
+            Log.i(TAG, "Successfully added contract");
+            Toast.makeText(context, "Successfully added contract!", Toast.LENGTH_SHORT).show();
+        } catch (RemoteException | OperationApplicationException e) {
+            Log.e(TAG, "Error saving contract", e);
+            Toast.makeText(context, "An error occurred. Try again later", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void resolveApplication(ApplicationVH holder, Application application, boolean accepted) {
@@ -252,6 +324,9 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
         // The progress bar shown when either button is pressed:
         private final ProgressBar pbLoading;
 
+        // The layout of the applicant's details:
+        private final LinearLayout layoutUserDetails;
+
         public ApplicationVH(@NonNull View itemView) {
             super(itemView);
 
@@ -262,6 +337,7 @@ public class OnlineApplicationsAdapter extends OnlineAdapter<Application, Online
             this.btnAccept = itemView.findViewById(R.id.rowApplicationBtnAccept);
             this.btnReject = itemView.findViewById(R.id.rowApplicationBtnReject);
             this.pbLoading = itemView.findViewById(R.id.rowApplicationPbLoading);
+            this.layoutUserDetails = itemView.findViewById(R.id.rowApplicationLayoutUserDetails);
         }
     }
 }

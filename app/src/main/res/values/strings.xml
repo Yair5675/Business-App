@@ -187,6 +187,8 @@
     <!-- Strings belonging to the application row: -->
     <string name="row_application_reject_button_txt">Reject</string>
     <string name="row_application_accept_button_txt">Accept</string>
+    <string name="row_application_save_contact_title">Save contact</string>
+    <string name="row_application_save_contact_msg">Are you sure you want to save this applicant as a phone contact?</string>
 
 
     <!-- Strings belonging to the branch menu: -->
