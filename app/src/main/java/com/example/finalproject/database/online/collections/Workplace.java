@@ -100,6 +100,7 @@ public class Workplace {
         // Create the workplace object:
         final Workplace workplace = new Workplace();
         workplace.setBranchId(branch.getBranchId());
+        workplace.setActive(branch.isActive());
         workplace.setManager(isManager);
         workplace.setCompanyName(branch.getCompanyName());
         workplace.setCountry(branch.getCountry());
