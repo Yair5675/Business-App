@@ -52,7 +52,7 @@ public class RoleColumnView extends LinearLayout {
         // Initialize the adapter:
         this.adapter = new EmployeeViewsAdapter(
                 // Remove the employee if it is clicked:
-                context, this.employees, (view, employee) -> removeEmployee(employee)
+                R.color.white, context, this.employees, (view, employee) -> removeEmployee(employee)
         );
 
         // Set the adapter and a linear layout manager:
@@ -68,7 +68,7 @@ public class RoleColumnView extends LinearLayout {
     public void setEditable(boolean isEditable) {
         // Change the onEmployeeClicked listener according to the isEditable variable:
         this.adapter = new EmployeeViewsAdapter(
-                this.context, this.employees,
+                R.color.white, this.context, this.employees,
                 isEditable ? (view, employee) -> removeEmployee(employee) : null
         );
         this.rvEmployees.setAdapter(this.adapter);

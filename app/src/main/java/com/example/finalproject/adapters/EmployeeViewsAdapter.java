@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,17 +26,21 @@ public class EmployeeViewsAdapter extends RecyclerView.Adapter<EmployeeViewsAdap
     // The list of employees that the adapter presents:
     private final List<Employee> employees;
 
+    // The ID of the employee's name text color (if null, default color is given):
+    private final @Nullable @ColorRes Integer nameTextColorRes;
+
     // A callback that will be activated once an employee is clicked. The callback receives the view
     // that was clicked and the employee it corresponds to:
     private final @Nullable BiConsumer<View, Employee> onEmployeeClickedListener;
 
     public EmployeeViewsAdapter(
-            Context context, List<Employee> employees,
+            @Nullable Integer nameTextColorRes, Context context, List<Employee> employees,
             @Nullable BiConsumer<View, Employee> onEmployeeClickedListener
     ) {
         // Load parameters:
         this.context = context;
         this.employees = employees;
+        this.nameTextColorRes = nameTextColorRes;
         this.onEmployeeClickedListener = onEmployeeClickedListener;
     }
 
@@ -59,6 +64,10 @@ public class EmployeeViewsAdapter extends RecyclerView.Adapter<EmployeeViewsAdap
 
         // Set the user's name:
         holder.tvUserName.setText(currentEmployee.getFullName());
+
+        // Set the text color if one was given:
+        if (this.nameTextColorRes != null)
+            holder.tvUserName.setTextColor(this.context.getColor(this.nameTextColorRes));
 
         // Set the on employee clicked listener (if it isn't null):
         if (this.onEmployeeClickedListener != null)

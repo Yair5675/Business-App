@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/navy_blue"
     android:padding="8dp">
 
     <TextView
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/shift_view_tv_start_time_sample"
         android:textSize="20sp"
+        android:textColor="@color/white"
         app:drawableEndCompat="@drawable/edit_icon_2"
         android:drawablePadding="8dp"
         />
@@ -22,6 +24,7 @@
         android:layout_height="wrap_content"
         android:text="@string/shift_view_tv_end_time_sample"
         android:textSize="20sp"
+        android:textColor="@color/white"
         android:layout_marginBottom="8dp"
         app:drawableEndCompat="@drawable/edit_icon_2"
         android:drawablePadding="8dp"

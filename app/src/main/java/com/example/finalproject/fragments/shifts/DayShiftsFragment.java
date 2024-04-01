@@ -163,9 +163,6 @@ public class DayShiftsFragment extends Fragment {
             // Set click listeners if the shifts are editable:
             if (this.isEditable)
                 this.setClickListeners(current);
-
-            // Set the background color of the shift views:
-            current.setBackgroundResource(R.color.light_gray_blue);
         }
 
         // Prevent the user from adding more shifts if the added number is the max number:
@@ -346,8 +343,6 @@ public class DayShiftsFragment extends Fragment {
             currentShift.setEndTime(startTime + sharedTime);
             startTime += sharedTime;
 
-            // Set the color:
-            currentShift.setBackgroundResource(R.color.light_gray_blue);
         }
     }
 
