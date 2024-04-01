@@ -458,9 +458,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         this.selectedCity = city;
         Log.i(TAG, "City given: " + city);
 
+        // Correct google's uncertainty about Tel Aviv:
+        if (this.selectedCity.equals("Tel Aviv-Jaffa")) {
+            Log.i(TAG, "Had to correct google's stupid mistake about Tel aviv");
+            this.selectedCity = "Tel Aviv-Yafo";
+        }
+
         // Show the city edit text and set the text to the new city:
         this.tilCity.setVisibility(View.VISIBLE);
-        this.etCity.setText(city);
+        this.etCity.setText(this.selectedCity);
     }
 
     /**
