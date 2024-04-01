@@ -133,8 +133,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         this.initTabLayout();
 
         // Get the current user:
-        // TODO: If we get back here from another activity, pass the user through intent to prevent
-        //  unnecessary lookups in the database. Look there only if the user wasn't received
         this.db.getCurrentUser(
                 this::initWithUser, _e -> this.initWithoutUser()
         );
