@@ -3,9 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menuUsersItemAbout" android:title="@string/users_menu_item_about_title" android:icon="@drawable/about_icon" app:showAsAction="ifRoom" />
     <item android:id="@+id/menuUsersItemAddBusiness" android:title="@string/users_menu_item_add_business_title" android:icon="@drawable/add_business_icon" app:showAsAction="ifRoom" />
-    <item android:id="@+id/menuUsersItemSignUp" android:title="@string/users_menu_item_sign_up_title" app:showAsAction="never" />
-    <item android:id="@+id/menuUsersItemSignIn" android:title="@string/users_menu_item_sign_in_title" app:showAsAction="never" />
-    <item android:id="@+id/menuUsersItemVerification" android:title="@string/users_menu_item_verify_email_title" app:showAsAction="never" />
-    <item android:id="@+id/menuUsersItemShowUsers" android:title="@string/users_menu_item_show_users_title" app:showAsAction="never" />
-    <item android:id="@+id/menuUsersItemDisconnect" android:title="@string/users_menu_item_disconnect_title" app:showAsAction="never" />
+    <item android:title="" app:showAsAction="always" android:icon="@drawable/menu_more">
+        <menu>
+            <item android:id="@+id/menuUsersItemSignUp" android:title="@string/users_menu_item_sign_up_title" app:showAsAction="ifRoom" android:icon="@drawable/register_icon" />
+            <item android:id="@+id/menuUsersItemSignIn" android:title="@string/users_menu_item_sign_in_title" app:showAsAction="ifRoom" android:icon="@drawable/login_icon_black"/>
+            <item android:id="@+id/menuUsersItemVerification" android:title="@string/users_menu_item_verify_email_title" app:showAsAction="ifRoom" android:icon="@drawable/email_verified_icon" />
+            <item android:id="@+id/menuUsersItemShowUsers" android:title="@string/users_menu_item_show_users_title" app:showAsAction="ifRoom" android:icon="@drawable/users_icon" />
+            <item android:id="@+id/menuUsersItemDisconnect" android:title="@string/users_menu_item_disconnect_title" app:showAsAction="ifRoom" android:icon="@drawable/logout_icon"/>
+        </menu>
+    </item>
 </menu>
