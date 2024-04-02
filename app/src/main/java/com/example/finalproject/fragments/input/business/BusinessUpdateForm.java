@@ -136,6 +136,7 @@ public class BusinessUpdateForm extends InputForm {
         // Create an empty branch and set the ID to be the same as the old branch:
         final Branch branch = new Branch();
         branch.setBranchId(this.oldBranch.getBranchId());
+        branch.setActive(true);
 
         // Load the inputs from the first fragment:
         this.loadFirstFragmentInputs(branch);
