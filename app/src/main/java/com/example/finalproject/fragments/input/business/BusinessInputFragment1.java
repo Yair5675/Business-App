@@ -78,6 +78,12 @@ public class BusinessInputFragment1 extends InputFragment {
         this.initTextLayouts(parent);
         this.initEditTexts(parent);
 
+        // Initialize the week shifts num picker:
+        this.shiftsPicker = parent.findViewById(R.id.fragBusinessInput1ShiftsPicker);
+
+        // Try to load previous info:
+        this.loadInfoFromBranch();
+
         // Load default values:
         if (this.openingTimeMinutes == -1 && this.closingTimeMinutes == -1) {
             this.setOpeningTime(8, 0);
@@ -87,14 +93,8 @@ public class BusinessInputFragment1 extends InputFragment {
         // Initialize time picker dialogs:
         this.initTimePickers();
 
-        // Initialize the week shifts num picker:
-        this.shiftsPicker = parent.findViewById(R.id.fragBusinessInput1ShiftsPicker);
-
         // Initialize the text watchers:
         this.initTextWatchers();
-
-        // Try to load previous info:
-        this.loadInfoFromBranch();
 
         return parent;
     }
@@ -193,16 +193,20 @@ public class BusinessInputFragment1 extends InputFragment {
                 return Result.failure(Constants.MANDATORY_INPUT_ERROR);
             else if (this.openingTimeMinutes >= this.closingTimeMinutes)
                 return Result.failure("Must be before closing time");
-            else
+            else {
+                this.tilClosingTime.setError(null);
                 return Result.success(null);
+            }
         });
         this.validationFunctions.put(this.etClosingTime, timePicked -> {
             if (timePicked.isEmpty())
                 return Result.failure(Constants.MANDATORY_INPUT_ERROR);
             else if (this.openingTimeMinutes >= this.closingTimeMinutes)
                 return Result.failure("Must be after opening time");
-            else
+            else {
+                this.tilOpeningTime.setError(null);
                 return Result.success(null);
+            }
         });
     }
 
