@@ -325,4 +325,7 @@
     <string name="dialog_help_manage_employees_employee_status_title"><b>Employee Status:</b></string>
     <string name="dialog_help_manage_employees_paragraph_3">After accepting your employee, you can decide to give them a little reward and promote them to a manager. Or, if they have been a bad non-binary worker, you can fire them from your business. Note that managers are allowed to fire and demote other managers.\nAdditionally, you can view your employee\'s shifts in your business by pressing \'See Shifts History\':</string>
 
+    <!-- Strings belonging to the help manage roles dialog: -->
+    <string name="dialog_help_manage_roles_paragraph_1">Managing roles in your business is very easy.\nTo add a role, go to your business\'s screen and swipe left once. This will bring you to a screen where you can add and remove roles in your business. Easy peasy lemon squeezy:</string>
+
 </resources>

@@ -545,6 +545,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         else if (ID == R.id.menuUsersItemHelpManageEmployees)
             new AlertDialog.Builder(this).setView(R.layout.dialog_help_manage_employees).create().show();
 
+        // If they need help managing roles (IDK why):
+        else if (ID == R.id.menuUsersItemHelpManageRoles)
+            new AlertDialog.Builder(this).setView(R.layout.dialog_help_manage_roles).create().show();
+
         return true;
     }
 
