@@ -314,4 +314,8 @@
     <string name="dialog_help_add_business_paragraph_1">In order to add your own business to our beloved app, press this icon on the menu at the home screen:</string>
     <string name="dialog_help_add_business_paragraph_2">In this screen, you will be prompted to enter various details about you business.\nAt the bottom of the first page of the form you will need to select the maximum amount of shifts in each day in the week.\nPay attention that if a business with a similar name and address already exists you will not be able to register yours.</string>
 
+    <!-- Strings belonging to the help apply to a business dialog: -->
+    <string name="dialog_help_apply_paragraph_1">In order to apply to a business, go to the businesses screen, locate the business you want to apply to and press \'See more\':</string>
+    <string name="dialog_help_apply_paragraph_2">After clicking the button, the business\'s screen will open and in it you can press the \'Apply to Branch\' button to let the managers know you want to join their crew!</string>
+
 </resources>
