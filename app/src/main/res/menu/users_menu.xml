@@ -19,7 +19,6 @@
                     <item android:id="@+id/menuUsersItemHelpManageEmployees" android:title="@string/users_menu_help_manage_employees" />
                     <item android:id="@+id/menuUsersItemHelpManageRoles" android:title="@string/users_menu_help_manage_roles" />
                     <item android:id="@+id/menuUsersItemHelpSetShifts" android:title="@string/users_menu_help_set_shifts" />
-                    <item android:id="@+id/menuUsersItemHelpViewShiftsHistory" android:title="@string/users_menu_help_view_shifts_history" />
                 </menu>
             </item>
 
