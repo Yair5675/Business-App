@@ -4,12 +4,25 @@
     <item android:id="@+id/menuUsersItemAbout" android:title="@string/users_menu_item_about_title" android:icon="@drawable/about_icon" app:showAsAction="ifRoom" />
     <item android:id="@+id/menuUsersItemAddBusiness" android:title="@string/users_menu_item_add_business_title" android:icon="@drawable/add_business_icon" app:showAsAction="ifRoom" />
     <item android:title="" app:showAsAction="always" android:icon="@drawable/menu_more">
-        <menu>
+        <menu >
             <item android:id="@+id/menuUsersItemSignUp" android:title="@string/users_menu_item_sign_up_title" app:showAsAction="ifRoom" android:icon="@drawable/register_icon" />
             <item android:id="@+id/menuUsersItemSignIn" android:title="@string/users_menu_item_sign_in_title" app:showAsAction="ifRoom" android:icon="@drawable/login_icon_black"/>
             <item android:id="@+id/menuUsersItemShiftsHistory" android:title="@string/users_menu_item_shifts_history_title" app:showAsAction="ifRoom" android:icon="@drawable/history_icon" />
             <item android:id="@+id/menuUsersItemVerification" android:title="@string/users_menu_item_verify_email_title" app:showAsAction="ifRoom" android:icon="@drawable/email_verified_icon" />
             <item android:id="@+id/menuUsersItemShowUsers" android:title="@string/users_menu_item_show_users_title" app:showAsAction="ifRoom" android:icon="@drawable/users_icon" />
+
+            <item android:id="@+id/menuUsersItemHelp" android:title="@string/users_menu_item_help_title" android:icon="@drawable/help_icon" app:showAsAction="ifRoom" >
+                <menu>
+                    <item android:id="@+id/menuUsersItemHelpHome" android:title="@string/users_menu_help_home_screen_title" />
+                    <item android:id="@+id/menuUsersItemHelpAddBusiness" android:title="@string/users_menu_help_add_business" />
+                    <item android:id="@+id/menuUsersItemHelpApplyToBusiness" android:title="@string/users_menu_help_apply_to_business" />
+                    <item android:id="@+id/menuUsersItemHelpManageEmployees" android:title="@string/users_menu_help_manage_employees" />
+                    <item android:id="@+id/menuUsersItemHelpManageRoles" android:title="@string/users_menu_help_manage_roles" />
+                    <item android:id="@+id/menuUsersItemHelpSetShifts" android:title="@string/users_menu_help_set_shifts" />
+                    <item android:id="@+id/menuUsersItemHelpViewShiftsHistory" android:title="@string/users_menu_help_view_shifts_history" />
+                </menu>
+            </item>
+
             <item android:id="@+id/menuUsersItemDisconnect" android:title="@string/users_menu_item_disconnect_title" app:showAsAction="ifRoom" android:icon="@drawable/logout_icon"/>
         </menu>
     </item>
