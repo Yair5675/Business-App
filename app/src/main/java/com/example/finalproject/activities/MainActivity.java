@@ -532,6 +532,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             // Show the help dialog:
             new HelpHomeScreenDialog().show(getSupportFragmentManager(), null);
 
+        // If they need help adding their business:
+        else if (ID == R.id.menuUsersItemHelpAddBusiness)
+            // Show the help dialog:
+            new AlertDialog.Builder(this).setView(R.layout.dialog_help_add_business).create().show();
+
         return true;
     }
 
