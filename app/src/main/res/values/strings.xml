@@ -297,4 +297,14 @@
 
 
     <string name="looks_like_you_aren_t_connected_to_the_internet_come_again_when_you_are">Looks like you aren\'t connected to the internet. Come again when you are.</string>
+    <string name="dialog_help_home_screen_intro">Every app needs a home screen, and this one is no different.\nIn this beautiful app, the home screen contains four mini screens, each serving its own purpose.\nThose are: The Personal Screen, The Businesses Screen, The Workplaces Screen and The Shifts Screen.</string>
+    <string name="dialog_help_home_screen_personal_screen_title"><b>Personal Screen:</b></string>
+    <string name="dialog_help_home_screen_businesses_screen_title"><b>Businesses Screen:</b></string>
+    <string name="dialog_help_home_screen_workplaces_screen_title"><b>Workplaces Screen:</b></string>
+    <string name="dialog_help_home_screen_shifts_screen_title"><b>Shifts Screen:</b></string>
+    <string name="dialog_help_home_screen_paragraph_1">In this screen, your account\'s information is shown to you. The only info that won\'t be presented to you is your city and country, however we will soon discuss how to view them.\nIf some piece of information is wrong, you can change it by scrolling down the screen and pressing the \'Edit Account\' button:</string>
+    <string name="dialog_help_home_screen_email_warning"><b>PAY ATTENTION: AN EMAIL CANNOT BE CHANGED ONCE IT IS REGISTERED WHEN CREATING AN ACCOUNT!\n\n</b></string>
+    <string name="dialog_help_home_screen_paragraph_2">You can also delete your account with the obvious \'Delete Account\' button to the right of the \'Edit Account\' button.</string>
+    <string name="dialog_help_hom_screen_workplaces_paragraph_1">In this screen the businesses in which you are an employee will be shown to you. Your status will be presented in each one (either manager or employee), and also the branch\'s address.\n\nThe \'active\' circle will alert you if your business was deleted. Deleted businesses you were a part of are still shown here.\n\nIf you want to look at your shifts history in a specific business (again, including deleted ones) press the \'See Shifts History\' button. If you want to enter the business\'s screen, press on the business anywhere but on the button.</string>
+    <string name="dialog_help_home_screen_shifts_paragraph">In this screen all future shifts from all businesses will be shown to you. Meaning, past shifts will not be shown and will actually disappear in real time.\nThe business\'s name will be shown above the role, date and time of the shift.</string>
 </resources>

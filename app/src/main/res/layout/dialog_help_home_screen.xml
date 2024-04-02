@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+
+        android:text="@string/users_menu_help_home_screen_title"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_help_home_screen_intro"
+                android:textSize="18sp"
+                />
+
+            <TextView
+                android:id="@+id/dialogHelpHomeScreenTvPersonalScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
+
+                android:text="@string/dialog_help_home_screen_personal_screen_title"
+                android:textSize="23sp"
+
+                app:drawableEndCompat="@drawable/expand_icon"
+                />
+            <LinearLayout
+                android:id="@+id/dialogHelpHomeScreenPersonalScreenLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:src="@drawable/personal_screen_1"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/dialog_help_home_screen_paragraph_1"
+                    android:textSize="18sp"
+                    android:layout_marginVertical="4dp"
+                    />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:src="@drawable/personal_screen_2"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginVertical="4dp"
+
+                    android:text="@string/dialog_help_home_screen_email_warning"
+                    android:textSize="18sp"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+
+                    android:textSize="18sp"
+                    android:text="@string/dialog_help_home_screen_paragraph_2" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/dialogHelpHomeScreenTvBusinessesScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
+
+                android:text="@string/dialog_help_home_screen_businesses_screen_title"
+                android:textSize="23sp"
+
+                app:drawableEndCompat="@drawable/expand_icon"
+                />
+            <LinearLayout
+                android:id="@+id/dialogHelpHomeScreenBusinessesScreenLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:src="@drawable/businesses_screen_1"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="In this screen you can search for businesses to apply to. You can view all that are available or narrow it down using the search bar. Additionally, checking the 'My city' box will narrow the search even more to only show businesses in your city.\nOnce you have found an interesting business, press the 'See more' button on the business to view more of it and potentially apply to it!"
+                    android:textSize="18sp"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/dialogHelpHomeScreenTvWorkplacesScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
+
+                android:text="@string/dialog_help_home_screen_workplaces_screen_title"
+                android:textSize="23sp"
+
+                app:drawableEndCompat="@drawable/expand_icon"
+                />
+            <LinearLayout
+                android:id="@+id/dialogHelpHomeScreenWorkplacesScreenLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:src="@drawable/workplaces_screen_1"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="4dp"
+
+                    android:textSize="18sp"
+                    android:text="@string/dialog_help_hom_screen_workplaces_paragraph_1"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/dialogHelpHomeScreenTvShiftsScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
+
+                android:text="@string/dialog_help_home_screen_shifts_screen_title"
+                android:textSize="23sp"
+
+                app:drawableEndCompat="@drawable/expand_icon"
+                />
+            <LinearLayout
+                android:id="@+id/dialogHelpHomeScreenShiftsScreenLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:src="@drawable/shifts_screen_1"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="4dp"
+
+                    android:textSize="18sp"
+                    android:text="@string/dialog_help_home_screen_shifts_paragraph"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

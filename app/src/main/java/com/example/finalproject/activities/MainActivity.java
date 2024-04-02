@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.example.finalproject.dialogs.HelpHomeScreenDialog;
 import com.example.finalproject.dialogs.LoginDialog;
 import com.example.finalproject.adapters.ScreenSlideAdapter;
 import com.example.finalproject.database.online.OnlineDatabase;
@@ -525,6 +526,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             startActivity(intent);
             finish();
         }
+
+        // If they need help in the home screen:
+        else if (ID == R.id.menuUsersItemHelpHome)
+            // Show the help dialog:
+            new HelpHomeScreenDialog().show(getSupportFragmentManager(), null);
 
         return true;
     }
