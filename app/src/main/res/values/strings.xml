@@ -327,5 +327,7 @@
 
     <!-- Strings belonging to the help manage roles dialog: -->
     <string name="dialog_help_manage_roles_paragraph_1">Managing roles in your business is very easy.\nTo add a role, go to your business\'s screen and swipe left once. This will bring you to a screen where you can add and remove roles in your business. Easy peasy lemon squeezy:</string>
+    <string name="dialog_help_set_shifts_paragraph_1">Managers can set shifts for the current week and the next one. To do so, go to the menu in your business\'s screen and select whichever week you want.\nIn the screen that will open you will be able to add shifts through the obvious button, but also edit shifts you have already set in the past for this week.</string>
+    <string name="dialog_help_set_shifts_paragraph_2">To add an employee to a specific role in the shift, press their image above and then the name of the role you want them in. Pay attention: an employee cannot work at two roles in one shift.\n\nTo remove an employee from a role in a certain shift, press their image in the shift.\n\nTo delete the entire shift, press on it for a second or too (long-press).\n\nOnce you are done setting your shifts, press \'Save Shifts\', and let the magnificent app do the rest.</string>
 
 </resources>
