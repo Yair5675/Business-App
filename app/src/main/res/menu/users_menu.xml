@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menuUsersItemAbout" android:title="@string/users_menu_item_about_title" android:icon="@drawable/about_icon" app:showAsAction="ifRoom" />
     <item android:id="@+id/menuUsersItemAddBusiness" android:title="@string/users_menu_item_add_business_title" android:icon="@drawable/add_business_icon" app:showAsAction="ifRoom" />
     <item android:title="" app:showAsAction="always" android:icon="@drawable/menu_more">
         <menu >

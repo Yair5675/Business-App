@@ -9,7 +9,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,9 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -496,11 +493,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             });
         }
 
-        // If they want to read the "About Us" dialog:
-        else if (ID == R.id.menuUsersItemAbout) {
-            this.activateAboutDialog();
-        }
-
         // If they want to add their own business:
         else if (ID == R.id.menuUsersItemAddBusiness) {
             // Create the registration form and set it in the input activity:
@@ -554,25 +546,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             new AlertDialog.Builder(this).setView(R.layout.dialog_help_set_shifts).create().show();
 
         return true;
-    }
-
-    private void activateAboutDialog() {
-        // Bind the XML file to the dialog:
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_about);
-
-        // Set the width to 90% of the screen and height to minimal:
-        final int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
-        final int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        Window window;
-        if ((window = dialog.getWindow()) != null)
-            window.setLayout(width, height);
-
-        // Set cancelable to true:
-        dialog.setCancelable(true);
-
-        // Show the dialog:
-        dialog.show();
     }
 
     @Override
