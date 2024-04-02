@@ -2,6 +2,7 @@ package com.example.finalproject.fragments.branch;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +39,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class EmployeesFragment extends Fragment implements EmployeeActions {
@@ -47,6 +51,9 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
 
     // The text view that tells the user if the branch is currently opened or closed:
     private TextView tvCurrentOpenness;
+
+    // The count down timer that makes the openness text view change in real time:
+    private CountDownTimer opennessTimer;
 
     // The text view that shows the working hours of the branch:
     private TextView tvWorkingHours;
@@ -127,7 +134,67 @@ public class EmployeesFragment extends Fragment implements EmployeeActions {
         else
             this.setEmployeeStatus(EmployeeStatus.UNEMPLOYED);
 
+        // Initialize the count down timer to change the greeting:
+        this.initOpennessTimer();
+
         return parent;
+    }
+
+    private void initOpennessTimer() {
+        // Get the next hour in milliseconds:
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        final int nextChangeTime = this.isBranchOpen() ? this.currentBranch.getClosingTime() : this.currentBranch.getOpeningTime();
+
+        // Set the message and color:
+        final @StringRes int nextTxt = this.isBranchOpen() ? R.string.act_branch_closed_msg : R.string.act_branch_opened_msg;
+        final @ColorInt int nextColor = this.isBranchOpen() ? Color.RED : Color.GREEN;
+
+        // Set the time in the calendar:
+        calendar.set(Calendar.HOUR_OF_DAY, nextChangeTime / 60);
+        calendar.set(Calendar.MINUTE, nextChangeTime % 60);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // If the next change in minutes is before the current time, it is tomorrow:
+        if (calendar.getTimeInMillis() < System.currentTimeMillis())
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        // Set the count down timer:
+        final long TICK_INTERVAL = 1000 * 60 * 5;
+        this.opennessTimer = new CountDownTimer(calendar.getTimeInMillis() - System.currentTimeMillis(), TICK_INTERVAL) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                final long secondsUntilFinished = millisUntilFinished / 1000;
+                Log.i(
+                        TAG,
+                        String.format(
+                                "Changing openness to %b in %d hours, %d minutes and %d seconds (at %d:%02d)",
+                                !isBranchOpen(),
+                                secondsUntilFinished / (60 * 60),
+                                (secondsUntilFinished / 60) % 60,
+                                secondsUntilFinished % 60,
+                                nextChangeTime / 60,
+                                nextChangeTime % 60
+                        )
+                );
+            }
+
+            @Override
+            public void onFinish() {
+                tvCurrentOpenness.setText(nextTxt);
+                tvCurrentOpenness.setTextColor(nextColor);
+            }
+        }.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Cancel the timer:
+        if (this.opennessTimer != null)
+            this.opennessTimer.cancel();
     }
 
     private void applyToBranch() {
