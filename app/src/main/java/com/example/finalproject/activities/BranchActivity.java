@@ -266,6 +266,7 @@ public class BranchActivity extends AppCompatActivity {
             // Go to the input activity:
             final Intent intent = new Intent(this, InputActivity.class);
             startActivity(intent);
+            finish();
         }
         // If the manager wants to delete the branch:
         else if (ID == R.id.menuBranchItemDelete) {
