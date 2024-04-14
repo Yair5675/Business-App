@@ -117,13 +117,13 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
             // Use a simple query to get the first 50 users:
             query = this.db.getFirestoreReference()
                     .collection("users")
-                    .orderBy("birthdate", Query.Direction.DESCENDING)
+                    .orderBy(User.BIRTHDATE, Query.Direction.DESCENDING)
                     .limit(50);
         else
             // Only get the current user:
             query = this.db.getFirestoreReference()
                     .collection("users")
-                    .whereEqualTo("uid", this.user.getUid())
+                    .whereEqualTo(User.UID, this.user.getUid())
                     .limit(1);
 
         FirestoreRecyclerOptions<User> options = builder.setQuery(query, User.class).build();
@@ -153,9 +153,9 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
         // Perform a like query:
         final Query searchQuery = this.db.getFirestoreReference()
                 .collection("users")
-                .whereGreaterThanOrEqualTo("fullName", query)
-                .whereLessThan("fullName", query + "\uf8ff")
-                .orderBy("birthdate", Query.Direction.DESCENDING)
+                .whereGreaterThanOrEqualTo(User.FULL_NAME, query)
+                .whereLessThan(User.FULL_NAME, query + "\uf8ff")
+                .orderBy(User.BIRTHDATE, Query.Direction.DESCENDING)
                 .limit(50);
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setLifecycleOwner(this)
@@ -176,13 +176,13 @@ public class UsersActivity extends AppCompatActivity implements SearchView.OnQue
                 // Use a simple query to get the first 50 users:
                 query = this.db.getFirestoreReference()
                         .collection("users")
-                        .orderBy("birthdate", Query.Direction.DESCENDING)
+                        .orderBy(User.BIRTHDATE, Query.Direction.DESCENDING)
                         .limit(50);
             else
                 // Only get the current user:
                 query = this.db.getFirestoreReference()
                         .collection("users")
-                        .whereEqualTo("uid", this.user.getUid())
+                        .whereEqualTo(User.UID, this.user.getUid())
                         .limit(1);
 
             FirestoreRecyclerOptions<User> options = builder.setQuery(query, User.class).build();
